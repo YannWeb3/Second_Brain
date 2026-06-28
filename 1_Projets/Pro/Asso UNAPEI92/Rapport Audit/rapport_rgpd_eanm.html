@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit RGPD — EANM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F3EE;
+    --card:#FFFFFF;
+    --line:#E6E2D8;
+    --ink:#23272E;
+    --ink-soft:#6B7280;
+
+    --red:#B0463B;
+    --red-bg:#F7E4E1;
+    --orange:#BD8A35;
+    --orange-bg:#F6ECD9;
+    --green:#4F7A68;
+    --green-bg:#E6EEE9;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    line-height:1.55;
+  }
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:40px 24px 80px;
+  }
+
+  /* ===== HEADER ===== */
+  .page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .page-header h1{
+    font-size:24px;
+    font-weight:700;
+    margin:0;
+  }
+  .page-header .count{
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+  .page-note{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0 0 28px;
+  }
+
+  /* ===== KPI ROW ===== */
+  .kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:16px;
+    margin-bottom:36px;
+  }
+  .kpi-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:20px 22px;
+  }
+  .kpi-card .kpi-label{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .kpi-card .kpi-value{
+    font-size:32px;
+    font-weight:700;
+  }
+
+  /* ===== SECTION TITLE ===== */
+  .section-title{
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    margin-bottom:14px;
+  }
+  .section-sub{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin:-8px 0 14px;
+  }
+
+  /* ===== RISQUES MAJEURS (vue globale) ===== */
+  .risk-list{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:6px 22px;
+    margin-bottom:36px;
+  }
+  .risk-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .risk-row:last-child{border-bottom:none;}
+  .risk-rank{
+    flex-shrink:0;
+    width:26px; height:26px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:700;
+    background:var(--red-bg); color:var(--red);
+  }
+  .risk-row:nth-child(4) .risk-rank,
+  .risk-row:nth-child(5) .risk-rank{
+    background:var(--orange-bg); color:var(--orange);
+  }
+  .risk-text{
+    font-size:14.5px;
+    font-weight:500;
+  }
+  .risk-text .estab-tag{
+    display:inline-block;
+    margin-left:8px;
+    font-size:12px;
+    font-weight:600;
+    color:var(--ink-soft);
+  }
+
+  /* ===== ESTABLISHMENT CARD (overview) ===== */
+  .estab-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-bottom:40px;
+  }
+  .estab-card{
+    display:block;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-left:4px solid var(--red);
+    border-radius:10px;
+    padding:18px 20px;
+    text-decoration:none;
+    color:var(--ink);
+    transition:box-shadow .15s ease, transform .15s ease;
+  }
+  .estab-card.modere{border-left-color:var(--orange);}
+  .estab-card.maitrise{border-left-color:var(--green);}
+  .estab-card:hover{
+    box-shadow:0 4px 16px rgba(0,0,0,0.06);
+    transform:translateY(-1px);
+  }
+  .estab-card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:6px;
+  }
+  .estab-card-top h3{
+    font-size:17px;
+    font-weight:600;
+    margin:0;
+  }
+  .estab-card .meta{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin-bottom:12px;
+  }
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    font-size:12.5px;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:6px;
+    white-space:nowrap;
+  }
+  .badge-red{background:var(--red-bg); color:var(--red);}
+  .badge-orange{background:var(--orange-bg); color:var(--orange);}
+  .badge-green{background:var(--green-bg); color:var(--green);}
+
+  .estab-icons{
+    display:flex;
+    gap:10px;
+    color:var(--ink-soft);
+  }
+  .estab-icons svg{width:18px; height:18px;}
+
+  /* ===== DETAIL PAGE ===== */
+  .back-link{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+    text-decoration:none;
+    margin-bottom:18px;
+  }
+  .back-link:hover{color:var(--ink);}
+  .back-link svg{width:16px; height:16px;}
+
+  .detail-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:6px;
+  }
+  .detail-header h2{
+    font-size:22px;
+    font-weight:700;
+    margin:0;
+  }
+  .detail-header .score{
+    font-size:15px;
+    font-weight:700;
+  }
+  .detail-header .score.red{color:var(--red);}
+  .detail-header .score.orange{color:var(--orange);}
+  .detail-header .score.green{color:var(--green);}
+
+  .detail-sites{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-bottom:24px;
+  }
+
+  .detail-section{
+    margin-bottom:64px;
+  }
+  .detail-section:last-child{
+    margin-bottom:0;
+  }
+
+  .block{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:22px 24px;
+    margin-bottom:16px;
+  }
+  .block-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .block-head svg{
+    width:20px; height:20px;
+    flex-shrink:0;
+  }
+  .block-head h3{
+    font-size:15.5px;
+    font-weight:700;
+    margin:0;
+  }
+  .block.risques svg{color:var(--red);}
+  .block.principes svg{color:var(--ink-soft);}
+  .block.urgent svg{color:var(--red);}
+  .block.planifier svg{color:var(--orange);}
+  .block.recommande svg{color:var(--green);}
+
+  .block.urgent .block-head h3{color:var(--red);}
+  .block.planifier .block-head h3{color:var(--orange);}
+  .block.recommande .block-head h3{color:var(--green);}
+
+  .block ul{
+    margin:0;
+    padding-left:20px;
+    font-size:14.5px;
+  }
+  .block ul li{
+    margin-bottom:9px;
+  }
+  .block ul li:last-child{margin-bottom:0;}
+
+  ul.action-list{padding-left:0; margin:0;}
+  .action-item{
+    padding:9px 0;
+    border-bottom:1px solid var(--line);
+    font-size:14.5px;
+    list-style:none;
+  }
+  .action-item:last-child{border-bottom:none;}
+
+  footer{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    text-align:center;
+    margin-top:40px;
+  }
+
+  @media (max-width:640px){
+    .kpi-grid{grid-template-columns:1fr;}
+    .estab-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="top">
+
+  <!-- ===================== MAQUETTE 1 — VUE GLOBALE ===================== -->
+  <div class="page-header">
+    <h1>Audit RGPD — vue globale</h1>
+    <div class="count">6 EANM (regroupés) · 11 réponses</div>
+  </div>
+  <p class="page-note">Plusieurs réponses concernant les sites d'un même gestionnaire ont été regroupées sous une seule fiche établissement (3 foyers de M. Perceval, 3 CAJ de M. Dorme, et CAJ Jean-Claude Richard / CAJ Vanves dont la réponse est restée quasiment vide).</p>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Score moyen de conformité</div>
+      <div class="kpi-value">45 / 100</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Risques majeurs détectés</div>
+      <div class="kpi-value">19</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Actions correctives proposées</div>
+      <div class="kpi-value">47</div>
+    </div>
+  </div>
+
+  <div class="section-title">Risques majeurs identifiés</div>
+  <div class="section-sub">Classés par ordre de criticité en cas de contrôle de la CNIL</div>
+
+  <div class="risk-list">
+    <div class="risk-row">
+      <div class="risk-rank">1</div>
+      <div class="risk-text">Aucun référent RGPD formellement désigné dans la quasi-totalité des établissements <span class="estab-tag">— tous sauf Foyers Perceval (référent informel)</span></div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">2</div>
+      <div class="risk-text">Vidéosurveillance, données biométriques et comportementales utilisées sans cadre ni analyse de risque (PIA) <span class="estab-tag">— Domaine de Vitray</span></div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">3</div>
+      <div class="risk-text">Photos/vidéos de résidents diffusées sans consentement écrit <span class="estab-tag">— Domaine de Vitray, CAJ Jean-Claude Richard, CAJ Dorme (Fontenay/Sceaux/Montrouge)</span></div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">4</div>
+      <div class="risk-text">Dossiers papier jamais détruits, parfois dans des armoires non fermées et accessibles à 8-12 personnes <span class="estab-tag">— CAJ Dorme, CAJ de Neuilly, EANM Bois Clair</span></div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">5</div>
+      <div class="risk-text">Information RGPD donnée uniquement à l'oral, sans aucun document remis aux résidents <span class="estab-tag">— CAJ Jean-Claude Richard, EANM Bois Clair</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Établissements — cliquer pour ouvrir le détail</div>
+
+  <div class="estab-grid">
+
+    <a class="estab-card" href="#detail-vitray">
+      <div class="estab-card-top">
+        <h3>Domaine de Vitray</h3>
+        <span class="badge badge-red">Risque élevé</span>
+      </div>
+      <div class="meta">Foyer d'hébergement · 50 résidents · 42 salariés</div>
+      <div class="estab-icons" title="Points de vigilance : référent RGPD, vidéosurveillance/biométrie sans PIA, photos sans consentement, documents visibles, destruction papier">
+        <!-- camera -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <!-- fingerprint -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a8 8 0 0 0-8 8c0 3 1 5 2 7"/><path d="M12 2a8 8 0 0 1 8 8c0 5-2 8-2 8"/><path d="M8 10a4 4 0 0 1 8 0c0 4 2 7 2 7"/><path d="M8 10c0 5-2 8-3 9"/><path d="M12 10v3a6 6 0 0 0 2 4"/></svg>
+        <!-- image (photos sans consentement) -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+        <!-- folder (documents visibles) -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      </div>
+    </a>
+
+    <a class="estab-card" href="#detail-dorme">
+      <div class="estab-card-top">
+        <h3>CAJ Fontenay / Sceaux / Montrouge</h3>
+        <span class="badge badge-red">Risque élevé</span>
+      </div>
+      <div class="meta">CAJ · 79 résidents (3 sites)</div>
+      <div class="estab-icons" title="Points de vigilance : référent RGPD, base légale inconnue, armoires non fermées, accès trop large, photos sans consentement écrit">
+        <!-- user-x -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h2.5"/><line x1="17" y1="8" x2="22" y2="13"/><line x1="22" y1="8" x2="17" y2="13"/></svg>
+        <!-- unlock -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+        <!-- eye (documents visibles fréquemment) -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <!-- file-x (sous-traitants) -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="9.5" y1="12.5" x2="14.5" y2="17.5"/><line x1="14.5" y1="12.5" x2="9.5" y2="17.5"/></svg>
+      </div>
+    </a>
+
+    <a class="estab-card" href="#detail-jcrichard">
+      <div class="estab-card-top">
+        <h3>CAJ Jean-Claude Richard</h3>
+        <span class="badge badge-red">Risque élevé</span>
+      </div>
+      <div class="meta">CAJ · 33 résidents (+ CAJ Vanves, 24 résidents, réponse incomplète)</div>
+      <div class="estab-icons" title="Points de vigilance : référent RGPD, photos sans consentement, information orale uniquement, stockage local, verrouillage long">
+        <!-- user-x -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h2.5"/><line x1="17" y1="8" x2="22" y2="13"/><line x1="22" y1="8" x2="17" y2="13"/></svg>
+        <!-- image -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+        <!-- megaphone (info orale) -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+        <!-- clock (verrouillage long) -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+    </a>
+
+    <a class="estab-card modere" href="#detail-neuilly">
+      <div class="estab-card-top">
+        <h3>CAJ de Neuilly</h3>
+        <span class="badge badge-orange">Risque modéré</span>
+      </div>
+      <div class="meta">CAJ · 35 résidents</div>
+      <div class="estab-icons" title="Points de vigilance : référent au quotidien, base légale, clés multiples, destruction papier, procédure de demande d'accès">
+        <!-- key -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5L19 11"/></svg>
+        <!-- file-warning -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="12" y1="13" x2="12" y2="16"/><circle cx="12" cy="19" r="0.5" fill="currentColor"/></svg>
+        <!-- trash-2 -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      </div>
+    </a>
+
+    <a class="estab-card modere" href="#detail-boisclair">
+      <div class="estab-card-top">
+        <h3>EANM du Bois Clair</h3>
+        <span class="badge badge-orange">Risque modéré</span>
+      </div>
+      <div class="meta">EANM · 66 résidents · 55 salariés</div>
+      <div class="estab-icons" title="Points de vigilance : référent RGPD, destruction papier, information orale, durée de conservation, reconnaissance des violations">
+        <!-- user-x -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h2.5"/><line x1="17" y1="8" x2="22" y2="13"/><line x1="22" y1="8" x2="17" y2="13"/></svg>
+        <!-- trash-2 -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        <!-- megaphone -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+        <!-- clock -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+    </a>
+
+    <a class="estab-card maitrise" href="#detail-perceval">
+      <div class="estab-card-top">
+        <h3>Graviers / Le Phare / Service Appart.</h3>
+        <span class="badge badge-green">Risque maîtrisé</span>
+      </div>
+      <div class="meta">Foyer hébergement · 81 résidents (3 sites)</div>
+      <div class="estab-icons" title="Points de vigilance : lien référent-DPO non activé, registre des traitements, email non sécurisé, durée de conservation">
+        <!-- check-circle -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ===================== DÉTAIL : DOMAINE DE VITRAY ===================== -->
+  <div class="detail-section">
+    <a class="back-link" href="#top" id="detail-vitray">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour à la vue d'ensemble
+    </a>
+
+    <div class="detail-header">
+      <h2>Domaine de Vitray</h2>
+      <div class="score red">Score : 38/100</div>
+    </div>
+    <div class="detail-sites">Foyer d'hébergement · 50 résidents · 42 salariés</div>
+
+    <div class="block risques">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3>1. Analyse des risques</h3>
+      </div>
+      <ul>
+        <li>Personne n'est officiellement responsable du RGPD, et l'équipe n'a jamais été formée sur le sujet.</li>
+        <li>Des caméras filment les espaces communs et l'extérieur, et l'établissement utilise des données biométriques et comportementales — sans avoir vérifié si c'est encadré correctement, comme installer des caméras sans se poser la question du droit à l'image.</li>
+        <li>Des photos de résidents sont prises et transmises aux familles ou au journal interne sans leur demander leur accord.</li>
+        <li>Des documents avec des informations sur les résidents sont souvent laissés visibles dans les espaces communs.</li>
+        <li>Les dossiers papier ne sont jamais détruits, comme une armoire qui ne se vide jamais.</li>
+        <li>La durée pendant laquelle les dossiers sont conservés n'est pas connue.</li>
+      </ul>
+    </div>
+
+    <div class="block principes">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+        <h3>2. Principes RGPD concernés</h3>
+      </div>
+      <ul>
+        <li><strong>Un responsable identifié</strong> : quelqu'un doit piloter le RGPD et savoir réagir.</li>
+        <li><strong>Une analyse de risques avant d'agir</strong> : avant d'installer des caméras ou d'utiliser des données biométriques, il faut vérifier que c'est justifié et bien encadré (analyse d'impact ou « PIA »).</li>
+        <li><strong>Le consentement avant une photo</strong> : on ne diffuse pas l'image de quelqu'un sans son accord, même en interne.</li>
+        <li><strong>Des documents rangés hors de la vue</strong>, surtout dans les espaces partagés avec d'autres résidents ou des visiteurs.</li>
+        <li><strong>Une durée de vie définie pour les dossiers</strong>, avec une destruction sécurisée une fois ce délai passé.</li>
+      </ul>
+    </div>
+
+    <div class="block urgent">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h3>Urgent</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Désigner un référent RGPD local et organiser le lien avec le DPO.</li>
+        <li class="action-item">Réaliser une analyse d'impact (PIA) pour la vidéosurveillance et les données biométriques/comportementales.</li>
+      </ul>
+    </div>
+
+    <div class="block planifier">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <h3>À planifier</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Encadrer la diffusion de photos de résidents en recueillant un consentement écrit.</li>
+        <li class="action-item">Ranger systématiquement les documents contenant des informations sur les résidents hors des espaces communs.</li>
+        <li class="action-item">Mettre en place une destruction sécurisée des dossiers papier en fin de conservation.</li>
+        <li class="action-item">Définir et écrire la durée de conservation des dossiers des résidents.</li>
+      </ul>
+    </div>
+
+    <div class="block recommande">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h3>Recommandé</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Former l'équipe au RGPD et aux bonnes pratiques de confidentialité.</li>
+        <li class="action-item">Vérifier auprès du DPO le contenu du registre des traitements pour cet établissement.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===================== DÉTAIL : CAJ FONTENAY / SCEAUX / MONTROUGE (DORME) ===================== -->
+  <div class="detail-section">
+    <a class="back-link" href="#top" id="detail-dorme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour à la vue d'ensemble
+    </a>
+
+    <div class="detail-header">
+      <h2>CAJ Fontenay / Sceaux / Montrouge</h2>
+      <div class="score red">Score : 30/100</div>
+    </div>
+    <div class="detail-sites">3 sites du même gestionnaire · CAJ Fontenay (36 résidents), CAJ Sceaux (26 résidents), CAJ Montrouge (17 résidents) · 79 résidents au total · 34 salariés au total</div>
+
+    <div class="block risques">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3>1. Analyse des risques</h3>
+      </div>
+      <ul>
+        <li>Sur les trois sites, personne n'est officiellement responsable du RGPD, et la base légale utilisée pour les dossiers des résidents n'est pas connue.</li>
+        <li>Les dossiers papier sont conservés dans des armoires qui ne ferment pas, et 8 à 9 personnes selon les sites en détiennent les clés — autant dire que tout le monde peut y accéder.</li>
+        <li>Des documents avec des informations sur les résidents sont fréquemment laissés visibles dans les espaces communs.</li>
+        <li>Beaucoup de personnes ont accès aux dossiers complets : direction, chefs de service, tous les éducateurs et l'administratif.</li>
+        <li>Les dossiers papier ne sont jamais détruits de façon sécurisée.</li>
+        <li>Des photos de résidents sont publiées sur le site web ou le journal interne avec seulement un accord oral, sans rien d'écrit.</li>
+        <li>On ne sait pas si les prestataires (repas, transport, intervenants extérieurs) se sont engagés par écrit à protéger les données.</li>
+        <li>La durée de conservation des dossiers après le départ d'un résident n'est pas définie.</li>
+      </ul>
+    </div>
+
+    <div class="block principes">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+        <h3>2. Principes RGPD concernés</h3>
+      </div>
+      <ul>
+        <li><strong>Un responsable identifié et une base légale claire</strong> pour savoir sur quoi s'appuie le traitement des dossiers.</li>
+        <li><strong>Des armoires fermées à clé</strong>, avec un accès limité à quelques personnes, et une destruction sécurisée des documents.</li>
+        <li><strong>Des documents rangés hors de la vue</strong>, surtout dans les espaces partagés.</li>
+        <li><strong>Le bon accès aux bonnes personnes</strong> : tout le monde n'a pas besoin de voir les dossiers complets.</li>
+        <li><strong>Le consentement écrit avant une photo</strong>, surtout avant une diffusion publique (site web, journal).</li>
+        <li><strong>Des engagements écrits avec les prestataires</strong> qui touchent aux données des résidents.</li>
+      </ul>
+    </div>
+
+    <div class="block urgent">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h3>Urgent</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Désigner un référent RGPD commun aux trois sites et organiser le lien avec le DPO.</li>
+        <li class="action-item">Clarifier avec le DPO la base légale du traitement des dossiers des résidents.</li>
+        <li class="action-item">Fermer à clé les armoires contenant les dossiers papier et limiter le nombre de détenteurs de clés.</li>
+        <li class="action-item">Mettre en place une destruction sécurisée des dossiers papier en fin de conservation.</li>
+        <li class="action-item">Recueillir un consentement écrit avant toute diffusion de photos de résidents.</li>
+      </ul>
+    </div>
+
+    <div class="block planifier">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <h3>À planifier</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Réduire le nombre de personnes ayant accès aux dossiers informatiques complets.</li>
+        <li class="action-item">Ranger systématiquement les documents contenant des informations sur les résidents hors des espaces communs.</li>
+        <li class="action-item">Vérifier et faire signer un engagement de confidentialité RGPD avec les prestataires (repas, transport, intervenants externes).</li>
+        <li class="action-item">Définir et écrire la durée de conservation des dossiers après le départ d'un résident.</li>
+      </ul>
+    </div>
+
+    <div class="block recommande">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h3>Recommandé</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Vérifier que le logiciel métier dispose d'un contrat avec clauses RGPD (article 28).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===================== DÉTAIL : CAJ JEAN-CLAUDE RICHARD / VANVES ===================== -->
+  <div class="detail-section">
+    <a class="back-link" href="#top" id="detail-jcrichard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour à la vue d'ensemble
+    </a>
+
+    <div class="detail-header">
+      <h2>CAJ Jean-Claude Richard</h2>
+      <div class="score red">Score : 32/100</div>
+    </div>
+    <div class="detail-sites">CAJ · 33 résidents · 9 salariés — site secondaire <strong>CAJ Vanves</strong> (24 résidents, même gestionnaire) : réponse au questionnaire restée quasiment vide, à compléter.</div>
+
+    <div class="block risques">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3>1. Analyse des risques</h3>
+      </div>
+      <ul>
+        <li>Personne n'est officiellement responsable du RGPD, l'équipe n'a jamais été formée et ne sait pas comment joindre le DPO.</li>
+        <li>Des photos de résidents sont prises et diffusées sans leur demander leur accord — comme publier la photo de quelqu'un sans lui demander la permission.</li>
+        <li>À l'admission, l'information sur le RGPD n'est donnée qu'à l'oral, sans aucun document remis aux résidents ou à leur entourage.</li>
+        <li>Les dossiers informatiques sont stockés sur des ordinateurs locaux plutôt que sur le serveur du siège, ce qui fragilise leur sauvegarde.</li>
+        <li>Les postes informatiques se verrouillent après plus de 10 minutes d'inactivité — trop de temps laissé pour un accès non autorisé.</li>
+        <li>La durée de conservation des dossiers après le départ d'un résident n'est pas définie.</li>
+        <li>Le site « CAJ Vanves », rattaché au même gestionnaire, n'a quasiment pas répondu au questionnaire : sa situation RGPD reste inconnue.</li>
+      </ul>
+    </div>
+
+    <div class="block principes">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+        <h3>2. Principes RGPD concernés</h3>
+      </div>
+      <ul>
+        <li><strong>Un responsable identifié et formé</strong> pour piloter le RGPD et accompagner l'équipe.</li>
+        <li><strong>Le consentement avant une photo</strong> : on ne diffuse pas l'image de quelqu'un sans son accord.</li>
+        <li><strong>Une information écrite à l'admission</strong>, en plus de l'oral, que la personne peut garder et relire.</li>
+        <li><strong>Un stockage centralisé et sauvegardé des données</strong>, plutôt que sur des postes individuels.</li>
+        <li><strong>Des postes qui se verrouillent rapidement</strong> pour protéger ce qui est affiché à l'écran.</li>
+        <li><strong>Une durée de vie définie pour les dossiers</strong>, harmonisée entre les sites.</li>
+      </ul>
+    </div>
+
+    <div class="block urgent">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h3>Urgent</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Désigner un référent RGPD local et organiser le lien avec le DPO.</li>
+        <li class="action-item">Arrêter la diffusion de photos de résidents sans consentement écrit préalable.</li>
+        <li class="action-item">Remettre aux résidents un support écrit d'information RGPD dès l'admission.</li>
+        <li class="action-item">Réduire le délai de verrouillage automatique des postes (plus de 10 min → 5 min maximum).</li>
+        <li class="action-item">Compléter le diagnostic RGPD du site CAJ Vanves, dont la réponse est restée vide.</li>
+      </ul>
+    </div>
+
+    <div class="block planifier">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <h3>À planifier</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Migrer le stockage des dossiers informatiques des ordinateurs locaux vers le serveur du siège.</li>
+        <li class="action-item">Former l'équipe au RGPD (aucune formation suivie à ce jour).</li>
+        <li class="action-item">Définir et écrire la durée de conservation des dossiers après le départ d'un résident.</li>
+      </ul>
+    </div>
+
+    <div class="block recommande">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h3>Recommandé</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Vérifier et faire signer un engagement de confidentialité avec le prestataire de repas.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===================== DÉTAIL : CAJ DE NEUILLY ===================== -->
+  <div class="detail-section">
+    <a class="back-link" href="#top" id="detail-neuilly">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour à la vue d'ensemble
+    </a>
+
+    <div class="detail-header">
+      <h2>CAJ de Neuilly</h2>
+      <div class="score orange">Score : 50/100</div>
+    </div>
+    <div class="detail-sites">CAJ · 35 résidents · 12 salariés</div>
+
+    <div class="block risques">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3>1. Analyse des risques</h3>
+      </div>
+      <ul>
+        <li>Personne n'est officiellement responsable du RGPD au quotidien, même si le DPO a déjà été contacté une fois par le passé.</li>
+        <li>La base légale utilisée pour les dossiers des résidents n'est pas connue.</li>
+        <li>12 personnes ont les clés des armoires contenant les dossiers papier, et ces dossiers ne sont jamais détruits de façon sécurisée.</li>
+        <li>La procédure pour traiter une demande d'accès au dossier d'un résident n'est connue que vaguement.</li>
+        <li>La durée de conservation des dossiers après le départ d'un résident n'est pas définie.</li>
+      </ul>
+    </div>
+
+    <div class="block principes">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+        <h3>2. Principes RGPD concernés</h3>
+      </div>
+      <ul>
+        <li><strong>Un responsable identifié, présent au quotidien</strong>, pas seulement contacté une fois en cas de besoin.</li>
+        <li><strong>Une base légale clairement documentée</strong> pour les dossiers des résidents.</li>
+        <li><strong>Un accès limité aux clés des armoires</strong> et une destruction sécurisée des documents.</li>
+        <li><strong>Une procédure connue de tous</strong> pour répondre aux demandes d'accès aux dossiers.</li>
+        <li><strong>Une durée de vie définie pour les dossiers</strong>, avec une destruction sécurisée à l'échéance.</li>
+      </ul>
+    </div>
+
+    <div class="block urgent">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h3>Urgent</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Désigner un référent RGPD local pour le suivi quotidien, en complément du contact déjà établi avec le DPO.</li>
+        <li class="action-item">Clarifier avec le DPO la base légale du traitement des dossiers des résidents.</li>
+        <li class="action-item">Réduire le nombre de détenteurs de clés des armoires et mettre en place une destruction sécurisée des dossiers papier.</li>
+      </ul>
+    </div>
+
+    <div class="block planifier">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <h3>À planifier</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Formaliser et diffuser à l'équipe la procédure de traitement des demandes d'accès aux dossiers.</li>
+        <li class="action-item">Définir et écrire la durée de conservation des dossiers après le départ d'un résident.</li>
+        <li class="action-item">Sensibiliser l'équipe à la reconnaissance d'une violation de données (actuellement incertaine).</li>
+      </ul>
+    </div>
+
+    <div class="block recommande">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h3>Recommandé</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Vérifier que le logiciel métier dispose bien d'un contrat avec clauses RGPD (article 28).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===================== DÉTAIL : EANM DU BOIS CLAIR ===================== -->
+  <div class="detail-section">
+    <a class="back-link" href="#top" id="detail-boisclair">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour à la vue d'ensemble
+    </a>
+
+    <div class="detail-header">
+      <h2>EANM du Bois Clair</h2>
+      <div class="score orange">Score : 52/100</div>
+    </div>
+    <div class="detail-sites">EANM · 66 résidents · 55 salariés</div>
+
+    <div class="block risques">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3>1. Analyse des risques</h3>
+      </div>
+      <ul>
+        <li>Personne n'est officiellement responsable du RGPD, et l'équipe ne sait pas comment joindre le DPO.</li>
+        <li>Les dossiers papier ne sont jamais détruits de façon sécurisée, comme une armoire qui ne se vide jamais.</li>
+        <li>À l'admission, les résidents reçoivent une information sur le RGPD seulement à l'oral, sans aucun document à garder.</li>
+        <li>La durée de conservation des dossiers après le départ d'un résident n'est pas définie.</li>
+        <li>L'équipe se dit incertaine quant à sa capacité à reconnaître une violation de données.</li>
+      </ul>
+    </div>
+
+    <div class="block principes">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+        <h3>2. Principes RGPD concernés</h3>
+      </div>
+      <ul>
+        <li><strong>Un responsable identifié</strong> pour piloter le RGPD et savoir réagir.</li>
+        <li><strong>Une destruction sécurisée et une durée de vie définie</strong> pour les documents.</li>
+        <li><strong>Une information écrite et claire à l'admission</strong>, en complément de l'oral.</li>
+        <li><strong>Une vigilance entretenue face aux incidents de sécurité.</strong></li>
+      </ul>
+    </div>
+
+    <div class="block urgent">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h3>Urgent</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Désigner un référent RGPD local et organiser le lien avec le DPO.</li>
+        <li class="action-item">Mettre en place une destruction sécurisée des dossiers papier en fin de conservation.</li>
+        <li class="action-item">Remettre aux résidents/familles un support écrit d'information RGPD à l'admission, en complément de l'oral.</li>
+      </ul>
+    </div>
+
+    <div class="block planifier">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <h3>À planifier</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Définir et écrire la durée de conservation des dossiers après le départ d'un résident.</li>
+        <li class="action-item">Sensibiliser l'équipe à la reconnaissance et au signalement d'une violation de données.</li>
+        <li class="action-item">Vérifier auprès du siège la nature exacte des traitements recensés pour l'établissement (registre).</li>
+        <li class="action-item">Sécuriser les transmissions de données par email (canal chiffré plutôt qu'email classique).</li>
+      </ul>
+    </div>
+
+    <div class="block recommande">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h3>Recommandé</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Sécuriser davantage les cahiers de transmission contenant des informations sur les résidents.</li>
+        <li class="action-item">Clarifier les modalités d'accès des familles aux données du résident majeur.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===================== DÉTAIL : GRAVIERS / LE PHARE / SERVICE APPART. (PERCEVAL) ===================== -->
+  <div class="detail-section">
+    <a class="back-link" href="#top" id="detail-perceval">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour à la vue d'ensemble
+    </a>
+
+    <div class="detail-header">
+      <h2>Graviers / Le Phare / Service Appart.</h2>
+      <div class="score green">Score : 68/100</div>
+    </div>
+    <div class="detail-sites">3 sites du même gestionnaire · Foyer d'Hébergement les Graviers (28 résidents), Foyer Résidence Le Phare (32 résidents), Service Appartements (21 résidents) · 81 résidents au total · 36 salariés au total</div>
+
+    <div class="block risques">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3>1. Analyse des risques</h3>
+      </div>
+      <ul>
+        <li>Un référent RGPD existe de façon informelle sur les trois sites, mais le lien avec le DPO du siège n'a jamais été utilisé.</li>
+        <li>Le registre des traitements n'est pas toujours connu sur le terrain.</li>
+        <li>Les informations sur les résidents sont parfois transmises par email classique, non sécurisé.</li>
+        <li>La durée de conservation des dossiers après le départ d'un résident n'est pas standardisée entre les sites.</li>
+      </ul>
+    </div>
+
+    <div class="block principes">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+        <h3>2. Principes RGPD concernés</h3>
+      </div>
+      <ul>
+        <li><strong>Un référent formellement désigné et relié au DPO</strong>, pas seulement informel.</li>
+        <li><strong>Une bonne connaissance du registre des traitements</strong> sur chaque site.</li>
+        <li><strong>Des échanges sécurisés</strong> pour les informations sensibles sur les résidents.</li>
+        <li><strong>Une durée de vie définie et harmonisée</strong> pour les dossiers entre les trois sites.</li>
+      </ul>
+    </div>
+
+    <div class="block urgent">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h3>Urgent</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Officialiser le rôle du référent RGPD informel et organiser sa mise en relation avec le DPO.</li>
+      </ul>
+    </div>
+
+    <div class="block planifier">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <h3>À planifier</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Clarifier avec le DPO le contenu du registre des traitements pour les trois sites.</li>
+        <li class="action-item">Sécuriser les échanges de données sensibles (remplacer l'email classique par un canal chiffré).</li>
+      </ul>
+    </div>
+
+    <div class="block recommande">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h3>Recommandé</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Harmoniser et documenter la durée de conservation des dossiers après le départ d'un résident, sur les trois sites.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    Rapport 3/8 — EANM (Foyer de vie, Foyer d'hébergement) · Synthèse établie à partir de 11 réponses au questionnaire d'auto-évaluation RGPD (avril-mai 2026), regroupées par gestionnaire/site.
+  </footer>
+
+</div>
+</body>
+</html>

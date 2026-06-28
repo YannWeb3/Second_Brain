@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNAPEI92 — DAF (Questionnaire RGPD)</title>
+  <style>
+    :root {
+      --primary: #0055A4;
+      --primary-dark: #003d7a;
+      --secondary: #E60028;
+      --bg: #f5f7fa;
+      --card: #fff;
+      --text: #333;
+      --text-light: #666;
+      --border: #e0e0e0;
+      --success: #28a745;
+      --error: #dc3545;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+    header p { opacity: 0.9; font-size: 0.95rem; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    .nav-blocks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 25px;
+      padding: 15px;
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+    }
+
+    .nav-block {
+      padding: 8px 16px;
+      background: var(--bg);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .nav-block:hover, .nav-block.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .section {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      scroll-margin-top: 80px;
+    }
+
+    .section-title {
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .question {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .question:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .question-label {
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: block;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .question-id {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: normal;
+      margin-left: 5px;
+    }
+
+    .required::after {
+      content: ' *';
+      color: var(--secondary);
+    }
+
+    .note {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      font-style: italic;
+      margin-top: 5px;
+      margin-bottom: 8px;
+    }
+
+    input, select, textarea {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .radio-group, .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .radio-group label, .checkbox-group label {
+      font-weight: normal;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .radio-group label:hover, .checkbox-group label:hover {
+      background: var(--bg);
+    }
+
+    input[type="radio"], input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      padding: 14px 40px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .message {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .message.show { display: block; }
+
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid var(--primary);
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.4rem; }
+      .nav-blocks { justify-content: center; }
+      .nav-block { font-size: 0.8rem; padding: 6px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="back-link">← Retour à l'accueil</a>
+
+    <header>
+      <h1>Questionnaire RGPD — DAF</h1>
+      <p>Direction Administrative et Financière — Conformité RGPD des données financières</p>
+    </header>
+
+    <nav class="nav-blocks">
+      <a href="#identification" class="nav-block">Identification</a>
+      <a href="#gouvernance" class="nav-block">Gouvernance</a>
+      <a href="#collecte" class="nav-block">Collecte & Données</a>
+      <a href="#stockage" class="nav-block">Stockage & Sécurité</a>
+      <a href="#conservation" class="nav-block">Conservation</a>
+      <a href="#sous-traitants" class="nav-block">Sous-traitants</a>
+      <a href="#droits" class="nav-block">Droits</a>
+      <a href="#incidents" class="nav-block">Incidents</a>
+      <a href="#questions-ouvertes" class="nav-block">Questions ouvertes</a>
+    </nav>
+
+    <div class="info-box">
+      <strong>Instructions :</strong> Ce questionnaire porte sur la conformité RGPD des traitements de données par le service DAF. Répondez en fonction de votre situation actuelle. Les champs marqués d'une étoile (*) sont obligatoires.
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <form id="formulaire">
+      <!-- Bloc 1 : Identification -->
+      <section class="section" id="identification">
+        <h2 class="section-title">Identification</h2>
+
+        <div class="question">
+          <label class="question-label required">Nom de l'association <span class="question-id">Q1</span></label>
+           <input type="text" name="q1_nom_association" required>
+           <input type="hidden" id="nom_etablissement" name="nom_etablissement">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nom et prénom du répondant <span class="question-id">Q2</span></label>
+          <input type="text" name="q2_nom_prenom_repondant" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Fonction du répondant <span class="question-id">Q3</span></label>
+          <input type="text" name="q3_fonction_repondant" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Date de remplissage <span class="question-id">Q4</span></label>
+          <input type="date" name="q4_date_remplissage" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nombre approximatif de fournisseurs / tiers dans votre base de données financières <span class="question-id">Q5</span></label>
+          <input type="text" name="q5_nb_fournisseurs" placeholder="Ex: 150" required>
+        </div>
+      </section>
+
+      <!-- Bloc 2 : Gouvernance -->
+      <section class="section" id="gouvernance">
+        <h2 class="section-title">Gouvernance</h2>
+
+        <div class="question">
+          <label class="question-label required">Un référent RGPD est-il identifié au sein du service DAF / comptabilité ? <span class="question-id">Q6</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_referent_rgpd" value="oui" required> Oui</label>
+            <label><input type="radio" name="q6_referent_rgpd" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Connaissez-vous le DPO externe de votre organisation et savez-vous comment le contacter ? <span class="question-id">Q7</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7_connaissance_dpo" value="oui" required> Oui</label>
+            <label><input type="radio" name="q7_connaissance_dpo" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le service DAF a-t-il reçu une formation RGPD spécifique ? <span class="question-id">Q8</span></label>
+          <div class="note">Si oui, joindre attestation ou preuve de formation</div>
+          <div class="radio-group">
+            <label><input type="radio" name="q8_formation_rgpd" value="oui" required> Oui</label>
+            <label><input type="radio" name="q8_formation_rgpd" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les traitements financiers et comptables sont-ils recensés dans le registre des traitements ? <span class="question-id">Q9</span></label>
+          <div class="note">Joindre un extrait du registre si disponible</div>
+          <div class="radio-group">
+            <label><input type="radio" name="q9_registre_traitements" value="oui" required> Oui</label>
+            <label><input type="radio" name="q9_registre_traitements" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous un document qui précise la base légale de chaque traitement DAF ? <span class="question-id">Q10</span></label>
+          <div class="note">Base légale principale attendue : obligation légale (Code du commerce, fiscalité)</div>
+          <div class="radio-group">
+            <label><input type="radio" name="q10_base_legale" value="oui" required> Oui</label>
+            <label><input type="radio" name="q10_base_legale" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3 : Collecte & Données -->
+      <section class="section" id="collecte">
+        <h2 class="section-title">Collecte & Données traitées</h2>
+
+        <div class="question">
+          <label class="question-label required">Quelles catégories de données personnelles traitez-vous ? (coordonnées fournisseurs, RIB salariés, données donateurs pour reçus fiscaux, données financières usagers...) <span class="question-id">Q11</span></label>
+          <textarea name="q11_categories_donnees" required></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Traitez-vous des données bancaires de personnes physiques (salariés, donateurs, usagers) ? <span class="question-id">Q12</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q12_donnees_bancaires" value="oui" required> Oui</label>
+            <label><input type="radio" name="q12_donnees_bancaires" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Traitez-vous des données fiscales de donateurs (reçus fiscaux, déductions...) ? <span class="question-id">Q13</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q13_donnees_fiscales" value="oui" required> Oui</label>
+            <label><input type="radio" name="q13_donnees_fiscales" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les personnes dont vous traitez les données financières sont-elles informées de ce traitement ? <span class="question-id">Q14</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q14_information_personnes" value="oui" required> Oui</label>
+            <label><input type="radio" name="q14_information_personnes" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Collectez-vous des données financières directement auprès des usagers ou de leurs familles ? <span class="question-id">Q15</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q15_collecte_directe" value="oui" required> Oui</label>
+            <label><input type="radio" name="q15_collecte_directe" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 4 : Stockage & Sécurité -->
+      <section class="section" id="stockage">
+        <h2 class="section-title">Stockage & Sécurité</h2>
+
+        <div class="question">
+          <label class="question-label required">Sur quel(s) outil(s) sont stockées les données comptables et financières ? (logiciel comptable, Excel, cloud, serveur local...) <span class="question-id">Q16</span></label>
+          <textarea name="q16_outils_stockage" required></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Combien de personnes ont accès aux données financières incluant des données personnelles ? <span class="question-id">Q17</span></label>
+          <div class="note">Précisez les fonctions concernées</div>
+          <textarea name="q17_nb_acces" required></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les données financières sont-elles sauvegardées régulièrement ? (fréquence + lieu) <span class="question-id">Q18</span></label>
+          <textarea name="q18_sauvegardes" required></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les fichiers contenant des RIB ou données bancaires sont-ils protégés par un mot de passe ou chiffrés ? <span class="question-id">Q19</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q19_protection_rib" value="oui" required> Oui</label>
+            <label><input type="radio" name="q19_protection_rib" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les accès au logiciel comptable sont-ils nominatifs et tracés ? <span class="question-id">Q20</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q20_acces_nominatifs" value="oui" required> Oui</label>
+            <label><input type="radio" name="q20_acces_nominatifs" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 5 : Conservation -->
+      <section class="section" id="conservation">
+        <h2 class="section-title">Conservation</h2>
+
+        <div class="question">
+          <label class="question-label required">Quelle est votre durée de conservation des documents comptables contenant des données personnelles ? <span class="question-id">Q21</span></label>
+          <div class="note">Durée légale comptable : 10 ans. Mais les données personnelles des personnes concernées doivent être minimisées après usage</div>
+          <textarea name="q21_duree_conservation" required></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous une procédure de suppression ou d'anonymisation des données personnelles dans les archives comptables au-delà des durées légales ? <span class="question-id">Q22</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q22_procedure_suppression" value="oui" required> Oui</label>
+            <label><input type="radio" name="q22_procedure_suppression" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les reçus fiscaux des donateurs sont-ils conservés ? Pendant combien de temps ? <span class="question-id">Q23</span></label>
+          <div class="note">Durée recommandée : durée de prescription fiscale (3 à 6 ans selon les cas)</div>
+          <textarea name="q23_conservation_recus" required></textarea>
+        </div>
+      </section>
+
+      <!-- Bloc 6 : Sous-traitants -->
+      <section class="section" id="sous-traitants">
+        <h2 class="section-title">Sous-traitants</h2>
+
+        <div class="question">
+          <label class="question-label required">Listez les prestataires qui accèdent à vos données financières incluant des données personnelles (expert-comptable, commissaire aux comptes, logiciel comptable SaaS, banque...) <span class="question-id">Q24</span></label>
+          <textarea name="q24_liste_prestataires" required></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Pour chacun de ces prestataires, avez-vous signé un contrat incluant des clauses RGPD (Art. 28) ? <span class="question-id">Q25</span></label>
+          <div class="note">Un simple contrat de mission ou CGU NE suffit PAS</div>
+          <div class="radio-group">
+            <label><input type="radio" name="q25_contrats_art28" value="oui" required> Oui</label>
+            <label><input type="radio" name="q25_contrats_art28" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Votre logiciel comptable est-il hébergé en France / UE ou aux USA / autre pays ? <span class="question-id">Q26</span></label>
+          <div class="note">Logiciel SaaS US = transfert hors UE = encadrement obligatoire</div>
+          <textarea name="q26_hebergement_logiciel" required></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Votre cabinet d'expertise comptable a-t-il accès à des données personnelles (salariés, donateurs, usagers) ? <span class="question-id">Q27</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q27_acces_expert" value="oui" required> Oui</label>
+            <label><input type="radio" name="q27_acces_expert" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si oui : un DPA Art. 28 est-il signé avec ce cabinet ? <span class="question-id">Q28</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q28_dpa_expert" value="oui" required> Oui</label>
+            <label><input type="radio" name="q28_dpa_expert" value="non"> Non</label>
+            <label><input type="radio" name="q28_dpa_expert" value="na"> N/A</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 7 : Droits -->
+      <section class="section" id="droits">
+        <h2 class="section-title">Droits des personnes</h2>
+
+        <div class="question">
+          <label class="question-label required">Les donateurs peuvent-ils demander la suppression de leurs données financières après la période légale ? <span class="question-id">Q29</span></label>
+          <div class="note">Attention : obligation légale de conservation = droit à l'effacement limité pendant cette période</div>
+          <div class="radio-group">
+            <label><input type="radio" name="q29_suppression_donateurs" value="oui" required> Oui</label>
+            <label><input type="radio" name="q29_suppression_donateurs" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous reçu des demandes d'exercice de droits liées à des données financières au cours des 12 derniers mois ? <span class="question-id">Q30</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q30_demandes_droits" value="oui" required> Oui</label>
+            <label><input type="radio" name="q30_demandes_droits" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Existe-t-il une procédure pour traiter ces demandes ? Qui en est responsable ? <span class="question-id">Q31</span></label>
+          <div class="note">Délai légal de réponse : 1 mois maximum</div>
+          <div class="radio-group">
+            <label><input type="radio" name="q31_procedure_droits" value="oui" required> Oui</label>
+            <label><input type="radio" name="q31_procedure_droits" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 8 : Incidents -->
+      <section class="section" id="incidents">
+        <h2 class="section-title">Violations & Incidents</h2>
+
+        <div class="question">
+          <label class="question-label required">Des violations ou incidents liés aux données financières ont-ils eu lieu au cours des 24 derniers mois ? (RIB envoyé à la mauvaise personne, accès non autorisé, fraude au virement...) <span class="question-id">Q32</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q32_incidents" value="oui" required> Oui</label>
+            <label><input type="radio" name="q32_incidents" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Si OUI : quel(s) type(s) d'incident(s) ? (brève description) <span class="question-id">Q33</span></label>
+          <textarea name="q33_types_incidents"></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Ces incidents ont-ils été notifiés en interne au DPO ou au siège dans les 72 heures ? <span class="question-id">Q34</span></label>
+          <div class="note">La notification CNIL (72h) est distincte de la notification interne</div>
+          <div class="radio-group">
+            <label><input type="radio" name="q34_notification_interne" value="oui" required> Oui</label>
+            <label><input type="radio" name="q34_notification_interne" value="non"> Non</label>
+            <label><input type="radio" name="q34_notification_interne" value="na"> N/A</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Existe-t-il une procédure en cas de fraude au virement ou d'usurpation impliquant des données personnelles ? <span class="question-id">Q35</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q35_procedure_fraude" value="oui" required> Oui</label>
+            <label><input type="radio" name="q35_procedure_fraude" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 9 : Questions ouvertes -->
+      <section class="section" id="questions-ouvertes">
+        <h2 class="section-title">Questions ouvertes</h2>
+
+        <div class="question">
+          <label class="question-label">Quelles sont selon vous les principales difficultés pour assurer la conformité RGPD dans vos activités DAF ? <span class="question-id">Q36</span></label>
+          <textarea name="q36_difficultes" placeholder="Décrivez les principales difficultés rencontrées..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Y a-t-il des points spécifiques à votre organisation que ce questionnaire n'a pas abordés ? <span class="question-id">Q37</span></label>
+          <textarea name="q37_points_specifiques" placeholder="Toute information complémentaire..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Y a-t-il des pratiques dont vous n'êtes pas sûr(e) de la conformité et sur lesquelles vous souhaitez un avis ? <span class="question-id">Q38</span></label>
+          <textarea name="q38_pratiques_douteuses" placeholder="Précisez les pratiques concernées..."></textarea>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="btn-submit">Envoyer le questionnaire</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQBhjBdwuEBtj5Ef63L_5ej3eyXB15DLmpnDBxqM5u0EdVRgoLK6NR1Hkn682obuvN7Q/exec';
+const FORM_TYPE = 'DAF_RGPD';
+
+const navBlocks = document.querySelectorAll('.nav-block');
+const sections = document.querySelectorAll('.section');
+function updateActiveNav() {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - 100) current = section.getAttribute('id');
+  });
+  navBlocks.forEach(block => {
+    block.classList.remove('active');
+    if (block.getAttribute('href') === '#' + current) block.classList.add('active');
+  });
+}
+window.addEventListener('scroll', updateActiveNav);
+updateActiveNav();
+
+function collectResponses() {
+  const responses = [];
+  const seen = new Set();
+  document.querySelectorAll('.question:not(.hidden)').forEach(qEl => {
+    const labelEl = qEl.querySelector('.question-label');
+    if (!labelEl) return;
+    const question = labelEl.innerText.replace(/^\*\s*/, '').replace(/\s+/g, ' ').trim();
+    const inputs = qEl.querySelectorAll('input, textarea, select');
+    if (inputs.length === 0) return;
+    const firstInput = inputs[0];
+    const fieldId = firstInput.name || firstInput.id || '';
+    if (seen.has(fieldId)) return;
+    seen.add(fieldId);
+    let answer = '';
+    const type = firstInput.type;
+    if (type === 'radio') {
+      const checked = qEl.querySelector('input[type="radio"]:checked');
+      answer = checked ? checked.value : '';
+    } else if (type === 'checkbox') {
+      const checkeds = qEl.querySelectorAll('input[type="checkbox"]:checked');
+      answer = Array.from(checkeds).map(c => c.value).join(' | ');
+    } else {
+      answer = firstInput.value.trim();
+    }
+    responses.push({ id: fieldId, question, answer });
+  });
+  const nomEtabEl = document.getElementById('nom_etablissement');
+  if (nomEtabEl) {
+    responses.push({ id: 'nom_etablissement', question: 'Nom de l\'établissement', answer: nomEtabEl.value || '' });
+  }
+  return responses;
+}
+
+document.getElementById('formulaire').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btn-submit');
+  const message = document.getElementById('message');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+  const payload = { type: FORM_TYPE, responses: collectResponses() };
+  try {
+    const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const result = await res.json();
+    if (result.status === 'success') {
+      message.className = 'message success show';
+      message.textContent = 'Questionnaire envoyé avec succès !';
+      this.reset();
+    } else throw new Error(result.message);
+  } catch (err) {
+    message.className = 'message error show';
+    message.textContent = 'Erreur: ' + err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Envoyer le questionnaire';
+  }
+});
+
+document.querySelector('input[name="q4_date_remplissage"]').valueAsDate = new Date();
+  </script>
+</body>
+</html>

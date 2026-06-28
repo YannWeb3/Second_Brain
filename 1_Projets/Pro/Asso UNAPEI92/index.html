@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNAPEI92 - Formulaires</title>
+  <style>
+    :root {
+      --primary: #0055A4;
+      --primary-dark: #003d7a;
+      --secondary: #E60028;
+      --bg: #f5f7fa;
+      --card: #fff;
+      --text: #333;
+      --text-light: #666;
+      --border: #e0e0e0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      border-radius: 12px;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      opacity: 0.9;
+      font-size: 1.1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      border-left: 4px solid var(--primary);
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    }
+
+    .card h3 {
+      color: var(--primary);
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+
+    .card span {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .card.etablissement {
+      border-left-color: var(--primary);
+    }
+
+    .card.service {
+      border-left-color: var(--secondary);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.5rem;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>UNAPEI92</h1>
+      <p>Formulaires de collecte de données — 15 établissements et services</p>
+    </header>
+
+    <main class="grid">
+      <a href="ime.html" class="card etablissement">
+        <h3>IME</h3>
+        <span>Institut Médico-Éducatif</span>
+      </a>
+
+      <a href="savs.html" class="card etablissement">
+        <h3>SAVS</h3>
+        <span>Service d'Accompagnement à la Vie Sociale</span>
+      </a>
+
+      <a href="sessad.html" class="card etablissement">
+        <h3>SESSAD</h3>
+        <span>Service d'Éducation Spéciale et de Soins à Domicile</span>
+      </a>
+
+      <a href="esat.html" class="card etablissement">
+        <h3>ESAT</h3>
+        <span>Établissement et Service d'Aide par le Travail</span>
+      </a>
+
+      <a href="eam.html" class="card etablissement">
+        <h3>EAM</h3>
+        <span>Établissement d'Accueil Médicalisé</span>
+      </a>
+
+      <a href="eanm.html" class="card etablissement">
+        <h3>EANM</h3>
+        <span>Établissement d'Accueil Non Médicalisé</span>
+      </a>
+
+      <a href="cmpp.html" class="card etablissement">
+        <h3>CMPP</h3>
+        <span>Centre Médico-Psycho-Pédagogique</span>
+      </a>
+
+      <a href="si-it.html" class="card service">
+        <h3>SI-IT</h3>
+        <span>Service Informatique & IT</span>
+      </a>
+
+      <a href="direction.html" class="card service">
+        <h3>Direction</h3>
+        <span>Direction générale</span>
+      </a>
+
+      <a href="qualite.html" class="card service">
+        <h3>Qualité</h3>
+        <span>Service Qualité</span>
+      </a>
+
+      <a href="donateurs.html" class="card service">
+        <h3>Donateurs & Adhérents</h3>
+        <span>Gestion des donateurs et adhérents</span>
+      </a>
+
+      <a href="daf.html" class="card service">
+        <h3>DAF</h3>
+        <span>Direction Administrative et Financière</span>
+      </a>
+
+      <a href="rh.html" class="card service">
+        <h3>RH</h3>
+        <span>Ressources Humaines</span>
+      </a>
+
+      <a href="paie.html" class="card service">
+        <h3>Paie</h3>
+        <span>Service Paie</span>
+      </a>
+
+      <a href="communication.html" class="card service">
+        <h3>Communication</h3>
+        <span>Service Communication</span>
+      </a>
+    </main>
+
+    <footer>
+      <p>UNAPEI92 — Formulaires de collecte de données internes</p>
+    </footer>
+  </div>
+</body>
+</html>

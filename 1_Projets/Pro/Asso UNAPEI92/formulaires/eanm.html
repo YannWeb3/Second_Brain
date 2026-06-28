@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNAPEI92 — EANM (Questionnaire RGPD)</title>
+  <style>
+    :root {
+      --primary: #0055A4;
+      --primary-dark: #003d7a;
+      --secondary: #E60028;
+      --bg: #f5f7fa;
+      --card: #fff;
+      --text: #333;
+      --text-light: #666;
+      --border: #e0e0e0;
+      --success: #28a745;
+      --error: #dc3545;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+    header p { opacity: 0.9; font-size: 0.95rem; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    .nav-blocks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 25px;
+      padding: 15px;
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+    }
+
+    .nav-block {
+      padding: 8px 16px;
+      background: var(--bg);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .nav-block:hover, .nav-block.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .section {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      scroll-margin-top: 80px;
+    }
+
+    .section-title {
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .question {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .question:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .question-label {
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: block;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .question-id {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: normal;
+      margin-left: 5px;
+    }
+
+    .required::after {
+      content: ' *';
+      color: var(--secondary);
+    }
+
+    input, select, textarea {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .radio-group, .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .radio-group label, .checkbox-group label {
+      font-weight: normal;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .radio-group label:hover, .checkbox-group label:hover {
+      background: var(--bg);
+    }
+
+    input[type="radio"], input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      padding: 14px 40px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .message {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .message.show { display: block; }
+
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid var(--primary);
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.4rem; }
+      .nav-blocks { justify-content: center; }
+      .nav-block { font-size: 0.8rem; padding: 6px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="back-link">← Retour à l'accueil</a>
+
+    <header>
+      <h1>Questionnaire RGPD — EANM</h1>
+      <p>Établissement d'Accueil Non Médicalisé — Protection des données des résidents</p>
+    </header>
+
+    <nav class="nav-blocks">
+      <a href="#identification" class="nav-block">Identification</a>
+      <a href="#gouvernance" class="nav-block">Gouvernance</a>
+      <a href="#registre" class="nav-block">Registre & PIA</a>
+      <a href="#securite" class="nav-block">Sécurité terrain</a>
+      <a href="#droits" class="nav-block">Droits usagers</a>
+      <a href="#sous-traitants" class="nav-block">Sous-traitants locaux</a>
+      <a href="#incidents" class="nav-block">Incidents locaux</a>
+      <a href="#specifiques" class="nav-block">Spécificités EANM</a>
+      <a href="#synthese" class="nav-block">Synthèse</a>
+    </nav>
+
+    <div class="info-box">
+      <strong>Instructions :</strong> Ce questionnaire porte sur la conformité RGPD de votre EANM. Répondez en fonction de votre situation actuelle. Les champs marqués d'une étoile (*) sont obligatoires.
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <form id="formulaire">
+      <!-- Bloc 0 : Identification -->
+      <section class="section" id="identification">
+        <h2 class="section-title">Identification de l'établissement</h2>
+
+        <div class="question">
+          <label class="question-label required">Nom de l'établissement EANM (Foyer de vie, Foyer d'hébergement) <span class="question-id">Q0.1</span></label>
+           <input type="text" name="q0_1_nom_etablissement" required>
+           <input type="hidden" id="nom_etablissement" name="nom_etablissement">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Personne répondant au questionnaire (Nom Prénom) <span class="question-id">Q0.2</span></label>
+          <input type="text" name="q0_2_nom_prenom_repondant" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Fonction du répondant <span class="question-id">Q0.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q0_3_fonction" value="directeur" required> Directeur/trice établissement</label>
+            <label><input type="radio" name="q0_3_fonction" value="chef_service"> Chef de service éducatif</label>
+            <label><input type="radio" name="q0_3_fonction" value="educateur"> Éducateur/trice spécialisé(e)</label>
+            <label><input type="radio" name="q0_3_fonction" value="resp_admin"> Responsable administratif</label>
+            <label><input type="radio" name="q0_3_fonction" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Date de remplissage <span class="question-id">Q0.4</span></label>
+          <input type="date" name="q0_4_date_remplissage" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nombre de résidents accueillis dans l'EANM <span class="question-id">Q0.5</span></label>
+          <input type="number" name="q0_5_nb_residents" min="0" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nombre de salariés dans l'établissement <span class="question-id">Q0.6</span></label>
+          <input type="number" name="q0_6_nb_salaries" min="0" required>
+        </div>
+      </section>
+
+      <!-- Bloc 1 : Gouvernance locale -->
+      <section class="section" id="gouvernance">
+        <h2 class="section-title">Gouvernance locale RGPD</h2>
+
+        <div class="question">
+          <label class="question-label required">Un référent RGPD est-il identifié dans votre établissement EANM ? <span class="question-id">Q1.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_1_1_referent_rgpd" value="identifie_connu" required> Oui identifié et connu des équipes</label>
+            <label><input type="radio" name="q1_1_1_referent_rgpd" value="identifie_informel"> Oui identifié mais informel</label>
+            <label><input type="radio" name="q1_1_1_referent_rgpd" value="non_identifie"> Non personne n'est identifiée</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Nom et fonction du référent RGPD local <span class="question-id">Q1.1.2</span></label>
+          <input type="text" name="q1_1_2_nom_fonction_referent">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le référent RGPD local sait-il contacter le DPO externe ? <span class="question-id">Q1.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_2_1_contact_dpo" value="connu_contacte" required> Oui coordonnées connues et DPO déjà contacté</label>
+            <label><input type="radio" name="q1_2_1_contact_dpo" value="connu_jamais"> Oui coordonnées connues mais jamais contacté</label>
+            <label><input type="radio" name="q1_2_1_contact_dpo" value="non_connu"> Non ne connaît pas le DPO</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les équipes de l'EANM ont-elles reçu une sensibilisation ou formation RGPD ? <span class="question-id">Q1.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="recente" required> Oui formation/sensibilisation récente (&lt;2 ans)</label>
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="ancienne"> Oui ancienne (&gt;2 ans)</label>
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="rapide"> Sensibilisation rapide uniquement</label>
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="jamais"> Non jamais</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">L'établissement connaît-il les procédures RGPD du siège (gestion demandes, incidents) ? <span class="question-id">Q1.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_4_1_procedures_siege" value="connues_appliquees" required> Oui procédures connues et appliquées</label>
+            <label><input type="radio" name="q1_4_1_procedures_siege" value="connues_non_appliquees"> Oui connues mais non appliquées</label>
+            <label><input type="radio" name="q1_4_1_procedures_siege" value="existent_non_connues"> Procédures existent mais non connues</label>
+            <label><input type="radio" name="q1_4_1_procedures_siege" value="pas_de_procedures"> Pas de procédures siège</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">L'établissement remonte-t-il les incidents/questions RGPD au siège ? <span class="question-id">Q1.5.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_5_1_remontees" value="systematiques" required> Oui remontées systématiques</label>
+            <label><input type="radio" name="q1_5_1_remontees" value="occasionnelles"> Remontées occasionnelles</label>
+            <label><input type="radio" name="q1_5_1_remontees" value="jamais"> Non jamais de remontée</label>
+            <label><input type="radio" name="q1_5_1_remontees" value="na"> N/A (jamais d'incident)</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 2 : Registre local -->
+      <section class="section" id="registre">
+        <h2 class="section-title">Registre des traitements & Bases légales & PIA</h2>
+
+        <div class="question">
+          <label class="question-label required">Connaissez-vous les traitements de données recensés pour votre EANM dans le registre ? <span class="question-id">Q2.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_1_1_registre" value="connu" required> Oui je connais les traitements EANM du registre</label>
+            <label><input type="radio" name="q2_1_1_registre" value="vaguement"> Vaguement</label>
+            <label><input type="radio" name="q2_1_1_registre" value="non_connu"> Non je ne connais pas le registre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Utilisez-vous des fichiers ou outils locaux non fournis par le siège ? <span class="question-id">Q2.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_2_1_outils_locaux" value="oui" required> Oui fichiers/outils locaux (Excel, cahiers papier)</label>
+            <label><input type="radio" name="q2_2_1_outils_locaux" value="non"> Non uniquement outils siège</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Si OUI précisez quels fichiers/outils locaux vous utilisez <span class="question-id">Q2.2.2</span></label>
+          <textarea name="q2_2_2_precisions_outils"></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Sur quelle base légale repose le traitement des dossiers des résidents de votre EANM ? <span class="question-id">Q2B.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2b_1_base_legale" value="interet_public" required> Mission d'intérêt public / autorité publique (Art. 6.1.e)</label>
+            <label><input type="radio" name="q2b_1_base_legale" value="consentement"> Consentement résidents (Art. 6.1.a)</label>
+            <label><input type="radio" name="q2b_1_base_legale" value="obligation_legale"> Obligation légale CASF (Art. 6.1.c)</label>
+            <label><input type="radio" name="q2b_1_base_legale" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous identifié des traitements à risque élevé dans votre EANM nécessitant une PIA ? <span class="question-id">Q2T.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2t_1_pia" value="realisees" required> Oui PIA réalisées</label>
+            <label><input type="radio" name="q2t_1_pia" value="identifiees_non_realisees"> Oui traitements identifiés mais PIA non réalisées</label>
+            <label><input type="radio" name="q2t_1_pia" value="aucun"> Non aucun traitement à risque identifié</label>
+            <label><input type="radio" name="q2t_1_pia" value="inconnu"> Inconnu (ne sait pas ce qu'est une PIA)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Parmi ces traitements lesquels sont présents dans votre EANM ? <span class="question-id">Q2T.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q2t_2_traitements" value="videosurveillance"> Vidéosurveillance résidents/espaces communs</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="geolocalisation"> Géolocalisation sorties (bracelets GPS, smartphones)</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="comportemental"> Suivi comportemental détaillé (crises, incidents)</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="biometrie"> Données biométriques (badgeuse cantine)</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="aucun"> Aucun de ces traitements</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Si vidéosurveillance où sont placées les caméras ? <span class="question-id">Q2T.3</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q2t_3_cameras" value="exterieurs"> Extérieurs uniquement (parkings, entrées)</label>
+            <label><input type="checkbox" name="q2t_3_cameras" value="espaces_communs"> Espaces communs (couloirs, réfectoire)</label>
+            <label><input type="checkbox" name="q2t_3_cameras" value="salles_activites"> Salles d'activités</label>
+            <label><input type="checkbox" name="q2t_3_cameras" value="chambres"> Chambres résidents</label>
+            <label><input type="checkbox" name="q2t_3_cameras" value="sanitaires"> Sanitaires</label>
+            <label><input type="checkbox" name="q2t_3_cameras" value="aucune"> Aucune vidéosurveillance</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3 : Sécurité terrain -->
+      <section class="section" id="securite">
+        <h2 class="section-title">Sécurité terrain</h2>
+
+        <div class="question">
+          <label class="question-label required">Où sont stockés les dossiers des résidents papier ? <span class="question-id">Q3.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="armoire_fermee_bureau_securise" required> Armoires fermées à clé dans bureau dédié sécurisé</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="armoire_fermee_bureau_partage"> Armoires fermées à clé dans bureau partagé</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="armoire_non_fermee"> Armoires non fermées à clé</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="classeurs_bureaux"> Classeurs dans bureaux éducateurs</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Combien de personnes ont les clés des armoires dossiers résidents ? <span class="question-id">Q3.1.2</span></label>
+          <input type="number" name="q3_1_2_nb_cles" min="0" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les dossiers papier sont-ils détruits de manière sécurisée en fin de conservation ? <span class="question-id">Q3.1.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_1_3_destruction" value="dechiqueteuse" required> Oui déchiqueteuse sur site</label>
+            <label><input type="radio" name="q3_1_3_destruction" value="prestataire"> Oui prestataire spécialisé avec certificat</label>
+            <label><input type="radio" name="q3_1_3_destruction" value="poubelle"> Poubelle classique</label>
+            <label><input type="radio" name="q3_1_3_destruction" value="jamais"> Jamais détruits (conservation indéfinie)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Où sont stockés les dossiers des résidents informatiques ? <span class="question-id">Q3.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_1_stockage_info" value="serveur_siege" required> Serveur centralisé siège (accès sécurisé)</label>
+            <label><input type="radio" name="q3_2_1_stockage_info" value="ordinateurs_locaux"> Ordinateurs locaux EANM</label>
+            <label><input type="radio" name="q3_2_1_stockage_info" value="logiciel_metier"> Logiciel métier dédié</label>
+            <label><input type="radio" name="q3_2_1_stockage_info" value="excel_locaux"> Fichiers Excel locaux</label>
+            <label><input type="radio" name="q3_2_1_stockage_info" value="cloud_non_securise"> Cloud non sécurisé</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Quel logiciel métier utilisez-vous pour la gestion des résidents ? <span class="question-id">Q3.2.2</span></label>
+          <input type="text" name="q3_2_2_logiciel_metier">
+        </div>
+
+        <div class="question">
+          <label class="question-label">Qui a accès aux dossiers informatiques complets des résidents ? <span class="question-id">Q3.2.3</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q3_2_3_acces" value="directeur"> Directeur/trice</label>
+            <label><input type="checkbox" name="q3_2_3_acces" value="chef_service"> Chef de service éducatif</label>
+            <label><input type="checkbox" name="q3_2_3_acces" value="educateurs_tous"> Éducateurs (tous)</label>
+            <label><input type="checkbox" name="q3_2_3_acces" value="educateurs_referents"> Éducateurs (référents résident uniquement)</label>
+            <label><input type="checkbox" name="q3_2_3_acces" value="administratif"> Personnel administratif</label>
+            <label><input type="checkbox" name="q3_2_3_acces" value="soignants"> Personnel soignant si présent</label>
+            <label><input type="checkbox" name="q3_2_3_acces" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les ordinateurs de l'EANM ont-ils un verrouillage automatique après inactivité ? <span class="question-id">Q3.2.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_4_verrouillage" value="moins_5min" required> Oui verrouillage auto &lt;5 minutes</label>
+            <label><input type="radio" name="q3_2_4_verrouillage" value="plus_10min"> Oui mais &gt;10 minutes</label>
+            <label><input type="radio" name="q3_2_4_verrouillage" value="manuel"> Verrouillage manuel uniquement</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Comment transmettez-vous des informations sur les résidents à l'extérieur ? <span class="question-id">Q3.3.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q3_3_1_transmission" value="email_classique"> Email classique non sécurisé</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="email_securise"> Email crypté/sécurisé</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="plateforme"> Plateforme sécurisée</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="courrier"> Courrier postal</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="main_propre"> Remise main propre</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">À qui transmettez-vous régulièrement des données sur les résidents ? <span class="question-id">Q3.3.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="mdph"> MDPH</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="familles"> Familles/représentants légaux</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="tuteurs"> Tuteurs/curateurs (si protection juridique)</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="services_sociaux"> Services sociaux</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="medecins"> Médecins si applicable</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="autre"> Autre</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="aucune"> Aucune transmission externe</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des documents avec données résidents sont-ils parfois visibles dans espaces communs ? <span class="question-id">Q3.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_4_1_visibilite" value="jamais" required> Non jamais documents visibles</label>
+            <label><input type="radio" name="q3_4_1_visibilite" value="parfois"> Parfois (planning activités, tableaux)</label>
+            <label><input type="radio" name="q3_4_1_visibilite" value="frequemment"> Oui fréquemment</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les cahiers de transmission contiennent-ils des données comportementales détaillées ? <span class="question-id">Q3.5.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_5_1_cahiers_transmission" value="tres_detailles" required> Oui très détaillés (crises, incidents intimes)</label>
+            <label><input type="radio" name="q3_5_1_cahiers_transmission" value="moderement"> Modérément détaillés</label>
+            <label><input type="radio" name="q3_5_1_cahiers_transmission" value="peu_detailles"> Peu détaillés (activités uniquement)</label>
+            <label><input type="radio" name="q3_5_1_cahiers_transmission" value="pas_cahiers"> Pas de cahiers</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les cahiers de transmission sont-ils sécurisés (armoire fermée) quand non utilisés ? <span class="question-id">Q3.5.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_5_2_securite_cahiers" value="securise" required> Oui rangement sécurisé systématique</label>
+            <label><input type="radio" name="q3_5_2_securite_cahiers" value="parfois"> Parfois laissés sur bureaux</label>
+            <label><input type="radio" name="q3_5_2_securite_cahiers" value="souvent"> Souvent accessibles espaces communs</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 4 : Droits usagers -->
+      <section class="section" id="droits">
+        <h2 class="section-title">Droits des usagers</h2>
+
+        <div class="question">
+          <label class="question-label required">Les résidents reçoivent-ils une information RGPD claire à l'admission ? <span class="question-id">Q4.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_1_1_info_rgpd_admission" value="document_dedie" required> Oui document dédié notice RGPD adapté (FALC si besoin)</label>
+            <label><input type="radio" name="q4_1_1_info_rgpd_admission" value="document_standard"> Oui document standard</label>
+            <label><input type="radio" name="q4_1_1_info_rgpd_admission" value="orale"> Information orale uniquement</label>
+            <label><input type="radio" name="q4_1_1_info_rgpd_admission" value="non"> Non pas d'information</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous déjà reçu des demandes de résidents pour consulter leur dossier ? <span class="question-id">Q4.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_2_1_demandes_acces" value="oui" required> Oui (nombre sur 12 derniers mois)</label>
+            <label><input type="radio" name="q4_2_1_demandes_acces" value="non"> Non jamais</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si OUI quel délai pour répondre aux demandes d'accès au dossier ? <span class="question-id">Q4.2.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_2_2_delai_acces" value="moins_1mois" required> Moins de 1 mois systématiquement</label>
+            <label><input type="radio" name="q4_2_2_delai_acces" value="1_2mois"> Entre 1 et 2 mois</label>
+            <label><input type="radio" name="q4_2_2_delai_acces" value="plus_2mois"> Plus de 2 mois</label>
+            <label><input type="radio" name="q4_2_2_delai_acces" value="na"> N/A (pas de demande)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Savez-vous comment traiter une demande d'exercice de droits des résidents ? <span class="question-id">Q4.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_3_1_procedure_droits" value="procedure_claire" required> Oui procédure claire connue</label>
+            <label><input type="radio" name="q4_3_1_procedure_droits" value="vaguement"> Vaguement je contacterais le siège</label>
+            <label><input type="radio" name="q4_3_1_procedure_droits" value="non"> Non je ne sais pas</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les résidents sous protection juridique peuvent-ils exercer leurs droits RGPD ? <span class="question-id">Q4.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_4_1_droits_protection" value="selon_niveau" required> Oui selon niveau mesure (curatelle = oui avec assistance)</label>
+            <label><input type="radio" name="q4_4_1_droits_protection" value="tuteur"> Toujours via tuteur/curateur uniquement</label>
+            <label><input type="radio" name="q4_4_1_droits_protection" value="non"> Non pas prévu</label>
+            <label><input type="radio" name="q4_4_1_droits_protection" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 5 : Sous-traitants locaux -->
+      <section class="section" id="sous-traitants">
+        <h2 class="section-title">Sous-traitants locaux</h2>
+
+        <div class="question">
+          <label class="question-label">Quels sous-traitants locaux utilisez-vous ayant accès aux données des résidents ? <span class="question-id">Q5.1.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="logiciel_metier"> Logiciel métier (Imago, Concerto...)</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="prestataires_repas"> Prestataires repas</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="transporteurs"> Transporteurs</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="nettoyage"> Entreprise nettoyage (accès locaux)</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="intervenants_externes"> Intervenants externes (activités, animateurs)</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="autre"> Autre</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="aucun"> Aucun</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Ces sous-traitants locaux ont-ils signé une clause de confidentialité ou contrat RGPD ? <span class="question-id">Q5.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_2_1_clauses" value="tous" required> Oui tous ont clauses</label>
+            <label><input type="radio" name="q5_2_1_clauses" value="certains"> Certains seulement</label>
+            <label><input type="radio" name="q5_2_1_clauses" value="non"> Non aucun</label>
+            <label><input type="radio" name="q5_2_1_clauses" value="inconnu"> Inconnu (géré par siège)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le logiciel métier a-t-il un contrat avec clauses RGPD (Art. 28) ? <span class="question-id">Q5.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_3_1_contrat_art28" value="oui" required> Oui contrat Art. 28 signé</label>
+            <label><input type="radio" name="q5_3_1_contrat_art28" value="non"> Non pas de contrat</label>
+            <label><input type="radio" name="q5_3_1_contrat_art28" value="inconnu"> Inconnu (géré par siège)</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 6 : Incidents locaux -->
+      <section class="section" id="incidents">
+        <h2 class="section-title">Incidents locaux</h2>
+
+        <div class="question">
+          <label class="question-label required">Des incidents de données ont-ils eu lieu dans votre EANM sur 24 derniers mois ? <span class="question-id">Q6.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_1_1_incidents" value="oui" required> Oui</label>
+            <label><input type="radio" name="q6_1_1_incidents" value="non"> Non</label>
+            <label><input type="radio" name="q6_1_1_incidents" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Si OUI type(s) d'incident(s) <span class="question-id">Q6.1.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="perte_vol_papier"> Perte/vol dossiers résidents papier</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="perte_cahiers"> Perte cahiers de transmission</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="email_erreur"> Email avec données à mauvais destinataire</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="divulgation"> Divulgation accidentelle données comportementales</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="photos_sans_consentement"> Photos résidents sans consentement</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="autre"> Autre</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="na"> N/A (pas d'incident)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous immédiatement informé le siège/DPO (dans les 72h) ? <span class="question-id">Q6.1.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_1_3_info_siege" value="oui_72h" required> Oui tous incidents remontés &lt;72h</label>
+            <label><input type="radio" name="q6_1_3_info_siege" value="certains"> Certains seulement</label>
+            <label><input type="radio" name="q6_1_3_info_siege" value="non"> Non jamais informé</label>
+            <label><input type="radio" name="q6_1_3_info_siege" value="na"> N/A (pas d'incident)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Savez-vous reconnaître une violation de données concernant les résidents ? <span class="question-id">Q6.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_2_1_reconnaitre_violation" value="oui" required> Oui formé à reconnaître violations</label>
+            <label><input type="radio" name="q6_2_1_reconnaitre_violation" value="incertain"> Incertain</label>
+            <label><input type="radio" name="q6_2_1_reconnaitre_violation" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 7 : Spécificités EANM -->
+      <section class="section" id="specifiques">
+        <h2 class="section-title">Spécificités EANM</h2>
+
+        <div class="question">
+          <label class="question-label required">Gérez-vous l'argent de poche des résidents ? <span class="question-id">Q7N.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7n_1_argent_poche" value="majorite" required> Oui pour la majorité des résidents</label>
+            <label><input type="radio" name="q7n_1_argent_poche" value="certains"> Oui pour certains résidents</label>
+            <label><input type="radio" name="q7n_1_argent_poche" value="non"> Non jamais</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si gestion argent poche où sont stockés les documents de traçabilité (registre, dépenses) ? <span class="question-id">Q7N.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7n_2_stockage_argent" value="armoire_coffre" required> Armoire fermée à clé ou coffre</label>
+            <label><input type="radio" name="q7n_2_stockage_argent" value="classeur"> Classeur bureau accessible</label>
+            <label><input type="radio" name="q7n_2_stockage_argent" value="excel"> Fichier Excel ordinateur</label>
+            <label><input type="radio" name="q7n_2_stockage_argent" value="cahier"> Cahier papier non sécurisé</label>
+            <label><input type="radio" name="q7n_2_stockage_argent" value="na"> N/A (pas de gestion argent poche)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des sorties/activités extérieures sont-elles organisées pour les résidents ? <span class="question-id">Q7N.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7n_3_sorties" value="regulieres" required> Oui régulièrement (hebdomadaires)</label>
+            <label><input type="radio" name="q7n_3_sorties" value="occasionnellement"> Occasionnellement</label>
+            <label><input type="radio" name="q7n_3_sorties" value="rarement"> Rarement</label>
+            <label><input type="radio" name="q7n_3_sorties" value="jamais"> Jamais</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Utilisez-vous des dispositifs de géolocalisation pour les sorties (bracelets GPS, smartphones) ? <span class="question-id">Q7N.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7n_4_geolocalisation" value="avec_pia" required> Oui avec consentement et PIA réalisée</label>
+            <label><input type="radio" name="q7n_4_geolocalisation" value="sans_pia"> Oui sans PIA</label>
+            <label><input type="radio" name="q7n_4_geolocalisation" value="non"> Non jamais de géolocalisation</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des photos de résidents lors de sorties/activités sont-elles prises et partagées ? <span class="question-id">Q7N.5</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7n_5_photos" value="consentements_ecrits" required> Oui avec consentements écrits systématiques</label>
+            <label><input type="radio" name="q7n_5_photos" value="consentements_oraux"> Oui consentements oraux</label>
+            <label><input type="radio" name="q7n_5_photos" value="sans_consentement"> Oui sans consentement (considéré implicite)</label>
+            <label><input type="radio" name="q7n_5_photos" value="non"> Non jamais de photos</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">À qui les photos de sorties sont-elles transmises/diffusées ? <span class="question-id">Q7N.6</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q7n_6_diffusion_photos" value="familles"> Familles uniquement (avec consentement)</label>
+            <label><input type="checkbox" name="q7n_6_diffusion_photos" value="site_web"> Site web / réseaux sociaux établissement</label>
+            <label><input type="checkbox" name="q7n_6_diffusion_photos" value="journal_interne"> Journal interne établissement</label>
+            <label><input type="checkbox" name="q7n_6_diffusion_photos" value="affiches"> Affiches/communication externe</label>
+            <label><input type="checkbox" name="q7n_6_diffusion_photos" value="interne"> Photos non diffusées (usage interne uniquement)</label>
+            <label><input type="checkbox" name="q7n_6_diffusion_photos" value="na"> N/A (pas de photos)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les résidents sont-ils majoritairement sous protection juridique (tutelle, curatelle) ? <span class="question-id">Q7N.7</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7n_7_protection_juridique" value="majorite" required> Oui majorité sous protection</label>
+            <label><input type="radio" name="q7n_7_protection_juridique" value="moitie"> Environ la moitié</label>
+            <label><input type="radio" name="q7n_7_protection_juridique" value="minorite"> Minorité sous protection</label>
+            <label><input type="radio" name="q7n_7_protection_juridique" value="non"> Non aucun</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les tuteurs/curateurs reçoivent-ils des comptes-rendus réguliers sur la vie quotidienne du résident ? <span class="question-id">Q7N.8</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7n_8_comptes_rendus" value="securises" required> Oui comptes-rendus réguliers sécurisés</label>
+            <label><input type="radio" name="q7n_8_comptes_rendus" value="non_securises"> Oui mais canaux non sécurisés (email classique)</label>
+            <label><input type="radio" name="q7n_8_comptes_rendus" value="rarement"> Rarement</label>
+            <label><input type="radio" name="q7n_8_comptes_rendus" value="non"> Non jamais</label>
+            <label><input type="radio" name="q7n_8_comptes_rendus" value="na"> N/A (pas de majeurs protégés)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les familles peuvent-elles accéder aux données du résident majeur (si pas sous tutelle) ? <span class="question-id">Q7N.9</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7n_9_acces_familles" value="avec_accord" required> Oui uniquement avec accord écrit du résident</label>
+            <label><input type="radio" name="q7n_9_acces_familles" value="acces_systematique"> Accès systématique sans vérifier accord</label>
+            <label><input type="radio" name="q7n_9_acces_familles" value="non"> Non jamais</label>
+            <label><input type="radio" name="q7n_9_acces_familles" value="depend"> Dépend des situations</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Quelle durée de conservation appliquez-vous aux dossiers après départ d'un résident ? <span class="question-id">Q7N.10</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7n_10_conservation" value="5_ans" required> 5 ans après départ</label>
+            <label><input type="radio" name="q7n_10_conservation" value="autre"> Autre durée (préciser)</label>
+            <label><input type="radio" name="q7n_10_conservation" value="indefinie"> Conservation indéfinie</label>
+            <label><input type="radio" name="q7n_10_conservation" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc Synthèse -->
+      <section class="section" id="synthese">
+        <h2 class="section-title">Synthèse et commentaires</h2>
+
+        <div class="question">
+          <label class="question-label">Principales difficultés EANM pour conformité RGPD <span class="question-id">Q_SYNTH.1</span></label>
+          <textarea name="qsynth_1_difficultes" placeholder="Décrivez les principales difficultés rencontrées..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Commentaires libres ou points EANM non abordés <span class="question-id">Q_SYNTH.2</span></label>
+          <textarea name="qsynth_2_commentaires" placeholder="Toute information complémentaire..."></textarea>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="btn-submit">Envoyer le questionnaire</button>
+      </div>
+    </form>
+  </div>
+
+<script>
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQBhjBdwuEBtj5Ef63L_5ej3eyXB15DLmpnDBxqM5u0EdVRgoLK6NR1Hkn682obuvN7Q/exec';
+const FORM_TYPE = 'EANM_RGPD';
+
+// Navigation sticky
+const navBlocks = document.querySelectorAll('.nav-block');
+const sections = document.querySelectorAll('.section');
+function updateActiveNav() {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - 100) current = section.getAttribute('id');
+  });
+  navBlocks.forEach(block => {
+    block.classList.remove('active');
+    if (block.getAttribute('href') === '#' + current) block.classList.add('active');
+  });
+}
+if (navBlocks.length > 0) {
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
+}
+
+// Collecte des réponses (format array v2.0)
+function collectResponses() {
+  const responses = [];
+  const seen = new Set();
+  document.querySelectorAll('.question:not(.hidden)').forEach(qEl => {
+    const labelEl = qEl.querySelector('.q-label, .question-label');
+    if (!labelEl) return;
+    const question = labelEl.innerText.replace(/^\*\s*/, '').replace(/\s+/g, ' ').trim();
+    const inputs = qEl.querySelectorAll('input, textarea, select');
+    if (inputs.length === 0) return;
+    const firstInput = inputs[0];
+    const fieldId = firstInput.name || firstInput.id || '';
+    if (seen.has(fieldId)) return;
+    seen.add(fieldId);
+    let answer = '';
+    const type = firstInput.type;
+    if (type === 'radio') {
+      const checked = qEl.querySelector('input[type="radio"]:checked');
+      answer = checked ? checked.value : '';
+    } else if (type === 'checkbox') {
+      const checkeds = qEl.querySelectorAll('input[type="checkbox"]:checked');
+      answer = Array.from(checkeds).map(c => c.value).join(' | ');
+    } else {
+      answer = firstInput.value.trim();
+    }
+    responses.push({ id: fieldId, question, answer });
+  });
+  const nomEtabEl = document.getElementById('nom_etablissement');
+  if (nomEtabEl) {
+    responses.push({ id: 'nom_etablissement', question: 'Nom de l\'établissement', answer: nomEtabEl.value || '' });
+  }
+  return responses;
+}
+
+// Soumission
+document.getElementById('formulaire').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!this.checkValidity()) return;
+  const btn = document.getElementById('btn-submit');
+  const message = document.getElementById('message');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+  const payload = { type: FORM_TYPE, responses: collectResponses() };
+  try {
+    const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const result = await res.json();
+    if (result.status === 'success') {
+      message.className = 'message success show';
+      message.textContent = 'Questionnaire envoyé avec succès ! Merci pour votre participation.';
+      this.reset();
+      const dateField = document.querySelector('[name*="date"]');
+      if (dateField && dateField.type === 'date') dateField.valueAsDate = new Date();
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (err) {
+    message.className = 'message error show';
+    message.textContent = 'Erreur lors de l\'envoi : ' + err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Envoyer le questionnaire';
+  }
+});
+
+// Date par défaut
+const dateField = document.querySelector('[name*="date"]');
+if (dateField && dateField.type === 'date') dateField.valueAsDate = new Date();
+</script>
+</body>
+</html>

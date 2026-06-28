@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit RGPD — Tableau de bord réseau</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F3EE;--card:#FFFFFF;--line:#E6E2D8;--ink:#23272E;--ink-soft:#6B7280;
+    --red:#B0463B;--red-bg:#F7E4E1;--orange:#BD8A35;--orange-bg:#F6ECD9;--green:#4F7A68;--green-bg:#E6EEE9;
+    --blue:#3B6EB0;--blue-bg:#E1EAF7;--purple:#6B4FA0;--purple-bg:#EDE8F5;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.55;font-size:15px;}
+  .wrap{max-width:980px;margin:0 auto;padding:40px 24px 80px;}
+
+  /* COVER */
+  .cover{background:var(--ink);color:#F5F3EE;border-radius:16px;padding:44px 48px;margin-bottom:40px;}
+  .cover-eyebrow{font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#8C9CB4;margin-bottom:14px;}
+  .cover h1{font-size:clamp(28px,4vw,42px);font-weight:700;margin:0 0 12px;line-height:1.15;}
+  .cover .sub{font-size:15px;color:#C9D2DF;max-width:580px;}
+  .cover-meta{display:flex;flex-wrap:wrap;gap:32px;margin-top:32px;padding-top:24px;border-top:1px solid #38445C;}
+  .cover-meta div .label{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8C9CB4;margin-bottom:5px;}
+  .cover-meta div .val{font-size:18px;font-weight:600;color:#FBF9F4;}
+
+  /* SECTIONS */
+  .section{margin-bottom:48px;}
+  .section-title{font-size:13px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;}
+  .section-sub{font-size:13.5px;color:var(--ink-soft);margin-bottom:20px;}
+
+  /* KPI GRID */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:40px;}
+  .kpi-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;}
+  .kpi-card .kpi-label{font-size:13px;color:var(--ink-soft);margin-bottom:8px;}
+  .kpi-card .kpi-value{font-size:30px;font-weight:700;line-height:1;}
+  .kpi-card .kpi-sub{font-size:12px;color:var(--ink-soft);margin-top:6px;}
+
+  /* ALERT BOX */
+  .alert-box{border-radius:12px;padding:18px 22px;margin-bottom:20px;font-size:14px;}
+  .alert-box.red{background:var(--red-bg);border:1px solid var(--red);color:var(--ink);}
+  .alert-box.orange{background:var(--orange-bg);border:1px solid var(--orange);color:var(--ink);}
+  .alert-box.blue{background:var(--blue-bg);border:1px solid var(--blue);color:var(--ink);}
+  .alert-box strong{display:block;margin-bottom:6px;}
+  .alert-box.red strong{color:var(--red);}
+  .alert-box.orange strong{color:var(--orange);}
+  .alert-box.blue strong{color:var(--blue);}
+
+  /* TABLEAU DE BORD ÉTABLISSEMENTS */
+  .dashboard-table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13.5px;}
+  .dashboard-table th{text-align:left;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);background:var(--bg);padding:11px 14px;border-bottom:1px solid var(--line);}
+  .dashboard-table td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  .dashboard-table tr:last-child td{border-bottom:none;}
+  .dashboard-table tr:hover td{background:#FAFAF8;}
+  .estab-name{font-weight:600;font-size:14px;}
+  .estab-type{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+
+  .badge{display:inline-flex;align-items:center;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:5px;white-space:nowrap;}
+  .badge-red{background:var(--red-bg);color:var(--red);}
+  .badge-orange{background:var(--orange-bg);color:var(--orange);}
+  .badge-green{background:var(--green-bg);color:var(--green);}
+  .badge-grey{background:#EAEAEA;color:#555;}
+
+  .score-bar-wrap{display:flex;align-items:center;gap:10px;}
+  .score-bar{height:8px;border-radius:4px;background:var(--line);flex:1;overflow:hidden;}
+  .score-bar-fill{height:100%;border-radius:4px;}
+  .fill-red{background:var(--red);}
+  .fill-orange{background:var(--orange);}
+  .fill-green{background:var(--green);}
+  .score-num{font-size:13px;font-weight:700;min-width:36px;text-align:right;}
+
+  /* TYPE SUMMARY CARDS */
+  .type-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+  .type-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;}
+  .type-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+  .type-card h3{font-size:15px;font-weight:700;margin:0;}
+  .type-card .type-meta{font-size:12.5px;color:var(--ink-soft);margin-bottom:10px;}
+  .type-card .type-risk{font-size:13px;}
+  .type-card .type-risk li{margin-bottom:5px;}
+  .type-card .type-risk li:last-child{margin-bottom:0;}
+  ul.type-risk{padding-left:18px;margin:0;}
+
+  /* MISSING SERVICES */
+  .missing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+  .missing-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;}
+  .missing-card .missing-icon{font-size:22px;margin-bottom:8px;}
+  .missing-card h4{font-size:14px;font-weight:700;margin:0 0 4px;}
+  .missing-card p{font-size:13px;color:var(--ink-soft);margin:0;}
+
+  /* ACTIONS IMMÉDIATES */
+  .action-blocks{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
+  .action-block{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;}
+  .action-block-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .action-block-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .icon-red{background:var(--red-bg);}
+  .icon-blue{background:var(--blue-bg);}
+  .icon-green{background:var(--green-bg);}
+  .action-block-icon svg{width:18px;height:18px;}
+  .icon-red svg{color:var(--red);}
+  .icon-blue svg{color:var(--blue);}
+  .icon-green svg{color:var(--green);}
+  .action-block h3{font-size:15px;font-weight:700;margin:0;}
+  .action-block .when{font-size:11.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px;}
+  .action-block ul{margin:0;padding-left:18px;font-size:13.5px;}
+  .action-block ul li{margin-bottom:7px;}
+  .action-block ul li:last-child{margin-bottom:0;}
+
+  /* 3 OUTILS */
+  .tool-blocks{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .tool-block{border-radius:12px;padding:24px;border:1px solid var(--line);}
+  .tool-block.registre{background:var(--blue-bg);border-color:var(--blue);}
+  .tool-block.memo{background:var(--purple-bg);border-color:var(--purple);}
+  .tool-block.process{background:var(--green-bg);border-color:var(--green);}
+  .tool-num{font-size:28px;font-weight:700;line-height:1;margin-bottom:8px;}
+  .tool-block.registre .tool-num{color:var(--blue);}
+  .tool-block.memo .tool-num{color:var(--purple);}
+  .tool-block.process .tool-num{color:var(--green);}
+  .tool-block h3{font-size:16px;font-weight:700;margin:0 0 6px;}
+  .tool-block .tool-what{font-size:13.5px;font-weight:600;margin-bottom:10px;color:var(--ink);}
+  .tool-block ul{margin:0;padding-left:18px;font-size:13.5px;}
+  .tool-block ul li{margin-bottom:6px;}
+  .tool-block ul li:last-child{margin-bottom:0;}
+  .tool-block .tool-who{margin-top:12px;padding-top:12px;border-top:1px solid rgba(0,0,0,0.1);font-size:12.5px;color:var(--ink-soft);}
+
+  footer{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:48px;}
+  @media(max-width:760px){
+    .kpi-grid{grid-template-columns:1fr 1fr;}
+    .action-blocks{grid-template-columns:1fr;}
+    .tool-blocks{grid-template-columns:1fr;}
+    .type-grid{grid-template-columns:1fr;}
+    .cover{padding:28px 24px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="top">
+
+  <div class="cover">
+    <div class="cover-eyebrow">Tableau de bord · Réseau médico-social</div>
+    <h1>Audit RGPD — Synthèse générale du réseau</h1>
+    <p class="sub">Vue consolidée de l'ensemble des réponses au questionnaire d'auto-évaluation RGPD, par établissement et par type de structure. Document à usage de la direction générale pour arbitrage et décision.</p>
+    <div class="cover-meta">
+      <div><div class="label">Établissements audités</div><div class="val">33 réponses</div></div>
+      <div><div class="label">Types de structures</div><div class="val">8 types</div></div>
+      <div><div class="label">Score moyen réseau</div><div class="val">43 / 100</div></div>
+      <div><div class="label">Périmètre manquant</div><div class="val">Siège + services</div></div>
+    </div>
+  </div>
+
+  <div class="alert-box blue">
+    <strong>⚠ Périmètre de l'audit incomplet — décision requise</strong>
+    Cet audit couvre uniquement les établissements médico-sociaux ayant répondu au questionnaire. Le siège et plusieurs services transversaux n'ont pas encore été audités et représentent une exposition RGPD significative. Voir la section dédiée ci-dessous.
+  </div>
+
+  <div class="section">
+    <div class="section-title">Chiffres clés du réseau</div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Score moyen réseau</div>
+        <div class="kpi-value">43<span style="font-size:18px;font-weight:400;color:var(--ink-soft)">/100</span></div>
+        <div class="kpi-sub">Marge de progression significative</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Établissements en risque élevé</div>
+        <div class="kpi-value" style="color:var(--red)">18</div>
+        <div class="kpi-sub">Score &lt; 40/100</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Risque commun n°1</div>
+        <div class="kpi-value" style="font-size:18px;line-height:1.2">Aucun référent RGPD</div>
+        <div class="kpi-sub">Présent dans 100% des structures</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Structures sans formation RGPD</div>
+        <div class="kpi-value" style="color:var(--red)">28</div>
+        <div class="kpi-sub">Sur 33 réponses reçues</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Synthèse par type de structure</div>
+    <div class="section-sub">Score moyen et risque principal par catégorie d'établissement</div>
+    <div class="type-grid">
+
+      <div class="type-card">
+        <div class="type-card-top">
+          <h3>CMPP</h3>
+          <span class="badge badge-red">45/100</span>
+        </div>
+        <div class="type-meta">1 établissement · 1 réponse · 317 enfants</div>
+        <ul class="type-risk">
+          <li>Base légale des dossiers psy à sécuriser</li>
+          <li>Accès trop large aux dossiers thérapeutiques</li>
+          <li>Aucune info RGPD remise aux familles</li>
+        </ul>
+      </div>
+
+      <div class="type-card">
+        <div class="type-card-top">
+          <h3>EAM (FAM/MAS)</h3>
+          <span class="badge badge-orange">47/100</span>
+        </div>
+        <div class="type-meta">2 établissements · 52 résidents</div>
+        <ul class="type-risk">
+          <li>Accès distant DPI non sécurisé</li>
+          <li>Contrats prestataires non signés</li>
+          <li>Appareils médicaux sur réseau unique</li>
+        </ul>
+      </div>
+
+      <div class="type-card">
+        <div class="type-card-top">
+          <h3>EANM</h3>
+          <span class="badge badge-red">45/100</span>
+        </div>
+        <div class="type-meta">6 groupes · 11 réponses · ~295 résidents</div>
+        <ul class="type-risk">
+          <li>Vidéosurveillance / biométrie sans PIA (Vitray)</li>
+          <li>Photos diffusées sans consentement</li>
+          <li>Armoires non fermées, accès multiples</li>
+        </ul>
+      </div>
+
+      <div class="type-card">
+        <div class="type-card-top">
+          <h3>ESAT</h3>
+          <span class="badge badge-red">38/100</span>
+        </div>
+        <div class="type-meta">7 établissements · 9 réponses · ~761 travailleurs</div>
+        <ul class="type-risk">
+          <li>Aucune formation RGPD dans la majorité des ESAT</li>
+          <li>Documents visibles dans les ateliers</li>
+          <li>Données transmises aux clients sans convention</li>
+        </ul>
+      </div>
+
+      <div class="type-card">
+        <div class="type-card-top">
+          <h3>IME</h3>
+          <span class="badge badge-red">42/100</span>
+        </div>
+        <div class="type-meta">6 établissements · 10 réponses · ~234 enfants</div>
+        <ul class="type-risk">
+          <li>Données génétiques sans analyse d'impact (PIA)</li>
+          <li>Transmissions aux écoles par email classique</li>
+          <li>Procédure parents séparés absente</li>
+        </ul>
+      </div>
+
+      <div class="type-card">
+        <div class="type-card-top">
+          <h3>SAMSAH</h3>
+          <span class="badge badge-orange">55/100</span>
+        </div>
+        <div class="type-meta">1 établissement · 21 usagers · Interventions à domicile</div>
+        <ul class="type-risk">
+          <li>Mobiles non sécurisés hors établissement</li>
+          <li>Données médicales par email classique</li>
+          <li>Confidentialité à domicile non cadrée</li>
+        </ul>
+      </div>
+
+      <div class="type-card">
+        <div class="type-card-top">
+          <h3>SAVS</h3>
+          <span class="badge badge-red">40/100</span>
+        </div>
+        <div class="type-meta">2 établissements · 99 personnes accompagnées</div>
+        <ul class="type-risk">
+          <li>Aucune formation RGPD — besoin prioritaire exprimé</li>
+          <li>Connexions mobiles à domicile non sécurisées</li>
+          <li>Incident non signalé dans les délais (Sceaux)</li>
+        </ul>
+      </div>
+
+      <div class="type-card">
+        <div class="type-card-top">
+          <h3>SESSAD</h3>
+          <span class="badge badge-orange">52/100</span>
+        </div>
+        <div class="type-meta">1 établissement · 86 enfants · Interventions en écoles</div>
+        <ul class="type-risk">
+          <li>Email non sécurisé vers les écoles</li>
+          <li>Ordinateurs en lieux publics</li>
+          <li>Données de santé non cloisonnées</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Périmètre non encore audité — À planifier impérativement</div>
+    <div class="section-sub">Ces services du siège et fonctions transversales traitent des données personnelles sensibles mais n'ont pas encore été inclus dans l'audit RGPD.</div>
+
+    <div class="alert-box red" style="margin-bottom:20px;">
+      <strong>🔴 Risque réel non mesuré</strong>
+      Le siège concentre des données sensibles de l'ensemble du réseau (paie, dossiers RH, dons, communication). Une faille au siège aurait un impact sur toutes les structures. Ne pas l'auditer, c'est laisser la porte principale ouverte.
+    </div>
+
+    <div class="missing-grid">
+      <div class="missing-card">
+        <div class="missing-icon">👥</div>
+        <h4>Ressources Humaines</h4>
+        <p>Dossiers salariés, contrats, bulletins de paie, données disciplinaires, données médicales (arrêts maladie).</p>
+      </div>
+      <div class="missing-card">
+        <div class="missing-icon">🏛</div>
+        <h4>Direction Générale</h4>
+        <p>Accès croisé aux données des établissements, décisions impactant les personnes accompagnées, correspondances sensibles.</p>
+      </div>
+      <div class="missing-card">
+        <div class="missing-icon">✅</div>
+        <h4>Service Qualité</h4>
+        <p>Évaluations internes, signalements d'événements indésirables, données nominatives sur incidents et usagers.</p>
+      </div>
+      <div class="missing-card">
+        <div class="missing-icon">💰</div>
+        <h4>Service Donateurs</h4>
+        <p>Fichiers de donateurs, coordonnées, historiques de dons, données bancaires — soumis au RGPD autant que les données de santé.</p>
+      </div>
+      <div class="missing-card">
+        <div class="missing-icon">📢</div>
+        <h4>Communication</h4>
+        <p>Photos et vidéos de bénéficiaires, consentements de diffusion, réseaux sociaux, newsletters, bases de contacts.</p>
+      </div>
+      <div class="missing-card">
+        <div class="missing-icon">💼</div>
+        <h4>Service Financier</h4>
+        <p>Données bancaires des usagers (argent de poche, gestion budgétaire), données fournisseurs, tiers de facturation.</p>
+      </div>
+      <div class="missing-card">
+        <div class="missing-icon">🖥</div>
+        <h4>Informatique / DSI</h4>
+        <p>Sécurité des systèmes, gestion des accès, sauvegardes, hébergement des données, incidents cyber.</p>
+      </div>
+      <div class="missing-card">
+        <div class="missing-icon">⚖️</div>
+        <h4>Juridique / DPO</h4>
+        <p>Vérifier que le DPO externe dispose bien de tous les registres à jour, des PIA réalisées, et des contrats signés.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Actions immédiates — Décisions à prendre au niveau réseau</div>
+    <div class="section-sub">Ces 3 chantiers s'appliquent à l'ensemble du réseau et doivent être lancés en priorité par la direction.</div>
+
+    <div class="action-blocks">
+
+      <div class="action-block">
+        <div class="action-block-head">
+          <div class="action-block-icon icon-red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+          </div>
+          <h3>Désigner les référents RGPD</h3>
+        </div>
+        <div class="when">À faire dans les 30 jours</div>
+        <ul>
+          <li>Nommer un référent RGPD par entité ou groupe d'établissements (1 personne, 1 rôle clair).</li>
+          <li>Organiser une réunion de lancement avec le DPO externe pour que chaque référent connaisse le lien de contact et la procédure d'escalade.</li>
+          <li>Inclure le siège et les services transversaux dans cette désignation.</li>
+          <li>Formaliser le rôle par une lettre de mission ou un avenant.</li>
+        </ul>
+      </div>
+
+      <div class="action-block">
+        <div class="action-block-head">
+          <div class="action-block-icon icon-red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <h3>Corriger les risques critiques</h3>
+        </div>
+        <div class="when">À faire dans les 30 jours</div>
+        <ul>
+          <li>Fermer à clé toutes les armoires contenant des dossiers papier dans les établissements concernés.</li>
+          <li>Arrêter immédiatement toute diffusion de photos de résidents / travailleurs sans consentement écrit.</li>
+          <li>Lancer la réalisation des PIA manquantes (données génétiques IME, vidéosurveillance Vitray, dispositifs médicaux EAM).</li>
+          <li>Retirer les documents nominatifs des espaces communs et ateliers ESAT.</li>
+        </ul>
+      </div>
+
+      <div class="action-block">
+        <div class="action-block-head">
+          <div class="action-block-icon icon-blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+          </div>
+          <h3>Planifier l'audit du siège</h3>
+        </div>
+        <div class="when">À planifier dans les 60 jours</div>
+        <ul>
+          <li>Lancer un questionnaire RGPD auprès des services RH, Qualité, Donateurs, Communication, Finance et DSI.</li>
+          <li>Désigner un référent RGPD au siège distinct des référents terrain.</li>
+          <li>Mandater le DPO pour un audit complémentaire du siège.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">3 outils à mettre en place immédiatement</div>
+    <div class="section-sub">Ces 3 livrables sont la base minimale pour commencer à se conformer au RGPD. Ils seront produits par le siège et diffusés à tous les établissements.</div>
+
+    <div class="tool-blocks">
+
+      <div class="tool-block registre">
+        <div class="tool-num">01</div>
+        <h3>Le Registre des traitements</h3>
+        <div class="tool-what">Qu'est-ce que c'est ?</div>
+        <ul>
+          <li>Un document qui liste <strong>tous les types de données</strong> collectées dans le réseau (dossiers usagers, dossiers salariés, dons, vidéosurveillance…).</li>
+          <li>Pour chaque traitement : <strong>qui collecte, pourquoi, combien de temps, qui y a accès, sur quelle base légale.</strong></li>
+          <li>C'est le <strong>premier document demandé par la CNIL</strong> lors d'un contrôle.</li>
+        </ul>
+        <div class="tool-who">
+          <strong>Pilote :</strong> DPO externe + siège<br>
+          <strong>Délai cible :</strong> Mise à jour complète dans les 60 jours<br>
+          <strong>Outil :</strong> Fichier partagé, mis à jour par les référents locaux
+        </div>
+      </div>
+
+      <div class="tool-block memo">
+        <div class="tool-num">02</div>
+        <h3>Le Mémo RGPD terrain</h3>
+        <div class="tool-what">Qu'est-ce que c'est ?</div>
+        <ul>
+          <li>Un document d'<strong>une page recto-verso</strong>, en langage simple, remis à chaque professionnel du réseau.</li>
+          <li>Il rappelle : <strong>les 5 bons réflexes au quotidien</strong> (armoire fermée, email sécurisé, écran verrouillé, pas de photo sans accord, signalement incident).</li>
+          <li>Il indique clairement <strong>qui contacter en cas de doute</strong> (référent local + DPO).</li>
+          <li>Il est adapté selon le type de structure (ESAT, IME, SAMSAH…) pour être concret et utile sur le terrain.</li>
+        </ul>
+        <div class="tool-who">
+          <strong>Pilote :</strong> Siège + DPO<br>
+          <strong>Délai cible :</strong> Diffusion dans les 45 jours<br>
+          <strong>Outil :</strong> PDF imprimable + version numérique
+        </div>
+      </div>
+
+      <div class="tool-block process">
+        <div class="tool-num">03</div>
+        <h3>Le Process incident à court terme</h3>
+        <div class="tool-what">Qu'est-ce que c'est ?</div>
+        <ul>
+          <li>Une <strong>procédure simple en 4 étapes</strong> pour que chaque professionnel sache quoi faire si une donnée est perdue, volée ou envoyée par erreur.</li>
+          <li>Étape 1 : <strong>Détecter</strong> — reconnaître ce qui est une violation (liste d'exemples concrets).</li>
+          <li>Étape 2 : <strong>Signaler</strong> — prévenir le référent RGPD local dans les 24h.</li>
+          <li>Étape 3 : <strong>Escalader</strong> — le référent prévient le DPO, qui décide si la CNIL doit être notifiée sous 72h.</li>
+          <li>Étape 4 : <strong>Documenter</strong> — tracer l'incident dans le registre des violations.</li>
+        </ul>
+        <div class="tool-who">
+          <strong>Pilote :</strong> DPO externe<br>
+          <strong>Délai cible :</strong> Diffusion dans les 30 jours<br>
+          <strong>Outil :</strong> Logigramme visuel + fiche de signalement
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section" style="margin-top: 48px;">
+    <div class="section-title">Tableau de bord par établissement</div>
+    <div class="section-sub">Classé par score croissant (du plus critique au plus avancé)</div>
+
+    <table class="dashboard-table">
+      <thead>
+        <tr>
+          <th style="width:35%">Établissement</th>
+          <th style="width:12%">Type</th>
+          <th style="width:22%">Score</th>
+          <th style="width:15%">Niveau de risque</th>
+          <th>Risque prioritaire</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="estab-name">CAJ Fontenay / Sceaux / Montrouge</div><div class="estab-type">Guillaume Dorme — 3 sites</div>
+            </td>
+          <td><span class="badge badge-grey">EANM</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-red" style="width:30%"></div></div><span class="score-num" style="color:var(--red)">30</span></div></td>
+          <td><span class="badge badge-red">Risque élevé</span></td>
+          <td>Armoires non fermées, accès trop large, photos sans consentement</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">CAJ Jean-Claude Richard</div><div class="estab-type">+ CAJ Vanves (réponse vide)</div>
+            </td>
+          <td><span class="badge badge-grey">EANM</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-red" style="width:32%"></div></div><span class="score-num" style="color:var(--red)">32</span></div></td>
+          <td><span class="badge badge-red">Risque élevé</span></td>
+          <td>Photos sans consentement, info orale uniquement, stockage local</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">ESAT Les Ateliers du Phare</div><div class="estab-type">Répondant : BACK</div>
+            </td>
+          <td><span class="badge badge-grey">ESAT</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-red" style="width:28%"></div></div><span class="score-num" style="color:var(--red)">28</span></div></td>
+          <td><span class="badge badge-red">Risque élevé</span></td>
+          <td>Armoire non fermée, documents visibles en atelier, pas de contrats prestataires</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">ESAT Meudon / Solipolis Meudon</div><div class="estab-type">Sophie LARUAZ & Sylvie WEIHSBACH</div>
+            </td>
+          <td><span class="badge badge-grey">ESAT</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-red" style="width:30%"></div></div><span class="score-num" style="color:var(--red)">30</span></div></td>
+          <td><span class="badge badge-red">Risque élevé</span></td>
+          <td>Aucune formation RGPD jamais reçue — cas le plus critique du réseau</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">Solipolis Vernouillet</div><div class="estab-type">Emilie Leroi (réponse double)</div>
+            </td>
+          <td><span class="badge badge-grey">ESAT</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-red" style="width:30%"></div></div><span class="score-num" style="color:var(--red)">30</span></div></td>
+          <td><span class="badge badge-red">Risque élevé</span></td>
+          <td>Données de production nominatives, documents visibles, pas de conventions clients</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">ESAT Yvonne Wendling</div><div class="estab-type">Arthur Zeller & Sophie Jilet</div>
+            </td>
+          <td><span class="badge badge-grey">ESAT</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-red" style="width:32%"></div></div><span class="score-num" style="color:var(--red)">32</span></div></td>
+          <td><span class="badge badge-red">Risque élevé</span></td>
+          <td>Suivi nominatif production, email non sécurisé, aucune formation</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">Domaine de Vitray</div><div class="estab-type">Foyer d'hébergement · 50 résidents</div>
+            </td>
+          <td><span class="badge badge-grey">EANM</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-red" style="width:38%"></div></div><span class="score-num" style="color:var(--red)">38</span></div></td>
+          <td><span class="badge badge-red">Risque élevé</span></td>
+          <td>Vidéosurveillance + biométrie sans PIA, photos sans consentement</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">FAM de La Pommeraie</div>
+            </td>
+          <td><span class="badge badge-grey">EAM</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-red" style="width:42%"></div></div><span class="score-num" style="color:var(--red)">42</span></div></td>
+          <td><span class="badge badge-red">Risque élevé</span></td>
+          <td>Accès distant DPI non sécurisé, appareils connectés sans réseau isolé</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">IME Neuilly sur Seine</div>
+            </td>
+          <td><span class="badge badge-grey">IME</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-red" style="width:38%"></div></div><span class="score-num" style="color:var(--red)">38</span></div></td>
+          <td><span class="badge badge-red">Risque élevé</span></td>
+          <td>Données génétiques sans PIA, armoire non fermée, durée conservation inconnue</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">IME La Maillerie / La Tissanderie</div><div class="estab-type">Emma Tebib (3 réponses regroupées)</div>
+            </td>
+          <td><span class="badge badge-grey">IME</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-red" style="width:35%"></div></div><span class="score-num" style="color:var(--red)">35</span></div></td>
+          <td><span class="badge badge-red">Risque élevé</span></td>
+          <td>Données génétiques sans PIA, transmissions aux écoles par email classique</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">IME Le Fil de Soi</div>
+            </td>
+          <td><span class="badge badge-grey">IME</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-red" style="width:38%"></div></div><span class="score-num" style="color:var(--red)">38</span></div></td>
+          <td><span class="badge badge-red">Risque élevé</span></td>
+          <td>Données génétiques sans PIA, email non sécurisé, aucune procédure familles</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">CMPP Les Provinces Françaises</div>
+            </td>
+          <td><span class="badge badge-grey">CMPP</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-red" style="width:45%"></div></div><span class="score-num" style="color:var(--red)">45</span></div></td>
+          <td><span class="badge badge-red">Risque élevé</span></td>
+          <td>Base légale fragile, accès dossiers psy trop large, aucune info familles</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">SAVS Sceaux</div>
+            </td>
+          <td><span class="badge badge-grey">SAVS</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-red" style="width:35%"></div></div><span class="score-num" style="color:var(--red)">35</span></div></td>
+          <td><span class="badge badge-red">Risque élevé</span></td>
+          <td>Incident non traité, données exposées fréquemment, aucune formation</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">ESAT Les Ateliers de Garlande</div>
+            </td>
+          <td><span class="badge badge-grey">ESAT</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-orange" style="width:35%"></div></div><span class="score-num" style="color:var(--orange)">35</span></div></td>
+          <td><span class="badge badge-orange">Risque modéré</span></td>
+          <td>Accès trop large à tous les dossiers, pas de contrats prestataires/clients</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">ESAT Les Ateliers du Phare</div><div class="estab-type">Répondant : E. GUITTENY (Directrice)</div>
+            </td>
+          <td><span class="badge badge-grey">ESAT</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-orange" style="width:44%"></div></div><span class="score-num" style="color:var(--orange)">44</span></div></td>
+          <td><span class="badge badge-orange">Risque modéré</span></td>
+          <td>Documents visibles, pas de conventions clients, méconnaissance reconnue</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">ESAT Cité Jardins</div>
+            </td>
+          <td><span class="badge badge-grey">ESAT</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-orange" style="width:48%"></div></div><span class="score-num" style="color:var(--orange)">48</span></div></td>
+          <td><span class="badge badge-orange">Risque modéré</span></td>
+          <td>Documents visibles, contrats prestataires non vérifiés</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">IME Châtillonnais / Espoir Châtillonnais</div><div class="estab-type">Karine JANAS (3 réponses)</div>
+            </td>
+          <td><span class="badge badge-grey">IME</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-orange" style="width:47%"></div></div><span class="score-num" style="color:var(--orange)">47</span></div></td>
+          <td><span class="badge badge-orange">Risque modéré</span></td>
+          <td>Données génétiques sans PIA, armoires non fermées, email non sécurisé</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">IME Bourg-la-Reine</div>
+            </td>
+          <td><span class="badge badge-grey">IME</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-orange" style="width:48%"></div></div><span class="score-num" style="color:var(--orange)">48</span></div></td>
+          <td><span class="badge badge-orange">Risque modéré</span></td>
+          <td>Armoires non fermées, email non sécurisé, procedure parents séparés absente</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">CAJ de Neuilly</div>
+            </td>
+          <td><span class="badge badge-grey">EANM</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-orange" style="width:50%"></div></div><span class="score-num" style="color:var(--orange)">50</span></div></td>
+          <td><span class="badge badge-orange">Risque modéré</span></td>
+          <td>12 clés d'armoires, base légale inconnue, procédure d'accès vague</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">EAM Bois Clair</div>
+            </td>
+          <td><span class="badge badge-grey">EAM</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-orange" style="width:52%"></div></div><span class="score-num" style="color:var(--orange)">52</span></div></td>
+          <td><span class="badge badge-orange">Risque modéré</span></td>
+          <td>Direction accès données médicales, durée conservation indéfinie</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">SESSAD Trajectoires</div>
+            </td>
+          <td><span class="badge badge-grey">SESSAD</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-orange" style="width:52%"></div></div><span class="score-num" style="color:var(--orange)">52</span></div></td>
+          <td><span class="badge badge-orange">Risque modéré</span></td>
+          <td>Email non sécurisé écoles, ordinateurs en lieux publics, données non cloisonnées</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">SAMSAH</div>
+            </td>
+          <td><span class="badge badge-grey">SAMSAH</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-orange" style="width:55%"></div></div><span class="score-num" style="color:var(--orange)">55</span></div></td>
+          <td><span class="badge badge-orange">Risque modéré</span></td>
+          <td>Mobiles non sécurisés, email non sécurisé, formation absente</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">SAVS Nanterre</div>
+            </td>
+          <td><span class="badge badge-grey">SAVS</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-orange" style="width:45%"></div></div><span class="score-num" style="color:var(--orange)">45</span></div></td>
+          <td><span class="badge badge-orange">Risque modéré</span></td>
+          <td>Connexions mobiles non sécurisées, pas de formation, prestataires inconnus</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">EANM du Bois Clair</div>
+            </td>
+          <td><span class="badge badge-grey">EANM</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-orange" style="width:52%"></div></div><span class="score-num" style="color:var(--orange)">52</span></div></td>
+          <td><span class="badge badge-orange">Risque modéré</span></td>
+          <td>Dossiers jamais détruits, info orale uniquement, durée conservation inconnue</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="estab-name">Graviers / Le Phare / Service Appart.</div><div class="estab-type">Loïc Perceval — 3 sites</div>
+            </td>
+          <td><span class="badge badge-grey">EANM</span></td>
+          <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill fill-green" style="width:68%"></div></div><span class="score-num" style="color:var(--green)">68</span></div></td>
+          <td><span class="badge badge-green">Risque maîtrisé</span></td>
+          <td>Référent informel à officialiser, email à sécuriser</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    Tableau de bord général · Audit RGPD réseau médico-social · Synthèse établie à partir de 33 réponses reçues entre avril et mai 2026.<br>
+    Ce document est à usage interne — direction générale et DPO. Il ne constitue pas un avis juridique.
+  </footer>
+
+</div>
+</body>
+</html>

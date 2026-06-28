@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNAPEI92 — CMPP (Questionnaire RGPD)</title>
+  <style>
+    :root {
+      --primary: #0055A4;
+      --primary-dark: #003d7a;
+      --secondary: #E60028;
+      --bg: #f5f7fa;
+      --card: #fff;
+      --text: #333;
+      --text-light: #666;
+      --border: #e0e0e0;
+      --success: #28a745;
+      --error: #dc3545;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+    header p { opacity: 0.9; font-size: 0.95rem; }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .nav-blocks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 25px;
+      padding: 15px;
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+    }
+    .nav-block {
+      padding: 8px 16px;
+      background: var(--bg);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .nav-block:hover, .nav-block.active {
+      background: var(--primary);
+      color: white;
+    }
+    .section {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      scroll-margin-top: 80px;
+    }
+    .section-title {
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+    .question {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .question:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .question-label {
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: block;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+    .question-id {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: normal;
+      margin-left: 5px;
+    }
+    .required::after {
+      content: ' *';
+      color: var(--secondary);
+    }
+    input, select, textarea {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    .radio-group, .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .radio-group label, .checkbox-group label {
+      font-weight: normal;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .radio-group label:hover, .checkbox-group label:hover {
+      background: var(--bg);
+    }
+    input[type="radio"], input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    .btn {
+      padding: 14px 40px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    .message {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .message.show { display: block; }
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid var(--primary);
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.4rem; }
+      .nav-blocks { justify-content: center; }
+      .nav-block { font-size: 0.8rem; padding: 6px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="back-link">← Retour à l'accueil</a>
+
+    <header>
+      <h1>Questionnaire RGPD — CMPP</h1>
+      <p>Centre Médico-Psycho-Pédagogique — Protection des données et secret professionnel</p>
+    </header>
+
+    <nav class="nav-blocks">
+      <a href="#identification" class="nav-block">Identification</a>
+      <a href="#gouvernance" class="nav-block">Gouvernance</a>
+      <a href="#registre" class="nav-block">Registre & PIA</a>
+      <a href="#securite" class="nav-block">Sécurité</a>
+      <a href="#donnees-sante" class="nav-block">Données santé</a>
+      <a href="#droits" class="nav-block">Droits usagers</a>
+      <a href="#sous-traitants" class="nav-block">Sous-traitants</a>
+      <a href="#incidents" class="nav-block">Incidents</a>
+      <a href="#specifiques" class="nav-block">Spécificités</a>
+      <a href="#synthese" class="nav-block">Synthèse</a>
+    </nav>
+
+    <div class="info-box">
+      <strong>Instructions :</strong> Ce questionnaire porte sur la conformité RGPD et le secret professionnel de votre CMPP. Répondez en fonction de votre situation actuelle. Les champs marqués d'une étoile (*) sont obligatoires.
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <form id="formulaire">
+      <!-- Bloc 0 : Identification -->
+      <section class="section" id="identification">
+        <h2 class="section-title">Identification de l'établissement</h2>
+
+        <div class="question">
+          <label class="question-label required">Nom de l'établissement CMPP <span class="question-id">Q0.1</span></label>
+           <input type="text" name="q0_1_nom_etablissement" required>
+           <input type="hidden" id="nom_etablissement" name="nom_etablissement">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Personne répondant au questionnaire (Nom Prénom) <span class="question-id">Q0.2</span></label>
+          <input type="text" name="q0_2_nom_prenom_repondant" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Fonction du répondant <span class="question-id">Q0.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q0_3_fonction" value="directeur" required> Directeur/trice établissement</label>
+            <label><input type="radio" name="q0_3_fonction" value="medecin"> Médecin psychiatre</label>
+            <label><input type="radio" name="q0_3_fonction" value="psychologue"> Psychologue</label>
+            <label><input type="radio" name="q0_3_fonction" value="cadre_admin"> Cadre administratif</label>
+            <label><input type="radio" name="q0_3_fonction" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Date de remplissage <span class="question-id">Q0.4</span></label>
+          <input type="date" name="q0_4_date_remplissage" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nombre d'enfants/jeunes suivis dans le CMPP <span class="question-id">Q0.5</span></label>
+          <input type="number" name="q0_5_nb_enfants" min="0" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nombre de professionnels dans l'établissement (dont psychologues psychiatres) <span class="question-id">Q0.6</span></label>
+          <input type="number" name="q0_6_nb_professionnels" min="0" required>
+        </div>
+      </section>
+
+      <!-- Bloc 1 : Gouvernance locale -->
+      <section class="section" id="gouvernance">
+        <h2 class="section-title">Gouvernance locale RGPD</h2>
+
+        <div class="question">
+          <label class="question-label required">Un référent RGPD est-il identifié dans votre établissement CMPP ? <span class="question-id">Q1.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_1_1_referent_rgpd" value="identifie_connu" required> Oui identifié et connu des équipes</label>
+            <label><input type="radio" name="q1_1_1_referent_rgpd" value="identifie_informel"> Oui identifié mais informel</label>
+            <label><input type="radio" name="q1_1_1_referent_rgpd" value="non_identifie"> Non personne n'est identifiée</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Nom et fonction du référent RGPD local <span class="question-id">Q1.1.2</span></label>
+          <input type="text" name="q1_1_2_nom_fonction_referent">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le référent RGPD local sait-il contacter le DPO externe ? <span class="question-id">Q1.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_2_1_contact_dpo" value="connu_contacte" required> Oui coordonnées connues et DPO déjà contacté</label>
+            <label><input type="radio" name="q1_2_1_contact_dpo" value="connu_jamais"> Oui coordonnées connues mais jamais contacté</label>
+            <label><input type="radio" name="q1_2_1_contact_dpo" value="non_connu"> Non ne connaît pas le DPO</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les professionnels du CMPP ont-ils reçu une formation RGPD spécifique secret professionnel ? <span class="question-id">Q1.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="rgpd_secret" required> Oui formation RGPD + secret professionnel récente (&lt;2 ans)</label>
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="rgpd_general"> Oui formation RGPD générale uniquement</label>
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="rapide"> Sensibilisation rapide uniquement</label>
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="jamais"> Non jamais</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">L'établissement connaît-il les procédures RGPD du siège (gestion demandes incidents) ? <span class="question-id">Q1.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_4_1_procedures_siege" value="connues_appliquees" required> Oui procédures connues et appliquées</label>
+            <label><input type="radio" name="q1_4_1_procedures_siege" value="connues_non_appliquees"> Oui connues mais non appliquées</label>
+            <label><input type="radio" name="q1_4_1_procedures_siege" value="existent_non_connues"> Procédures existent mais non connues</label>
+            <label><input type="radio" name="q1_4_1_procedures_siege" value="pas_de_procedures"> Pas de procédures siège</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">L'établissement remonte-t-il les incidents/questions RGPD au siège ? <span class="question-id">Q1.5.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_5_1_remontees" value="systematiques" required> Oui remontées systématiques</label>
+            <label><input type="radio" name="q1_5_1_remontees" value="occasionnelles"> Remontées occasionnelles</label>
+            <label><input type="radio" name="q1_5_1_remontees" value="jamais"> Non jamais de remontée</label>
+            <label><input type="radio" name="q1_5_1_remontees" value="na"> N/A (jamais d'incident)</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 2 : Registre & Bases légales -->
+      <section class="section" id="registre">
+        <h2 class="section-title">Registre des traitements & Bases légales</h2>
+
+        <div class="question">
+          <label class="question-label required">Connaissez-vous les traitements de données recensés pour votre CMPP dans le registre ? <span class="question-id">Q2.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_1_1_registre" value="connu" required> Oui je connais les traitements CMPP du registre</label>
+            <label><input type="radio" name="q2_1_1_registre" value="vaguement"> Vaguement</label>
+            <label><input type="radio" name="q2_1_1_registre" value="non_connu"> Non je ne connais pas le registre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Utilisez-vous des fichiers ou outils locaux non fournis par le siège ? <span class="question-id">Q2.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_2_1_outils_locaux" value="oui" required> Oui fichiers/outils locaux (Excel, tableaux thérapeutiques papier)</label>
+            <label><input type="radio" name="q2_2_1_outils_locaux" value="non"> Non uniquement outils siège</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Si OUI précisez quels fichiers/outils locaux vous utilisez <span class="question-id">Q2.2.2</span></label>
+          <textarea name="q2_2_2_precisions_outils"></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Sur quelle base légale repose le traitement des dossiers thérapeutiques des enfants de votre CMPP ? <span class="question-id">Q2B.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2b_1_base_legale" value="interet_public" required> Mission d'intérêt public / autorité publique (Art. 6.1.e)</label>
+            <label><input type="radio" name="q2b_1_base_legale" value="consentement"> Consentement parents/représentants légaux (Art. 6.1.a)</label>
+            <label><input type="radio" name="q2b_1_base_legale" value="obligation_legale"> Obligation légale CASF / CSP (Art. 6.1.c)</label>
+            <label><input type="radio" name="q2b_1_base_legale" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous identifié des traitements à risque élevé dans votre CMPP nécessitant une PIA ? <span class="question-id">Q2T.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2t_1_pia" value="realisees" required> Oui PIA réalisées</label>
+            <label><input type="radio" name="q2t_1_pia" value="identifiees_non_realisees"> Oui traitements identifiés mais PIA non réalisées</label>
+            <label><input type="radio" name="q2t_1_pia" value="aucun"> Non aucun traitement à risque identifié</label>
+            <label><input type="radio" name="q2t_1_pia" value="inconnu"> Inconnu (ne sait pas ce qu'est une PIA)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le CMPP suit-il plus de 1000 enfants avec données psychologiques centralisées ? <span class="question-id">Q2T.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2t_2_plus_1000" value="avec_pia" required> Oui &gt;1000 enfants avec PIA réalisée</label>
+            <label><input type="radio" name="q2t_2_plus_1000" value="sans_pia"> Oui &gt;1000 enfants sans PIA</label>
+            <label><input type="radio" name="q2t_2_plus_1000" value="moins_1000"> Non &lt;1000 enfants</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3 : Sécurité terrain -->
+      <section class="section" id="securite">
+        <h2 class="section-title">Sécurité terrain</h2>
+
+        <div class="question">
+          <label class="question-label required">Où sont stockés les dossiers thérapeutiques des enfants papier ? <span class="question-id">Q3.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="bureaux_individuels" required> Armoires fermées à clé dans bureaux individuels psychologues/psy</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="bureau_partage"> Armoires fermées dans bureau partagé</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="armoire_non_fermee"> Armoires non fermées à clé</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="classeurs"> Classeurs accessibles</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Chaque psychologue/psychiatre a-t-il son propre espace sécurisé pour ses dossiers ? <span class="question-id">Q3.1.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_1_2_espaces" value="bureaux_individuels" required> Oui bureaux individuels avec armoires personnelles</label>
+            <label><input type="radio" name="q3_1_2_espaces" value="bureaux_partages"> Bureaux partagés avec armoires communes</label>
+            <label><input type="radio" name="q3_1_2_espaces" value="pas_armoires"> Pas d'armoires individuelles</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les dossiers thérapeutiques papier sont-ils détruits de manière sécurisée en fin de conservation ? <span class="question-id">Q3.1.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_1_3_destruction" value="dechiqueteuse" required> Oui déchiqueteuse sur site</label>
+            <label><input type="radio" name="q3_1_3_destruction" value="prestataire"> Oui prestataire spécialisé avec certificat</label>
+            <label><input type="radio" name="q3_1_3_destruction" value="poubelle"> Poubelle classique</label>
+            <label><input type="radio" name="q3_1_3_destruction" value="jamais"> Jamais détruits (conservation indéfinie)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Utilisez-vous un logiciel métier pour les dossiers thérapeutiques ? <span class="question-id">Q3.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_1_logiciel" value="logiciel_cmpp" required> Oui logiciel CMPP dédié (Imago, Docapost, Concerto)</label>
+            <label><input type="radio" name="q3_2_1_logiciel" value="excel"> Fichiers Excel pour dossiers thérapeutiques</label>
+            <label><input type="radio" name="q3_2_1_logiciel" value="papier"> Dossiers papier uniquement</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Quel logiciel métier utilisez-vous pour les dossiers thérapeutiques ? <span class="question-id">Q3.2.2</span></label>
+          <input type="text" name="q3_2_2_nom_logiciel">
+        </div>
+
+        <div class="question">
+          <label class="question-label">Qui a accès aux dossiers thérapeutiques informatiques complets ? <span class="question-id">Q3.2.3</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q3_2_3_acces" value="psychologue_traitant"> Psychologue traitant uniquement</label>
+            <label><input type="checkbox" name="q3_2_3_acces" value="psychiatre"> Psychiatre coordonnateur</label>
+            <label><input type="checkbox" name="q3_2_3_acces" value="direction"> Direction CMPP</label>
+            <label><input type="checkbox" name="q3_2_3_acces" value="secretariat"> Secrétariat/administratif</label>
+            <label><input type="checkbox" name="q3_2_3_acces" value="tous_psychologues"> Tous psychologues CMPP</label>
+            <label><input type="checkbox" name="q3_2_3_acces" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les ordinateurs des psychologues ont-ils un verrouillage automatique renforcé ? <span class="question-id">Q3.2.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_4_verrouillage" value="moins_3min" required> Oui verrouillage auto &lt;3 minutes</label>
+            <label><input type="radio" name="q3_2_4_verrouillage" value="5_10min"> Oui 5-10 minutes</label>
+            <label><input type="radio" name="q3_2_4_verrouillage" value="manuel"> Verrouillage manuel uniquement</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Comment transmettez-vous des informations psychologiques sur les enfants à l'extérieur ? <span class="question-id">Q3.3.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q3_3_1_transmission" value="email_classique"> Email classique non sécurisé</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="email_crypte"> Email crypté/sécurisé</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="plateforme"> Plateforme sécurisée</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="courrier"> Courrier postal recommandé</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="parents"> Remise main propre parents</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="jamais"> Jamais de transmission externe</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">À qui transmettez-vous régulièrement des données psychologiques des enfants ? <span class="question-id">Q3.3.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="ecoles"> Écoles / enseignants</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="medecins"> Médecins traitants / pédiatres</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="mdph"> MDPH (pour dossiers handicap)</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="services_sociaux"> Services sociaux (ASE, PMI)</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="cmpp_cmp"> CMPP/CMP autres (transferts)</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="parents"> Parents/représentants légaux</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="jamais"> Jamais de transmission</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les échanges avec les parents ont-ils lieu dans des espaces garantissant la confidentialité ? <span class="question-id">Q3.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_4_1_confidentialite" value="bureaux_fermes" required> Oui bureaux individuels fermés</label>
+            <label><input type="radio" name="q3_4_1_confidentialite" value="semi_ouverts"> Espaces semi-ouverts (salles avec cloisons)</label>
+            <label><input type="radio" name="q3_4_1_confidentialite" value="ouverts"> Non espaces ouverts</label>
+            <label><input type="radio" name="q3_4_1_confidentialite" value="variable"> Variable</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des notes manuscrites temporaires (séances) sont-elles sécurisées ? <span class="question-id">Q3.5.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_5_1_notes" value="securisees" required> Oui rangement sécurisé immédiat après séance</label>
+            <label><input type="radio" name="q3_5_1_notes" value="parfois"> Parfois laissées sur bureaux</label>
+            <label><input type="radio" name="q3_5_1_notes" value="souvent"> Souvent accessibles</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3bis : Données santé -->
+      <section class="section" id="donnees-sante">
+        <h2 class="section-title">Données de santé (psychologiques/psychiatriques)</h2>
+
+        <div class="question">
+          <label class="question-label required">Les données psychologiques/psychiatriques sont-elles cloisonnées du reste des données ? <span class="question-id">Q3B.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3b_1_cloisonnement" value="dossiers_separes" required> Oui dossiers thérapeutiques strictement séparés accès psychologues uniquement</label>
+            <label><input type="radio" name="q3b_1_cloisonnement" value="partiellement"> Partiellement (droits différenciés même outil)</label>
+            <label><input type="radio" name="q3b_1_cloisonnement" value="non_cloisonne"> Non dossier unique tout accessible</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le personnel non-psychologue (direction secrétariat) a-t-il accès aux contenus thérapeutiques ? <span class="question-id">Q3B.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3b_2_acces_non_psy" value="non_psy_seul" required> Non strictement psychologues/psychiatres uniquement</label>
+            <label><input type="radio" name="q3b_2_acces_non_psy" value="partiel"> Accès partiel direction (résumés uniquement)</label>
+            <label><input type="radio" name="q3b_2_acces_non_psy" value="direction_acces"> Oui direction/secrétariat accèdent contenus thérapeutiques</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Sur quelle exception Art. 9.2 vous appuyez-vous pour traiter les données psychologiques ? <span class="question-id">Q3B.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3b_3_exception_art9" value="medecine_preventive" required> Médecine préventive et soins santé mentale (Art. 9.2.h)</label>
+            <label><input type="radio" name="q3b_3_exception_art9" value="interet_public"> Intérêt public santé publique (Art. 9.2.i)</label>
+            <label><input type="radio" name="q3b_3_exception_art9" value="consentement"> Consentement explicite parents (Art. 9.2.a)</label>
+            <label><input type="radio" name="q3b_3_exception_art9" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les psychologues/psychiatres sont-ils soumis au secret professionnel renforcé ? <span class="question-id">Q3B.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3b_4_secret_professionnel" value="oui" required> Oui secret professionnel Code déontologie + pénal</label>
+            <label><input type="radio" name="q3b_4_secret_professionnel" value="partiellement"> Partiellement</label>
+            <label><input type="radio" name="q3b_4_secret_professionnel" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 4 : Droits usagers -->
+      <section class="section" id="droits">
+        <h2 class="section-title">Droits des usagers</h2>
+
+        <div class="question">
+          <label class="question-label required">Les parents reçoivent-ils une information RGPD claire incluant données psy à l'admission ? <span class="question-id">Q4.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_1_1_info_rgpd" value="document_adapte" required> Oui document dédié RGPD + notice psy adaptée</label>
+            <label><input type="radio" name="q4_1_1_info_rgpd" value="document_standard"> Oui document RGPD standard</label>
+            <label><input type="radio" name="q4_1_1_info_rgpd" value="orale"> Information orale uniquement</label>
+            <label><input type="radio" name="q4_1_1_info_rgpd" value="non"> Non pas d'information</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous déjà reçu des demandes de parents pour consulter le dossier thérapeutique de leur enfant ? <span class="question-id">Q4.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_2_1_demandes_acces" value="oui" required> Oui (nombre sur 12 derniers mois)</label>
+            <label><input type="radio" name="q4_2_1_demandes_acces" value="non"> Non jamais</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si OUI quel délai pour répondre aux demandes d'accès au dossier thérapeutique ? <span class="question-id">Q4.2.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_2_2_delai_acces" value="moins_1mois" required> Moins de 1 mois systématiquement</label>
+            <label><input type="radio" name="q4_2_2_delai_acces" value="1_2mois"> Entre 1 et 2 mois</label>
+            <label><input type="radio" name="q4_2_2_delai_acces" value="plus_2mois"> Plus de 2 mois</label>
+            <label><input type="radio" name="q4_2_2_delai_acces" value="na"> N/A (pas de demande)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Savez-vous comment traiter une demande d'accès dossier psy (possibilité médiation psychologue) ? <span class="question-id">Q4.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_3_1_procedure_acces" value="procedure_claire" required> Oui procédure claire (possibilité accompagnement psy)</label>
+            <label><input type="radio" name="q4_3_1_procedure_acces" value="vaguement"> Vaguement je contacterais le siège</label>
+            <label><input type="radio" name="q4_3_1_procedure_acces" value="non"> Non je ne sais pas</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">En cas de parents séparés/divorcés comment gérez-vous les demandes d'accès au dossier psy de l'enfant ? <span class="question-id">Q4.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_4_1_parents_separes" value="procedure_claire" required> Procédure claire (vérification autorité parentale jugement)</label>
+            <label><input type="radio" name="q4_4_1_parents_separes" value="cas_par_cas"> Au cas par cas</label>
+            <label><input type="radio" name="q4_4_1_parents_separes" value="pas_procedure"> Pas de procédure spécifique</label>
+            <label><input type="radio" name="q4_4_1_parents_separes" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 5 : Sous-traitants locaux -->
+      <section class="section" id="sous-traitants">
+        <h2 class="section-title">Sous-traitants locaux</h2>
+
+        <div class="question">
+          <label class="question-label">Quels sous-traitants locaux utilisez-vous ayant accès aux données psychologiques des enfants ? <span class="question-id">Q5.1.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="logiciel_cmpp"> Logiciel métier CMPP (Imago, Concerto)</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="psy_vacataires"> Psychologues/psychiatres libéraux vacataires</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="orthophonistes"> Orthophonistes/psychomotriciens externes</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="services_hospitaliers"> Services hospitaliers partenaires (CMP)</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="autre"> Autre</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="aucun"> Aucun</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Ces sous-traitants ont-ils TOUS signé un contrat avec clauses RGPD (Art. 28) et/ou engagement confidentialité ? <span class="question-id">Q5.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_2_1_clauses" value="tous" required> Oui tous ont clauses Art. 28 ou engagement</label>
+            <label><input type="radio" name="q5_2_1_clauses" value="certains"> Certains seulement</label>
+            <label><input type="radio" name="q5_2_1_clauses" value="non"> Non aucun</label>
+            <label><input type="radio" name="q5_2_1_clauses" value="inconnu"> Inconnu (géré par siège)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le logiciel métier a-t-il un contrat avec clauses RGPD (Art. 28) ? <span class="question-id">Q5.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_3_1_contrat_art28" value="oui" required> Oui contrat Art. 28 signé</label>
+            <label><input type="radio" name="q5_3_1_contrat_art28" value="non"> Non pas de contrat</label>
+            <label><input type="radio" name="q5_3_1_contrat_art28" value="inconnu"> Inconnu (géré par siège)</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 6 : Incidents locaux -->
+      <section class="section" id="incidents">
+        <h2 class="section-title">Incidents locaux</h2>
+
+        <div class="question">
+          <label class="question-label required">Des incidents de données psychologiques ont-ils eu lieu dans votre CMPP sur 24 derniers mois ? <span class="question-id">Q6.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_1_1_incidents" value="oui" required> Oui</label>
+            <label><input type="radio" name="q6_1_1_incidents" value="non"> Non</label>
+            <label><input type="radio" name="q6_1_1_incidents" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Si OUI type(s) d'incident(s) psychologiques <span class="question-id">Q6.1.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="perte_dossiers"> Perte/vol dossiers thérapeutiques papier</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="email_erreur"> Email avec bilan psy à mauvais parent</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="transmission_excessive"> Transmission données psy excessive à école</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="divulgation"> Divulgation accidentelle diagnostic psy</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="acces_non_autorise"> Accès non autorisé dossier psy (collègue parent)</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="autre"> Autre</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="na"> N/A</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous immédiatement informé le siège/DPO (dans les 72h) ? <span class="question-id">Q6.1.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_1_3_info_siege" value="oui_72h" required> Oui tous incidents psy remontés &lt;72h</label>
+            <label><input type="radio" name="q6_1_3_info_siege" value="certains"> Certains seulement</label>
+            <label><input type="radio" name="q6_1_3_info_siege" value="non"> Non jamais informé</label>
+            <label><input type="radio" name="q6_1_3_info_siege" value="na"> N/A (pas incident)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Savez-vous reconnaître une violation de données psychologiques ? <span class="question-id">Q6.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_2_1_reconnaitre_violation" value="oui" required> Oui formé à reconnaître violations psy</label>
+            <label><input type="radio" name="q6_2_1_reconnaitre_violation" value="incertain"> Incertain</label>
+            <label><input type="radio" name="q6_2_1_reconnaitre_violation" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 7 : Spécificités CMPP -->
+      <section class="section" id="specifiques">
+        <h2 class="section-title">Spécificités CMPP</h2>
+
+        <div class="question">
+          <label class="question-label">Quelles données transmettez-vous aux écoles pour les enfants suivis au CMPP ? <span class="question-id">Q7C.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q7c_1_transmission_ecoles" value="aucune"> Aucune donnée (parents transmettent si souhaité)</label>
+            <label><input type="checkbox" name="q7c_1_transmission_ecoles" value="notification"> Notification suivi CMPP uniquement (sans diagnostic)</label>
+            <label><input type="checkbox" name="q7c_1_transmission_ecoles" value="besoins_pedagogiques"> Besoins pédagogiques et aménagements scolaires (sans diagnostic)</label>
+            <label><input type="checkbox" name="q7c_1_transmission_ecoles" value="diagnostics_complets"> Diagnostics psychologiques/psychiatriques complets</label>
+            <label><input type="checkbox" name="q7c_1_transmission_ecoles" value="bilans"> Bilans psychométriques (QI, tests)</label>
+            <label><input type="checkbox" name="q7c_1_transmission_ecoles" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les transmissions aux écoles sont-elles validées par les parents avant envoi ? <span class="question-id">Q7C.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7c_2_validation_parents" value="signature" required> Oui validation systématique parents (signature accord)</label>
+            <label><input type="radio" name="q7c_2_validation_parents" value="orale"> Validation orale uniquement</label>
+            <label><input type="radio" name="q7c_2_validation_parents" value="non"> Non transmissions sans validation parents</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les transmissions aux écoles sont-elles sécurisées ? <span class="question-id">Q7C.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7c_3_securite_transmission" value="canal_securise" required> Oui canal sécurisé (plateforme, courrier recommandé)</label>
+            <label><input type="radio" name="q7c_3_securite_transmission" value="email_crypte"> Email sécurisé</label>
+            <label><input type="radio" name="q7c_3_securite_transmission" value="email_classique"> Email classique</label>
+            <label><input type="radio" name="q7c_3_securite_transmission" value="parents"> Remise main propre parents (parents transmettent)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">En cas de parents séparés/conflictuels recueillez-vous l'accord des DEUX parents pour le suivi psy ? <span class="question-id">Q7C.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7c_4_accord_parents" value="deux_parents" required> Oui systématiquement accord écrit des 2 parents</label>
+            <label><input type="radio" name="q7c_4_accord_parents" value="un_parent"> Accord 1 parent suffit</label>
+            <label><input type="radio" name="q7c_4_accord_parents" value="pas_verification"> Pas de vérification systématique</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">En cas de conflit parental comment gérez-vous l'accès aux informations psy de l'enfant ? <span class="question-id">Q7C.5</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7c_5_conflit_parental" value="procedure_claire" required> Procédure claire (les 2 parents ont accès sauf décision justice)</label>
+            <label><input type="radio" name="q7c_5_conflit_parental" value="favorise_parent"> Favorise parent accompagnant</label>
+            <label><input type="radio" name="q7c_5_conflit_parental" value="cas_par_cas"> Décision au cas par cas</label>
+            <label><input type="radio" name="q7c_5_conflit_parental" value="pas_procedure"> Pas de procédure</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les mineurs de plus de 15 ans (mineurs matures) peuvent-ils s'opposer à la transmission d'informations aux parents ? <span class="question-id">Q7C.6</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7c_6_mineurs_matures" value="oui" required> Oui respect secret professionnel mineur mature (&gt;15 ans)</label>
+            <label><input type="radio" name="q7c_6_mineurs_matures" value="partiellement"> Partiellement selon situations</label>
+            <label><input type="radio" name="q7c_6_mineurs_matures" value="non"> Non parents informés systématiquement</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des signalements à l'ASE (Informations Préoccupantes) sont-ils effectués pour certains enfants ? <span class="question-id">Q7C.7</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7c_7_signalements_ase" value="oui" required> Oui occasionnellement (suspicions maltraitance)</label>
+            <label><input type="radio" name="q7c_7_signalements_ase" value="non"> Non jamais</label>
+            <label><input type="radio" name="q7c_7_signalements_ase" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si signalements IP les transmissions sont-elles sécurisées et encadrées ? <span class="question-id">Q7C.8</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7c_8_securite_ip" value="canal_securise" required> Oui canal sécurisé CRIP + procédure écrite</label>
+            <label><input type="radio" name="q7c_8_securite_ip" value="courrier"> Courrier recommandé</label>
+            <label><input type="radio" name="q7c_8_securite_ip" value="email_crypte"> Email sécurisé</label>
+            <label><input type="radio" name="q7c_8_securite_ip" value="email_classique"> Email classique</label>
+            <label><input type="radio" name="q7c_8_securite_ip" value="na"> N/A (pas de signalements)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les tests psychométriques (QI, Wisc...) sont-ils stockés de manière sécurisée ? <span class="question-id">Q7C.9</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7c_9_tests_securises" value="oui" required> Oui protocoles tests armoires fermées à clé</label>
+            <label><input type="radio" name="q7c_9_tests_securises" value="partiellement"> Partiellement sécurisés</label>
+            <label><input type="radio" name="q7c_9_tests_securises" value="non"> Non accessibles bureaux</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Quelle est la durée de conservation des dossiers thérapeutiques après fin de suivi ? <span class="question-id">Q7C.10</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7c_10_conservation" value="majorite_20ans" required> Jusqu'à majorité + 20 ans (38 ans si début suivi 18 ans)</label>
+            <label><input type="radio" name="q7c_10_conservation" value="autre"> Autre durée (préciser)</label>
+            <label><input type="radio" name="q7c_10_conservation" value="indefinie"> Conservation indéfinie</label>
+            <label><input type="radio" name="q7c_10_conservation" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les psychologues vacataires ont-ils accès aux dossiers thérapeutiques des enfants qu'ils ne suivent pas ? <span class="question-id">Q7C.11</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7c_11_vacataires_acces" value="non" required> Non strictement dossiers enfants suivis uniquement</label>
+            <label><input type="radio" name="q7c_11_vacataires_acces" value="oui"> Oui accès tous dossiers CMPP</label>
+            <label><input type="radio" name="q7c_11_vacataires_acces" value="variable"> Variable</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des supervisions d'équipe avec partage de situations cliniques sont-elles organisées ? <span class="question-id">Q7C.12</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7c_12_supervisions" value="anonymisees" required> Oui avec anonymisation systématique des situations</label>
+            <label><input type="radio" name="q7c_12_supervisions" value="parfois_noms"> Oui parfois avec noms enfants</label>
+            <label><input type="radio" name="q7c_12_supervisions" value="non"> Non jamais de supervision</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des photos/vidéos d'enfants en séance sont-elles réalisées (observations cliniques) ? <span class="question-id">Q7C.13</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7c_13_photos" value="consentement_ecrit" required> Oui avec consentement écrit parents ET accord enfant si âge</label>
+            <label><input type="radio" name="q7c_13_photos" value="consentement_oral"> Oui consentement oral</label>
+            <label><input type="radio" name="q7c_13_photos" value="sans_consentement"> Oui sans consentement (à visée thérapeutique)</label>
+            <label><input type="radio" name="q7c_13_photos" value="non"> Non jamais</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les comptes-rendus de bilans psychologiques sont-ils transmis aux parents de manière adaptée ? <span class="question-id">Q7C.14</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7c_14_restitution" value="entretien_document" required> Oui entretien restitution systématique + remise document écrit</label>
+            <label><input type="radio" name="q7c_14_restitution" value="document_seul"> Document écrit uniquement sans entretien</label>
+            <label><input type="radio" name="q7c_14_restitution" value="orale_seule"> Transmission orale uniquement</label>
+            <label><input type="radio" name="q7c_14_restitution" value="variable"> Variable</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des données sont-elles échangées avec d'autres structures psy (CMP, CAMSP, hôpitaux) ? <span class="question-id">Q7C.15</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7c_15_echanges" value="accord_ecrit_securise" required> Oui avec accord écrit parents et canal sécurisé</label>
+            <label><input type="radio" name="q7c_15_echanges" value="accord_oral"> Oui avec accord oral</label>
+            <label><input type="radio" name="q7c_15_echanges" value="sans_accord"> Oui sans accord parents</label>
+            <label><input type="radio" name="q7c_15_echanges" value="non"> Non jamais d'échanges</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les dossiers thérapeutiques comportent-ils des données excessives non strictement nécessaires au suivi psy ? <span class="question-id">Q7C.16</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7c_16_donnees_excessives" value="non" required> Non uniquement données nécessaires suivi thérapeutique</label>
+            <label><input type="radio" name="q7c_16_donnees_excessives" value="parfois"> Parfois données familiales/sociales excessives détaillées</label>
+            <label><input type="radio" name="q7c_16_donnees_excessives" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc Synthèse -->
+      <section class="section" id="synthese">
+        <h2 class="section-title">Synthèse et commentaires</h2>
+
+        <div class="question">
+          <label class="question-label">Principales difficultés CMPP pour conformité RGPD et secret professionnel <span class="question-id">Q_SYNTH.1</span></label>
+          <textarea name="qsynth_1_difficultes" placeholder="Décrivez les principales difficultés rencontrées..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Commentaires libres ou points CMPP psy non abordés <span class="question-id">Q_SYNTH.2</span></label>
+          <textarea name="qsynth_2_commentaires" placeholder="Toute information complémentaire..."></textarea>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="btn-submit">Envoyer le questionnaire</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQBhjBdwuEBtj5Ef63L_5ej3eyXB15DLmpnDBxqM5u0EdVRgoLK6NR1Hkn682obuvN7Q/exec';
+const FORM_TYPE = 'CMPP_RGPD';
+
+// Navigation sticky
+const navBlocks = document.querySelectorAll('.nav-block');
+const sections = document.querySelectorAll('.section');
+function updateActiveNav() {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - 100) current = section.getAttribute('id');
+  });
+  navBlocks.forEach(block => {
+    block.classList.remove('active');
+    if (block.getAttribute('href') === '#' + current) block.classList.add('active');
+  });
+}
+if (navBlocks.length > 0) {
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
+}
+
+// Collecte des réponses (format array v2.0)
+function collectResponses() {
+  const responses = [];
+  const seen = new Set();
+  document.querySelectorAll('.question:not(.hidden)').forEach(qEl => {
+    const labelEl = qEl.querySelector('.q-label, .question-label');
+    if (!labelEl) return;
+    const question = labelEl.innerText.replace(/^\*\s*/, '').replace(/\s+/g, ' ').trim();
+    const inputs = qEl.querySelectorAll('input, textarea, select');
+    if (inputs.length === 0) return;
+    const firstInput = inputs[0];
+    const fieldId = firstInput.name || firstInput.id || '';
+    if (seen.has(fieldId)) return;
+    seen.add(fieldId);
+    let answer = '';
+    const type = firstInput.type;
+    if (type === 'radio') {
+      const checked = qEl.querySelector('input[type="radio"]:checked');
+      answer = checked ? checked.value : '';
+    } else if (type === 'checkbox') {
+      const checkeds = qEl.querySelectorAll('input[type="checkbox"]:checked');
+      answer = Array.from(checkeds).map(c => c.value).join(' | ');
+    } else {
+      answer = firstInput.value.trim();
+    }
+    responses.push({ id: fieldId, question, answer });
+  });
+  const nomEtabEl = document.getElementById('nom_etablissement');
+  if (nomEtabEl) {
+    responses.push({ id: 'nom_etablissement', question: 'Nom de l\'établissement', answer: nomEtabEl.value || '' });
+  }
+  return responses;
+}
+
+// Soumission
+document.getElementById('formulaire').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!this.checkValidity()) return;
+  const btn = document.getElementById('btn-submit');
+  const message = document.getElementById('message');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+  const payload = { type: FORM_TYPE, responses: collectResponses() };
+  try {
+    const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const result = await res.json();
+    if (result.status === 'success') {
+      message.className = 'message success show';
+      message.textContent = 'Questionnaire envoyé avec succès ! Merci pour votre participation.';
+      this.reset();
+      const dateField = document.querySelector('[name*="date"]');
+      if (dateField && dateField.type === 'date') dateField.valueAsDate = new Date();
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (err) {
+    message.className = 'message error show';
+    message.textContent = 'Erreur lors de l\'envoi : ' + err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Envoyer le questionnaire';
+  }
+});
+
+// Date par défaut
+const dateField = document.querySelector('[name*="date"]');
+if (dateField && dateField.type === 'date') dateField.valueAsDate = new Date();
+</script>
+</body>
+</html>

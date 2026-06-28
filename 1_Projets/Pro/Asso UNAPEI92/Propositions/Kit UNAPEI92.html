@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kit RGPD — UNAPEI92</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
+
+        :root {
+            --bleu: #1B4F8A;
+            --bleu-m: #2E75B6;
+            --bleu-pale: #EBF2FA;
+            --vert: #2D6A4F;
+            --vert-pale: #E8F5F0;
+            --orange: #C05621;
+            --orange-pale: #FEF0E6;
+            --rouge: #C53030;
+            --rouge-pale: #FEF0F0;
+            --gris: #F7F8FA;
+            --bord: #E4E8EF;
+            --txt: #1A202C;
+            --txt2: #4A5568;
+            --txt3: #718096;
+            --r: 10px;
+            --ombre: 0 2px 12px rgba(0, 0, 0, .07);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F0F4F9;
+            color: var(--txt);
+            min-height: 100vh;
+        }
+
+        /* ── TOP BANNER ── */
+        .banner {
+            background: linear-gradient(135deg, #1B4F8A 0%, #2E75B6 60%, #3B8FCC 100%);
+            color: white;
+            padding: 2rem 2.5rem 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .banner-left h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.9rem;
+            letter-spacing: -.02em;
+            line-height: 1.2;
+        }
+
+        .banner-left p {
+            font-size: .88rem;
+            opacity: .8;
+            margin-top: .4rem;
+        }
+
+        .banner-meta {
+            display: flex;
+            gap: .6rem;
+            flex-wrap: wrap;
+            margin-top: .9rem;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, .18);
+            border: 1px solid rgba(255, 255, 255, .3);
+            border-radius: 20px;
+            padding: .25rem .8rem;
+            font-size: .78rem;
+            font-weight: 500;
+        }
+
+        .banner-dpo {
+            background: rgba(255, 255, 255, .12);
+            border: 1px solid rgba(255, 255, 255, .25);
+            border-radius: var(--r);
+            padding: .9rem 1.2rem;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .banner-dpo .label {
+            font-size: .72rem;
+            opacity: .75;
+            margin-bottom: .25rem;
+        }
+
+        .banner-dpo .val {
+            font-size: .95rem;
+            font-weight: 600;
+        }
+
+        .banner-dpo .warn {
+            font-size: .72rem;
+            margin-top: .4rem;
+            opacity: .8;
+            background: rgba(255, 200, 0, .2);
+            padding: .15rem .5rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* ── NAV TABS ── */
+        .tabs-wrap {
+            background: white;
+            border-bottom: 1px solid var(--bord);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .05);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            padding: 0 2rem;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: .9rem 1.2rem;
+            border: none;
+            background: none;
+            font-size: .9rem;
+            font-weight: 500;
+            color: var(--txt3);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            transition: color .15s, border-color .15s;
+        }
+
+        .tab-btn:hover {
+            color: var(--bleu-m);
+        }
+
+        .tab-btn.active {
+            color: var(--bleu);
+            border-bottom-color: var(--bleu);
+        }
+
+        /* ── LAYOUT ── */
+        .content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* ── CARDS ── */
+        .card {
+            background: white;
+            border-radius: var(--r);
+            border: 1px solid var(--bord);
+            box-shadow: var(--ombre);
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--txt);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .card-title .icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        /* ── SECTION HEADERS ── */
+        .sec-head {
+            margin-bottom: 1.5rem;
+        }
+
+        .sec-head h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            color: var(--bleu);
+            margin-bottom: .3rem;
+        }
+
+        .sec-head p {
+            color: var(--txt2);
+            font-size: .9rem;
+        }
+
+        /* ── VOYANTS ── */
+        .voyants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .voyant-card {
+            background: white;
+            border-radius: var(--r);
+            border: 1.5px solid var(--bord);
+            padding: 1.1rem;
+            cursor: pointer;
+            transition: box-shadow .15s, transform .12s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .voyant-card:hover {
+            box-shadow: 0 4px 18px rgba(0, 0, 0, .1);
+            transform: translateY(-2px);
+        }
+
+        .voyant-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+
+        .voyant-card.vert {
+            border-color: #C6E8D9;
+        }
+
+        .voyant-card.vert::before {
+            background: var(--vert);
+        }
+
+        .voyant-card.orange {
+            border-color: #F9D5B5;
+        }
+
+        .voyant-card.orange::before {
+            background: var(--orange);
+        }
+
+        .voyant-card.rouge {
+            border-color: #F9BBBB;
+        }
+
+        .voyant-card.rouge::before {
+            background: var(--rouge);
+        }
+
+        .voyant-icon {
+            font-size: 1.4rem;
+            margin-bottom: .5rem;
+        }
+
+        .voyant-name {
+            font-size: .88rem;
+            font-weight: 600;
+            margin-bottom: .35rem;
+        }
+
+        .voyant-badge {
+            display: inline-block;
+            font-size: .72rem;
+            font-weight: 600;
+            padding: .2rem .6rem;
+            border-radius: 20px;
+        }
+
+        .badge-vert {
+            background: var(--vert-pale);
+            color: var(--vert);
+        }
+
+        .badge-orange {
+            background: var(--orange-pale);
+            color: var(--orange);
+        }
+
+        .badge-rouge {
+            background: var(--rouge-pale);
+            color: var(--rouge);
+        }
+
+        .voyant-detail {
+            display: none;
+            margin-top: .8rem;
+            font-size: .82rem;
+            color: var(--txt2);
+            line-height: 1.6;
+            border-top: 1px solid var(--bord);
+            padding-top: .8rem;
+        }
+
+        .voyant-card.open .voyant-detail {
+            display: block;
+        }
+
+        .action-btn {
+            margin-top: .7rem;
+            display: inline-block;
+            background: var(--bleu);
+            color: white;
+            font-size: .78rem;
+            font-weight: 600;
+            padding: .35rem .9rem;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .action-btn:hover {
+            background: var(--bleu-m);
+        }
+
+        /* ── TABLEAU REGISTRE ── */
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: var(--r);
+            border: 1px solid var(--bord);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .84rem;
+        }
+
+        thead th {
+            background: var(--bleu);
+            color: white;
+            padding: .75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: .78rem;
+            white-space: nowrap;
+        }
+
+        thead th:first-child {
+            border-radius: var(--r) 0 0 0;
+        }
+
+        thead th:last-child {
+            border-radius: 0 var(--r) 0 0;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--bord);
+        }
+
+        tbody tr:nth-child(even) {
+            background: #FAFBFD;
+        }
+
+        tbody tr:hover {
+            background: var(--bleu-pale);
+        }
+
+        tbody td {
+            padding: .7rem 1rem;
+            color: var(--txt2);
+            vertical-align: top;
+            line-height: 1.5;
+        }
+
+        tbody td:first-child {
+            font-weight: 600;
+            color: var(--txt);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: .2rem .65rem;
+            border-radius: 20px;
+            font-size: .75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .s-ok {
+            background: var(--vert-pale);
+            color: var(--vert);
+        }
+
+        .s-warn {
+            background: var(--orange-pale);
+            color: var(--orange);
+        }
+
+        .s-alert {
+            background: var(--rouge-pale);
+            color: var(--rouge);
+        }
+
+        /* ── MÉMO ── */
+        .memo-item {
+            display: grid;
+            grid-template-columns: 2.5rem 1fr;
+            gap: 1rem;
+            padding: 1.1rem 0;
+            border-bottom: 1px solid var(--bord);
+            align-items: start;
+        }
+
+        .memo-item:last-child {
+            border-bottom: none;
+        }
+
+        .memo-num {
+            width: 2.2rem;
+            height: 2.2rem;
+            border-radius: 50%;
+            background: var(--bleu-pale);
+            color: var(--bleu);
+            font-weight: 700;
+            font-size: .85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: .1rem;
+        }
+
+        .memo-num.rouge {
+            background: var(--rouge-pale);
+            color: var(--rouge);
+        }
+
+        .memo-body h3 {
+            font-size: .95rem;
+            font-weight: 600;
+            margin-bottom: .2rem;
+        }
+
+        .memo-body .quand {
+            display: inline-block;
+            background: var(--gris);
+            border: 1px solid var(--bord);
+            border-radius: 4px;
+            font-size: .75rem;
+            font-weight: 600;
+            padding: .1rem .5rem;
+            margin-bottom: .5rem;
+            color: var(--txt3);
+        }
+
+        .memo-body .steps {
+            font-size: .84rem;
+            color: var(--txt2);
+            line-height: 1.7;
+        }
+
+        .memo-body .steps li {
+            margin-left: 1.2rem;
+            margin-bottom: .2rem;
+        }
+
+        .memo-section-label {
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--bleu);
+            background: var(--bleu-pale);
+            padding: .35rem .9rem;
+            border-radius: 4px;
+            margin: 1.2rem 0 .4rem;
+            display: inline-block;
+        }
+
+        /* ── FORMATION ── */
+        .phase-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media(max-width: 680px) {
+            .phase-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .phase-card {
+            border-radius: var(--r);
+            padding: 1rem 1.1rem;
+            border: 1px solid;
+        }
+
+        .phase-card.p1 {
+            background: var(--bleu-pale);
+            border-color: #BDD7EE;
+            color: var(--bleu);
+        }
+
+        .phase-card.p2 {
+            background: var(--vert-pale);
+            border-color: #A8D5C1;
+            color: var(--vert);
+        }
+
+        .phase-card.p3 {
+            background: var(--orange-pale);
+            border-color: #F9CCA4;
+            color: var(--orange);
+        }
+
+        .phase-card .ph-label {
+            font-size: .72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            opacity: .7;
+        }
+
+        .phase-card .ph-title {
+            font-size: .95rem;
+            font-weight: 700;
+            margin: .25rem 0 .15rem;
+        }
+
+        .phase-card .ph-date {
+            font-size: .8rem;
+            opacity: .75;
+        }
+
+        .module-row {
+            display: grid;
+            grid-template-columns: 2.5rem 1fr auto;
+            gap: 1rem;
+            align-items: start;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bord);
+        }
+
+        .module-row:last-child {
+            border-bottom: none;
+        }
+
+        .module-num {
+            width: 2.2rem;
+            height: 2.2rem;
+            border-radius: 8px;
+            background: var(--bleu-pale);
+            color: var(--bleu);
+            font-size: .82rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .module-body h4 {
+            font-size: .9rem;
+            font-weight: 600;
+            margin-bottom: .2rem;
+        }
+
+        .module-body .tags {
+            display: flex;
+            gap: .4rem;
+            flex-wrap: wrap;
+            margin-bottom: .4rem;
+        }
+
+        .tag {
+            font-size: .72rem;
+            font-weight: 500;
+            padding: .15rem .55rem;
+            border-radius: 20px;
+            border: 1px solid;
+        }
+
+        .tag-duree {
+            background: #EEF2FF;
+            color: #3730A3;
+            border-color: #C7D2FE;
+        }
+
+        .tag-fmt {
+            background: var(--gris);
+            color: var(--txt3);
+            border-color: var(--bord);
+        }
+
+        .tag-public {
+            background: var(--vert-pale);
+            color: var(--vert);
+            border-color: #A8D5C1;
+        }
+
+        .module-body .desc {
+            font-size: .82rem;
+            color: var(--txt2);
+            line-height: 1.6;
+        }
+
+        .module-status select {
+            font-size: .78rem;
+            padding: .3rem .6rem;
+            border-radius: 6px;
+            border: 1px solid var(--bord);
+            background: var(--gris);
+            color: var(--txt2);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        /* ── INCIDENT ── */
+        .alerte-box {
+            background: var(--rouge-pale);
+            border: 1.5px solid #F9BBBB;
+            border-radius: var(--r);
+            padding: 1.2rem 1.4rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .alerte-box h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--rouge);
+            margin-bottom: .5rem;
+        }
+
+        .alerte-box p {
+            font-size: .85rem;
+            color: var(--txt2);
+            line-height: 1.6;
+        }
+
+        .chrono {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            position: relative;
+            padding-left: 2.2rem;
+            margin: 1.2rem 0;
+        }
+
+        .chrono::before {
+            content: '';
+            position: absolute;
+            left: .9rem;
+            top: .5rem;
+            bottom: .5rem;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--rouge), var(--bleu));
+            opacity: .2;
+        }
+
+        .chrono-step {
+            position: relative;
+            padding: .7rem 0 .7rem .9rem;
+        }
+
+        .chrono-dot {
+            position: absolute;
+            left: -.96rem;
+            top: .9rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px var(--bleu);
+            background: var(--bleu);
+        }
+
+        .chrono-step.urgent .chrono-dot {
+            box-shadow: 0 0 0 2px var(--rouge);
+            background: var(--rouge);
+        }
+
+        .chrono-step h4 {
+            font-size: .85rem;
+            font-weight: 600;
+            margin-bottom: .2rem;
+        }
+
+        .chrono-step p {
+            font-size: .82rem;
+            color: var(--txt2);
+            line-height: 1.5;
+        }
+
+        .time-badge {
+            display: inline-block;
+            font-size: .72rem;
+            font-weight: 700;
+            padding: .15rem .6rem;
+            border-radius: 4px;
+            margin-bottom: .3rem;
+        }
+
+        .time-rouge {
+            background: var(--rouge-pale);
+            color: var(--rouge);
+        }
+
+        .time-orange {
+            background: var(--orange-pale);
+            color: var(--orange);
+        }
+
+        .time-bleu {
+            background: var(--bleu-pale);
+            color: var(--bleu);
+        }
+
+        /* ── RAPPORT DIRECTION ── */
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .report-kpi {
+            background: white;
+            border: 1px solid var(--bord);
+            border-radius: var(--r);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .report-kpi .num {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: .2rem;
+        }
+
+        .report-kpi .lbl {
+            font-size: .78rem;
+            color: var(--txt3);
+        }
+
+        .site-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            padding: .7rem 0;
+            border-bottom: 1px solid var(--bord);
+            gap: 1rem;
+        }
+
+        .site-row:last-child {
+            border-bottom: none;
+        }
+
+        .site-name {
+            font-size: .9rem;
+            font-weight: 600;
+        }
+
+        .site-ref {
+            font-size: .78rem;
+            color: var(--txt3);
+        }
+
+        .site-badges {
+            display: flex;
+            gap: .4rem;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        /* ── RAPPELS ── */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .cal-card {
+            background: white;
+            border-radius: var(--r);
+            border: 1px solid var(--bord);
+            overflow: hidden;
+        }
+
+        .cal-header {
+            padding: .6rem 1rem;
+            font-weight: 700;
+            font-size: .78rem;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            color: white;
+        }
+
+        .cal-body {
+            padding: .8rem 1rem;
+        }
+
+        .cal-item {
+            font-size: .83rem;
+            color: var(--txt2);
+            padding: .3rem 0;
+            border-bottom: 1px dashed var(--bord);
+            display: flex;
+            gap: .5rem;
+        }
+
+        .cal-item:last-child {
+            border-bottom: none;
+        }
+
+        .cal-item span {
+            flex-shrink: 0;
+        }
+
+        /* ── UTILS ── */
+        .info-strip {
+            background: var(--bleu-pale);
+            border-left: 4px solid var(--bleu);
+            border-radius: 0 6px 6px 0;
+            padding: .7rem 1rem;
+            font-size: .83rem;
+            color: var(--bleu);
+            margin-bottom: 1.2rem;
+            line-height: 1.5;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        @media(max-width: 640px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* print */
+        @media print {
+
+            .tabs-wrap,
+            .tab-btn {
+                display: none !important;
+            }
+
+            .section {
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- BANNER -->
+    <div class="banner">
+        <div class="banner-left">
+            <h1>🛡️ Kit RGPD — UNAPEI92</h1>
+            <p>Boîte à outils du référent RGPD par service et établissement</p>
+            <div class="banner-meta">
+                <span class="pill">📋 Registre des traitements</span>
+                <span class="pill">🗓️ Mémo quoi / quand / comment</span>
+                <span class="pill">🎓 Programme de formation</span>
+                <span class="pill">📊 Rapport direction</span>
+            </div>
+        </div>
+        <div class="banner-dpo">
+            <div class="label">🔑 Contact DPO externe</div>
+            <div class="val">rgpd@unapei92.fr</div>
+            <div class="warn">⏰ Incident = appel immédiat (72h max)</div>
+        </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs-wrap">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('voyants')">🚦 Les 5 voyants</button>
+            <button class="tab-btn" onclick="showTab('registre')">📋 Registre</button>
+            <button class="tab-btn" onclick="showTab('memo')">🗓️ Mémo du référent</button>
+            <button class="tab-btn" onclick="showTab('formation')">🎓 Formation</button>
+            <button class="tab-btn" onclick="showTab('incident')">🚨 Incident</button>
+            <button class="tab-btn" onclick="showTab('rapport')">📊 Rapport direction</button>
+            <button class="tab-btn" onclick="showTab('rappels')">🔔 Rappels & alertes</button>
+        </div>
+    </div>
+
+    <div class="content">
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- ONGLET 1 — VOYANTS -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div id="tab-voyants" class="section active">
+            <div class="sec-head">
+                <h2>Les 5 voyants RGPD</h2>
+                <p>Comme le tableau de bord d'une voiture : un coup d'œil suffit pour savoir où on en est. Cliquez sur
+                    un voyant pour voir quoi faire.</p>
+            </div>
+
+            <div class="voyants-grid">
+                <div class="voyant-card vert" onclick="this.classList.toggle('open')">
+                    <div class="voyant-icon">🔑</div>
+                    <div class="voyant-name">Droits des personnes</div>
+                    <span class="voyant-badge badge-vert">✅ OK</span>
+                    <div class="voyant-detail">
+                        <strong>C'est quoi ?</strong><br>
+                        Chaque résident, famille ou salarié peut demander à voir, corriger ou effacer ses données. Vous
+                        devez répondre en moins de 30 jours.<br><br>
+                        <strong>Ce qu'on vérifie :</strong><br>
+                        → Y a-t-il une demande sans réponse depuis plus de 30 jours ?<br>
+                        → La boîte <em>rgpd@unapei92.fr</em> est-elle consultée ?<br><br>
+                        <strong>Fréquence :</strong> 1er lundi de chaque mois — 5 min max.
+                        <br><button class="action-btn" onclick="event.stopPropagation(); showTab('memo')">Voir comment
+                            traiter une demande →</button>
+                    </div>
+                </div>
+
+                <div class="voyant-card vert" onclick="this.classList.toggle('open')">
+                    <div class="voyant-icon">✋</div>
+                    <div class="voyant-name">Consentements</div>
+                    <span class="voyant-badge badge-vert">✅ OK</span>
+                    <div class="voyant-detail">
+                        <strong>C'est quoi ?</strong><br>
+                        On ne prend pas de photo, on n'envoie pas de newsletter sans que la personne ait dit
+                        <em>oui</em> par écrit. Pas de case pré-cochée.<br><br>
+                        <strong>Ce qu'on vérifie :</strong><br>
+                        → Chaque formulaire a-t-il une case à cocher ?<br>
+                        → Les consentements photos sont-ils de moins de 3 ans ?<br><br>
+                        <strong>Fréquence :</strong> à chaque nouveau document créé.
+                        <br><button class="action-btn" onclick="event.stopPropagation(); showTab('memo')">Checklist
+                            formulaire →</button>
+                    </div>
+                </div>
+
+                <div class="voyant-card orange" onclick="this.classList.toggle('open')">
+                    <div class="voyant-icon">🗑️</div>
+                    <div class="voyant-name">Durées de conservation</div>
+                    <span class="voyant-badge badge-orange">⚠️ À vérifier</span>
+                    <div class="voyant-detail">
+                        <strong>C'est quoi ?</strong><br>
+                        On ne garde pas les dossiers indéfiniment — comme un frigo, on jette ce qui est périmé.<br><br>
+                        <strong>⚠️ Point d'attention :</strong><br>
+                        3 dossiers de résidents partis depuis + de 5 ans n'ont pas encore été traités à l'IME
+                        Saint-Exupéry.<br><br>
+                        <strong>Prochaine action :</strong> nettoyage avant le 15 octobre 🍂
+                        <br><button class="action-btn" onclick="event.stopPropagation(); showTab('memo')">Voir le mémo
+                            nettoyage →</button>
+                    </div>
+                </div>
+
+                <div class="voyant-card rouge" onclick="this.classList.toggle('open')">
+                    <div class="voyant-icon">🔒</div>
+                    <div class="voyant-name">Sécurité des accès</div>
+                    <span class="voyant-badge badge-rouge">🚨 Urgent</span>
+                    <div class="voyant-detail">
+                        <strong>C'est quoi ?</strong><br>
+                        Chaque porte numérique a sa clé. Un salarié qui part = ses accès bloqués le jour même.<br><br>
+                        <strong>🚨 Problème identifié :</strong><br>
+                        2 anciens salariés ont encore accès au logiciel Ogirys à l'ESAT Les Acacias.<br><br>
+                        <strong>Action immédiate :</strong> contacter le prestataire informatique cette semaine.
+                        <br><button class="action-btn" onclick="event.stopPropagation(); showTab('incident')">Signaler
+                            comme incident →</button>
+                    </div>
+                </div>
+
+                <div class="voyant-card vert" onclick="this.classList.toggle('open')">
+                    <div class="voyant-icon">📝</div>
+                    <div class="voyant-name">Sous-traitants</div>
+                    <span class="voyant-badge badge-vert">✅ OK</span>
+                    <div class="voyant-detail">
+                        <strong>C'est quoi ?</strong><br>
+                        Même le prestataire qui accède à vos données doit avoir signé un contrat RGPD (appelé
+                        DPA).<br><br>
+                        <strong>Ce qu'on vérifie :</strong><br>
+                        → Y a-t-il un DPA signé avec chaque prestataire ?<br>
+                        → Le contrat est-il encore valide ?<br><br>
+                        <strong>État actuel :</strong> 4/4 prestataires OK ✅ — renouvellement prestataire info en déc.
+                        2025.
+                        <br><button class="action-btn" onclick="event.stopPropagation(); showTab('registre')">Voir dans
+                            le registre →</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="icon" style="background:var(--bleu-pale)">📖</span> L'image pour
+                    retenir les 5 voyants</div>
+                <div
+                    style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:.8rem; font-size:.84rem; color:var(--txt2)">
+                    <div style="background:var(--gris);border-radius:8px;padding:.8rem"><strong>🔑
+                            Droits</strong><br>Chaque personne peut demander ses clés à tout moment.</div>
+                    <div style="background:var(--gris);border-radius:8px;padding:.8rem"><strong>✋
+                            Consentements</strong><br>On ne rentre pas sans frapper. Toujours.</div>
+                    <div style="background:var(--gris);border-radius:8px;padding:.8rem"><strong>🗑️
+                            Durées</strong><br>Le frigo se vide. On jette ce qui est périmé.</div>
+                    <div style="background:var(--gris);border-radius:8px;padding:.8rem"><strong>🔒 Accès</strong><br>Mon
+                        mot de passe = ma clé perso. Je ne la prête pas.</div>
+                    <div style="background:var(--gris);border-radius:8px;padding:.8rem"><strong>📝
+                            Prestataires</strong><br>Même le plombier a besoin d'un badge signé.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- ONGLET 2 — REGISTRE -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div id="tab-registre" class="section">
+            <div class="sec-head">
+                <h2>Registre des traitements</h2>
+                <p>La liste de tout ce qu'on fait avec les données. C'est le carnet de bord obligatoire. À mettre à jour
+                    à chaque nouveau logiciel, formulaire ou prestataire.</p>
+            </div>
+
+            <div class="info-strip">
+                💡 <strong>Quand le mettre à jour ?</strong> Nouveau logiciel · Nouveau formulaire · Nouveau prestataire
+                · Changement de durée de conservation · Départ d'un partenaire.
+                Validation par le DPO externe : <strong>1 fois par an</strong>.
+            </div>
+
+            <div class="card" style="padding:0">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Traitement (quoi ?)</th>
+                                <th>Service</th>
+                                <th>Pourquoi on collecte</th>
+                                <th>Qui est concerné</th>
+                                <th>Données collectées</th>
+                                <th>Durée de conservation</th>
+                                <th>Qui y a accès</th>
+                                <th>Logiciel / support</th>
+                                <th>Sous-traitant</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><strong>Dossier résident</strong></td>
+                                <td>IME Saint-Exupéry</td>
+                                <td>Suivi éducatif et médical</td>
+                                <td>Résidents + familles</td>
+                                <td>Nom, prénom, naissance, diagnostic, suivi médical</td>
+                                <td>Durée prise en charge + 10 ans</td>
+                                <td>Éducateurs, médecin, direction</td>
+                                <td>Ogirys</td>
+                                <td>Éditeur logiciel (DPA ✅)</td>
+                                <td><span class="status-badge s-ok">✅ Conforme</span></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><strong>Dossier salarié</strong></td>
+                                <td>RH — Direction</td>
+                                <td>Gestion paie et contrats</td>
+                                <td>Tous les salariés</td>
+                                <td>Nom, contrat, paie, arrêts maladie</td>
+                                <td>Durée contrat + 5 ans</td>
+                                <td>RH, comptable, direction</td>
+                                <td>Silae</td>
+                                <td>Cabinet compta (DPA ✅)</td>
+                                <td><span class="status-badge s-ok">✅ Conforme</span></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><strong>Photos & vidéos résidents</strong></td>
+                                <td>Communication</td>
+                                <td>Site web, plaquettes, réseaux</td>
+                                <td>Résidents (avec accord famille)</td>
+                                <td>Photos, vidéos</td>
+                                <td>3 ans renouvelables</td>
+                                <td>Chargé de comm</td>
+                                <td>SharePoint</td>
+                                <td>Agence com (DPA à vérifier ⚠️)</td>
+                                <td><span class="status-badge s-warn">⚠️ À régulariser</span></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><strong>Vidéosurveillance</strong></td>
+                                <td>Sécurité — tous sites</td>
+                                <td>Sécurité des biens et personnes</td>
+                                <td>Toute personne dans les locaux</td>
+                                <td>Images vidéo</td>
+                                <td>30 jours maximum</td>
+                                <td>Direction, prestataire sécurité</td>
+                                <td>Hikvision</td>
+                                <td>Prestataire (DPA non signé 🚨)</td>
+                                <td><span class="status-badge s-alert">🚨 Action urgente</span></td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><strong>Liste diffusion email familles</strong></td>
+                                <td>Direction / Services</td>
+                                <td>Info familles (newsletters, convos)</td>
+                                <td>Parents et tuteurs des résidents</td>
+                                <td>Nom, prénom, email</td>
+                                <td>Durée relation + 1 an</td>
+                                <td>Direction, secrétariat</td>
+                                <td>Mailchimp</td>
+                                <td>Mailchimp (DPA à contrôler ⚠️)</td>
+                                <td><span class="status-badge s-warn">⚠️ À régulariser</span></td>
+                            </tr>
+                            <tr style="background:#FAFBFD; color:var(--txt3); font-style:italic;">
+                                <td>6</td>
+                                <td colspan="9" style="color:var(--txt3)">→ Ajouter un nouveau traitement ici…</td>
+                                <td><span class="status-badge" style="background:var(--gris);color:var(--txt3)">⬜ Non
+                                        vérifié</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card" style="background:var(--orange-pale); border-color:#F9CCA4">
+                    <div class="card-title" style="color:var(--orange)">⚠️ Points à régulariser</div>
+                    <ul style="font-size:.85rem;color:var(--txt2);line-height:1.8;padding-left:1.2rem">
+                        <li>Agence de communication : envoyer un avenant DPA (le DPO a un modèle)</li>
+                        <li>Mailchimp : vérifier les conditions RGPD ou demander un DPA</li>
+                        <li>Vidéosurveillance : DPA à signer d'urgence avec le prestataire sécurité</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-title"><span class="icon" style="background:var(--vert-pale)">💡</span> Comment
+                        ajouter une ligne ?</div>
+                    <ol style="font-size:.85rem;color:var(--txt2);line-height:1.8;padding-left:1.2rem">
+                        <li>Identifiez ce que vous faites avec les données (le "traitement")</li>
+                        <li>Répondez aux 10 colonnes — même en une phrase courte</li>
+                        <li>Notez le statut : conforme / à régulariser / urgent</li>
+                        <li>Signalez au DPO si vous mettez "À régulariser" ou "Urgent"</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- ONGLET 3 — MÉMO -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div id="tab-memo" class="section">
+            <div class="sec-head">
+                <h2>Mémo du référent</h2>
+                <p>Votre guide de survie RGPD. Quoi faire, quand, comment. Gardez-le sous la main — imprimé ou en
+                    favoris.</p>
+            </div>
+
+            <div class="info-strip">
+                📧 DPO externe : <strong>rgpd@unapei92.fr</strong> &nbsp;|&nbsp; 🚨 Incident urgent : appelez le DPO
+                directement &nbsp;|&nbsp; ⏰ Délai légal violation de données : <strong>72h max</strong> pour notifier la
+                CNIL
+            </div>
+
+            <div class="card">
+
+                <div class="memo-section-label">🔑 Droits des personnes</div>
+                <div class="memo-item">
+                    <div class="memo-num">1</div>
+                    <div class="memo-body">
+                        <h3>Répondre à une demande de droit (accès, effacement, rectification)</h3>
+                        <span class="quand">⏱️ Dès réception — max 30 jours</span>
+                        <ul class="steps">
+                            <li>Accusez réception par écrit (email ou courrier) dès réception</li>
+                            <li>Vérifiez l'identité du demandeur (pièce d'identité si nécessaire)</li>
+                            <li>Rassemblez toutes les données concernant cette personne</li>
+                            <li>Répondez dans les 30 jours — si besoin d'aide, contactez le DPO</li>
+                            <li>Consignez la demande dans votre fichier de suivi (date, type, réponse)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="memo-item">
+                    <div class="memo-num">2</div>
+                    <div class="memo-body">
+                        <h3>Vérifier qu'aucune demande ne traîne depuis + de 30 jours</h3>
+                        <span class="quand">📅 1er lundi de chaque mois — 5 minutes</span>
+                        <ul class="steps">
+                            <li>Ouvrir la boîte rgpd@unapei92.fr</li>
+                            <li>Vérifier le fichier de suivi des demandes</li>
+                            <li>Si une demande est en attente depuis + 30 jours → relancer immédiatement et alerter le
+                                DPO</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="memo-section-label">✋ Consentements</div>
+                <div class="memo-item">
+                    <div class="memo-num">3</div>
+                    <div class="memo-body">
+                        <h3>Vérifier chaque nouveau formulaire avant diffusion</h3>
+                        <span class="quand">📋 À chaque nouveau document créé</span>
+                        <ul class="steps">
+                            <li>□ Il y a une case à cocher — <em>non pré-cochée</em></li>
+                            <li>□ On explique clairement pourquoi on collecte ces données</li>
+                            <li>□ On indique combien de temps on les garde</li>
+                            <li>□ On dit comment se désinscrire ou retirer son consentement</li>
+                            <li>Si doute → envoyer le formulaire au DPO avant diffusion</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="memo-item">
+                    <div class="memo-num">4</div>
+                    <div class="memo-body">
+                        <h3>Renouveler les consentements photos/vidéos résidents</h3>
+                        <span class="quand">🔄 Tous les 3 ans — ou à chaque changement de tuteur</span>
+                        <ul class="steps">
+                            <li>Préparer le formulaire de renouvellement (modèle disponible sur le dossier partagé)</li>
+                            <li>Envoyer aux familles / tuteurs légaux</li>
+                            <li>Classer les formulaires signés dans le dossier résident papier ET numérique</li>
+                            <li>Si refus ou pas de réponse → supprimer les photos de la personne de tous les supports
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="memo-section-label">🗑️ Durées de conservation</div>
+                <div class="memo-item">
+                    <div class="memo-num">5</div>
+                    <div class="memo-body">
+                        <h3>Le grand nettoyage de l'automne 🍂</h3>
+                        <span class="quand">📅 Chaque octobre — 1 matinée</span>
+                        <ul class="steps">
+                            <li>Lister les résidents et salariés dont le dossier a + de 5 ans après leur départ</li>
+                            <li>Vérifier la durée légale de conservation applicable (le DPO a un tableau récapitulatif)
+                            </li>
+                            <li>Archiver (si conservation légale encore en cours) OU supprimer définitivement</li>
+                            <li>⚠️ Supprimer = garder une trace de la suppression (date + qui a supprimé)</li>
+                            <li>Signaler au DPO si doute sur une durée avant suppression</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="memo-section-label">🔒 Sécurité des accès</div>
+                <div class="memo-item">
+                    <div class="memo-num">6</div>
+                    <div class="memo-body">
+                        <h3>Bloquer les accès d'un salarié qui part</h3>
+                        <span class="quand">⚡ Le jour du départ — pas d'exception</span>
+                        <ul class="steps">
+                            <li>□ Bloquer l'accès email professionnel (J du départ, max J+1)</li>
+                            <li>□ Bloquer l'accès logiciel métier Ogirys et autres (J du départ)</li>
+                            <li>□ Récupérer badge, clés, ordinateur portable</li>
+                            <li>□ Changer les mots de passe partagés si le salarié les connaissait</li>
+                            <li>Consigner dans le registre des accès : nom, date de départ, date de blocage</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="memo-item">
+                    <div class="memo-num">7</div>
+                    <div class="memo-body">
+                        <h3>Rappel "pas de partage de mot de passe"</h3>
+                        <span class="quand">📢 2 fois par an — janvier et juin</span>
+                        <ul class="steps">
+                            <li>Envoyer un email de rappel à l'équipe : <em>"Mon mot de passe = ma clé perso. Je ne la
+                                    prête à personne."</em></li>
+                            <li>Vérifier que chaque salarié a son propre compte nominatif</li>
+                            <li>Signaler tout compte générique (ex : "admin" partagé) au responsable informatique</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="memo-section-label">📝 Sous-traitants & prestataires</div>
+                <div class="memo-item">
+                    <div class="memo-num">8</div>
+                    <div class="memo-body">
+                        <h3>Vérifier les contrats RGPD (DPA) avant de signer</h3>
+                        <span class="quand">📋 À chaque nouveau contrat + contrôle annuel chaque janvier</span>
+                        <ul class="steps">
+                            <li>□ Y a-t-il une clause RGPD / DPA dans le contrat ?</li>
+                            <li>□ Ce contrat est-il signé par les deux parties ?</li>
+                            <li>□ Le DPA est-il encore en cours de validité ?</li>
+                            <li>Si non → demander un avenant RGPD au prestataire. Le DPO a un modèle de clause prêt à
+                                envoyer.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="memo-section-label" style="background:var(--rouge-pale);color:var(--rouge)">🚨 En cas
+                    d'incident</div>
+                <div class="memo-item">
+                    <div class="memo-num rouge">!</div>
+                    <div class="memo-body">
+                        <h3>Violation de données — email mal envoyé, dossier perdu, accès non autorisé…</h3>
+                        <span class="quand"
+                            style="background:var(--rouge-pale);color:var(--rouge);border-color:#F9BBBB">⏰ 72h max légal
+                            pour notifier la CNIL</span>
+                        <ul class="steps">
+                            <li><strong>Dans l'heure :</strong> prévenir le DPO externe par téléphone — pas par email
+                            </li>
+                            <li><strong>Dans les 24h :</strong> documenter — quoi, combien de personnes, quelles
+                                données, est-ce que la fuite est stoppée ?</li>
+                            <li><strong>Sous 72h :</strong> le DPO décide si la CNIL doit être notifiée (c'est lui qui
+                                le fait)</li>
+                            <li><strong>Si risque élevé :</strong> prévenir aussi les personnes concernées</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- ONGLET 4 — FORMATION -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div id="tab-formation" class="section">
+            <div class="sec-head">
+                <h2>Programme de formation</h2>
+                <p>Former 100% du personnel d'ici mars 2026. Sessions courtes (30 min max), animées par les chefs de
+                    service grâce aux supports fournis. Zéro budget formateur externe.</p>
+            </div>
+
+            <div class="phase-grid">
+                <div class="phase-card p1">
+                    <div class="ph-label">Phase 1</div>
+                    <div class="ph-title">Former les référents RGPD</div>
+                    <div class="ph-date">📅 Septembre 2025</div>
+                </div>
+                <div class="phase-card p2">
+                    <div class="ph-label">Phase 2</div>
+                    <div class="ph-title">Former les cadres et chefs de service</div>
+                    <div class="ph-date">📅 Octobre – Novembre 2025</div>
+                </div>
+                <div class="phase-card p3">
+                    <div class="ph-label">Phase 3</div>
+                    <div class="ph-title">Former tout le personnel</div>
+                    <div class="ph-date">📅 Janvier – Mars 2026</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="icon" style="background:var(--bleu-pale)">📘</span> Phase 1 —
+                    Référents RGPD (septembre 2025)</div>
+                <div class="module-row">
+                    <div class="module-num">1</div>
+                    <div class="module-body">
+                        <h4>Le RGPD en 10 images — la base pour tout comprendre</h4>
+                        <div class="tags">
+                            <span class="tag tag-duree">⏱️ 2h</span>
+                            <span class="tag tag-fmt">Présentiel demi-journée</span>
+                            <span class="tag tag-public">Référents RGPD</span>
+                        </div>
+                        <div class="desc">
+                            Ce qu'est une donnée personnelle avec des exemples concrets de l'UNAPEI92 · Les 5 voyants
+                            expliqués simplement · Rôle du référent dans son établissement · Comment remplir le registre
+                            des traitements
+                        </div>
+                    </div>
+                    <div class="module-status"><select>
+                            <option>⬜ À planifier</option>
+                            <option>📅 Planifié</option>
+                            <option>🔄 En cours</option>
+                            <option>✅ Réalisé</option>
+                        </select></div>
+                </div>
+                <div class="module-row">
+                    <div class="module-num">2</div>
+                    <div class="module-body">
+                        <h4>Les outils du référent — registre + mémo en pratique</h4>
+                        <div class="tags">
+                            <span class="tag tag-duree">⏱️ 1h30</span>
+                            <span class="tag tag-fmt">Atelier pratique sur poste</span>
+                            <span class="tag tag-public">Référents RGPD</span>
+                        </div>
+                        <div class="desc">
+                            Ouvrir et remplir le registre · Utiliser le mémo quoi/quand/comment · Saisir une mise à jour
+                            ou un incident · Exercice : compléter 2 lignes du registre de son propre service
+                        </div>
+                    </div>
+                    <div class="module-status"><select>
+                            <option>⬜ À planifier</option>
+                            <option>📅 Planifié</option>
+                            <option>🔄 En cours</option>
+                            <option>✅ Réalisé</option>
+                        </select></div>
+                </div>
+                <div class="module-row" style="border:none">
+                    <div class="module-num">3</div>
+                    <div class="module-body">
+                        <h4>Que faire en cas d'incident ? — les 72h qui comptent</h4>
+                        <div class="tags">
+                            <span class="tag tag-duree">⏱️ 45 min</span>
+                            <span class="tag tag-fmt">Mise en situation / jeu de rôle</span>
+                            <span class="tag tag-public">Référents RGPD</span>
+                        </div>
+                        <div class="desc">
+                            Scénario 1 : email envoyé à la mauvaise famille · Scénario 2 : dossier papier perdu · Qui
+                            prévenir, dans quel ordre, dans quel délai ? · Remplir la fiche incident ensemble
+                        </div>
+                    </div>
+                    <div class="module-status"><select>
+                            <option>⬜ À planifier</option>
+                            <option>📅 Planifié</option>
+                            <option>🔄 En cours</option>
+                            <option>✅ Réalisé</option>
+                        </select></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="icon" style="background:var(--vert-pale)">📗</span> Phase 2 —
+                    Cadres et chefs de service (oct.–nov. 2025)</div>
+                <div class="module-row">
+                    <div class="module-num">4</div>
+                    <div class="module-body">
+                        <h4>RGPD pour les managers — responsabilités et 3 réflexes clés</h4>
+                        <div class="tags">
+                            <span class="tag tag-duree">⏱️ 1h</span>
+                            <span class="tag tag-fmt">Réunion d'équipe</span>
+                            <span class="tag tag-public">Chefs de service · Cadres · Direction</span>
+                        </div>
+                        <div class="desc">
+                            Les 3 réflexes du manager RGPD : → Salarié qui part = bloquer ses accès le jour même →
+                            Nouveau logiciel = prévenir le référent → Incident = appeler le DPO sous 72h · Ce que risque
+                            l'association lors d'un contrôle CNIL
+                        </div>
+                    </div>
+                    <div class="module-status"><select>
+                            <option>⬜ À planifier</option>
+                            <option>📅 Planifié</option>
+                            <option>🔄 En cours</option>
+                            <option>✅ Réalisé</option>
+                        </select></div>
+                </div>
+                <div class="module-row" style="border:none">
+                    <div class="module-num">5</div>
+                    <div class="module-body">
+                        <h4>Droits des résidents et familles — ce qu'ils peuvent demander</h4>
+                        <div class="tags">
+                            <span class="tag tag-duree">⏱️ 45 min</span>
+                            <span class="tag tag-fmt">Petit groupe présentiel</span>
+                            <span class="tag tag-public">Chefs de service · Secrétaires · Éducateurs référents</span>
+                        </div>
+                        <div class="desc">
+                            Les 5 droits d'une personne sur ses données · Comment répondre à une demande d'accès · Le
+                            cas des photos et vidéos : consentement obligatoire · Exercice : rédiger une réponse type à
+                            une famille
+                        </div>
+                    </div>
+                    <div class="module-status"><select>
+                            <option>⬜ À planifier</option>
+                            <option>📅 Planifié</option>
+                            <option>🔄 En cours</option>
+                            <option>✅ Réalisé</option>
+                        </select></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="icon" style="background:var(--orange-pale)">📙</span> Phase 3 —
+                    Tout le personnel (janv.–mars 2026)</div>
+                <div class="module-row">
+                    <div class="module-num">6</div>
+                    <div class="module-body">
+                        <h4>Les 5 règles d'or RGPD — formation courte pour tous</h4>
+                        <div class="tags">
+                            <span class="tag tag-duree">⏱️ 30 min</span>
+                            <span class="tag tag-fmt">Réunion d'équipe — animé par le chef de service</span>
+                            <span class="tag tag-public">Tous les salariés + intérimaires + stagiaires</span>
+                        </div>
+                        <div class="desc">
+                            Diaporama 10 slides : 1️⃣ Je ne partage pas mon mot de passe · 2️⃣ Je n'envoie pas de
+                            données par email non sécurisé · 3️⃣ Je ne prends pas de photo sans autorisation · 4️⃣ Je
+                            signale tout incident à mon chef de service · 5️⃣ Je redirige les demandes vers le référent
+                            RGPD
+                        </div>
+                    </div>
+                    <div class="module-status"><select>
+                            <option>⬜ À planifier</option>
+                            <option>📅 Planifié</option>
+                            <option>🔄 En cours</option>
+                            <option>✅ Réalisé</option>
+                        </select></div>
+                </div>
+                <div class="module-row" style="border:none">
+                    <div class="module-num">7</div>
+                    <div class="module-body">
+                        <h4>Quiz RGPD — 10 questions vrai/faux</h4>
+                        <div class="tags">
+                            <span class="tag tag-duree">⏱️ 15 min</span>
+                            <span class="tag tag-fmt">En ligne ou papier — après la formation</span>
+                            <span class="tag tag-public">Tous les salariés</span>
+                        </div>
+                        <div class="desc">
+                            10 questions vrai/faux sur des cas concrets UNAPEI92 · Score min 7/10 pour validation · En
+                            cas d'échec : 15 min de reprise avec le référent · Les résultats remontent au référent RGPD
+                            pour le suivi
+                        </div>
+                    </div>
+                    <div class="module-status"><select>
+                            <option>⬜ À planifier</option>
+                            <option>📅 Planifié</option>
+                            <option>🔄 En cours</option>
+                            <option>✅ Réalisé</option>
+                        </select></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="icon" style="background:#FEF9E7">🔁</span> Formations permanentes
+                    (tout au long de l'année)</div>
+                <div class="module-row">
+                    <div class="module-num" style="background:#FEF9E7;color:#B7791F">8</div>
+                    <div class="module-body">
+                        <h4>Formation des nouveaux arrivants — intégration J+30 max</h4>
+                        <div class="tags">
+                            <span class="tag tag-duree">⏱️ 30 min</span>
+                            <span class="tag tag-fmt">Individuel avec le référent RGPD</span>
+                            <span class="tag tag-public">Tous les nouveaux salariés</span>
+                        </div>
+                        <div class="desc">
+                            Remettre le mémo "5 règles d'or" · Expliquer les accès logiciels et leur sécurisation ·
+                            Présenter le référent RGPD du service · Faire signer la charte informatique
+                        </div>
+                    </div>
+                    <div class="module-status"><select>
+                            <option>⬜ À intégrer parcours accueil</option>
+                            <option>📅 Planifié</option>
+                            <option>✅ En place</option>
+                        </select></div>
+                </div>
+                <div class="module-row" style="border:none">
+                    <div class="module-num" style="background:#FEF9E7;color:#B7791F">9</div>
+                    <div class="module-body">
+                        <h4>Rappel annuel — le mois d'octobre = mois RGPD 🍂</h4>
+                        <div class="tags">
+                            <span class="tag tag-duree">⏱️ 15 min</span>
+                            <span class="tag tag-fmt">Email + affiche + quiz flash</span>
+                            <span class="tag tag-public">Tous les salariés — chaque année</span>
+                        </div>
+                        <div class="desc">
+                            Email de rappel par la direction · Affiche mise à jour en salle de pause · Quiz flash de 5
+                            questions (5 min en ligne) · Partage des résultats du bilan annuel RGPD avec les équipes
+                        </div>
+                    </div>
+                    <div class="module-status"><select>
+                            <option>🔁 Récurrent chaque octobre</option>
+                            <option>✅ En place</option>
+                        </select></div>
+                </div>
+            </div>
+
+            <div class="card" style="background:var(--vert-pale);border-color:#A8D5C1">
+                <div
+                    style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;text-align:center;font-size:.85rem;color:var(--vert)">
+                    <div>
+                        <div style="font-size:1.6rem;font-weight:700">9</div>modules au total
+                    </div>
+                    <div>
+                        <div style="font-size:1.6rem;font-weight:700">~8h</div>de formation totale
+                    </div>
+                    <div>
+                        <div style="font-size:1.6rem;font-weight:700">0€</div>de formateur externe
+                    </div>
+                    <div>
+                        <div style="font-size:1.6rem;font-weight:700">100%</div>du personnel visé
+                    </div>
+                    <div>
+                        <div style="font-size:1.6rem;font-weight:700">Mars 26</div>objectif complet
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- ONGLET 5 — INCIDENT -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div id="tab-incident" class="section">
+            <div class="sec-head">
+                <h2>Que faire en cas d'incident ?</h2>
+                <p>Un incident RGPD, c'est comme un dégât des eaux : on coupe l'eau d'abord, on appelle le plombier (le
+                    DPO), et on documente les dégâts. Pas de panique, mais pas d'attente non plus.</p>
+            </div>
+
+            <div class="alerte-box">
+                <h3>⏰ La règle des 72h</h3>
+                <p>Si des données ont été exposées, perdues ou volées, la loi oblige à notifier la CNIL dans les
+                    <strong>72 heures</strong>. C'est le DPO externe qui le fait — mais vous devez l'alerter
+                    <strong>immédiatement</strong>, pas le lendemain.</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-title"><span class="icon" style="background:var(--rouge-pale)">🚨</span> C'est quoi
+                        un incident ?</div>
+                    <ul style="font-size:.85rem;color:var(--txt2);line-height:2;padding-left:1.2rem">
+                        <li>Email envoyé à la mauvaise famille ou au mauvais salarié</li>
+                        <li>Dossier papier perdu, volé ou oublié dans un lieu public</li>
+                        <li>Accès non autorisé à un logiciel ou à un dossier</li>
+                        <li>Données partagées sans consentement préalable</li>
+                        <li>Piratage ou tentative de piratage (ransomware, phishing)</li>
+                        <li>Perte d'un ordinateur ou d'une clé USB avec des données</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-title"><span class="icon" style="background:var(--vert-pale)">✅</span> Ce qui n'est
+                        PAS un incident</div>
+                    <ul style="font-size:.85rem;color:var(--txt2);line-height:2;padding-left:1.2rem">
+                        <li>Un email interne mal rédigé sans données personnelles</li>
+                        <li>Une mise à jour logiciel qui fait planter un PC</li>
+                        <li>Une demande d'un résident pour accéder à son dossier</li>
+                        <li>Un formulaire oublié de mettre à jour</li>
+                    </ul>
+                    <p style="font-size:.8rem;color:var(--txt3);margin-top:.8rem">En cas de doute : appelez le DPO.
+                        Mieux vaut un faux positif qu'une notification CNIL manquée.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="icon" style="background:var(--rouge-pale)">🗺️</span> Les 4 étapes
+                    — dans l'ordre, sans exception</div>
+                <div class="chrono">
+                    <div class="chrono-step urgent">
+                        <div class="chrono-dot"></div>
+                        <span class="time-badge time-rouge">Dans l'heure</span>
+                        <h4>Étape 1 — Stopper la fuite et appeler le DPO</h4>
+                        <p>Bloquez l'accès, récupérez le document, supprimez l'email si possible. Puis appelez le DPO
+                            externe par téléphone — pas par email. Donnez-lui les infos de base : quoi, où, combien de
+                            personnes.</p>
+                    </div>
+                    <div class="chrono-step">
+                        <div class="chrono-dot"></div>
+                        <span class="time-badge time-orange">Dans les 24h</span>
+                        <h4>Étape 2 — Documenter l'incident</h4>
+                        <p>Répondez par écrit à ces 4 questions : Que s'est-il passé exactement ? Combien de personnes
+                            sont concernées ? Quelles données ont été exposées ? La fuite est-elle maintenant stoppée ?
+                        </p>
+                    </div>
+                    <div class="chrono-step urgent">
+                        <div class="chrono-dot"></div>
+                        <span class="time-badge time-rouge">Avant 72h</span>
+                        <h4>Étape 3 — Décision CNIL (par le DPO)</h4>
+                        <p>Le DPO analyse et décide si la CNIL doit être notifiée. C'est lui qui fait la démarche, pas
+                            vous. Votre rôle : lui donner toutes les informations rapidement.</p>
+                    </div>
+                    <div class="chrono-step">
+                        <div class="chrono-dot"></div>
+                        <span class="time-badge time-bleu">Si nécessaire</span>
+                        <h4>Étape 4 — Prévenir les personnes concernées</h4>
+                        <p>Si le DPO juge que le risque pour les personnes est élevé, les résidents, familles ou
+                            salariés concernés doivent être informés. Le DPO vous aide à rédiger le message.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="icon" style="background:var(--gris)">📋</span> Historique des
+                    incidents</div>
+                <div class="site-row">
+                    <div>
+                        <div class="site-name">Email envoyé à la mauvaise famille</div>
+                        <div class="site-ref">ESAT Les Acacias · 3 juin 2025 · DPO notifié · CNIL non concernée</div>
+                    </div>
+                    <span class="status-badge s-warn">⚠️ En cours</span>
+                </div>
+                <div class="site-row" style="border:none">
+                    <div>
+                        <div class="site-name">Dossier papier égaré — retrouvé</div>
+                        <div class="site-ref">Foyer Colibri · 15 avril 2025 · Résolu · Procédure de classement renforcée
+                        </div>
+                    </div>
+                    <span class="status-badge s-ok">✅ Résolu</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- ONGLET 6 — RAPPORT DIRECTION -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div id="tab-rapport" class="section">
+            <div class="sec-head">
+                <h2>Rapport direction</h2>
+                <p>Synthèse mensuelle pour la direction et le DPO externe. Simple, lisible, actionnable. Généré à partir
+                    des mises à jour des référents.</p>
+            </div>
+
+            <div class="card" style="border-left: 4px solid var(--bleu)">
+                <div
+                    style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1.2rem">
+                    <div>
+                        <div
+                            style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3)">
+                            Rapport mensuel</div>
+                        <div style="font-size:1.2rem;font-weight:700;color:var(--bleu)">Juin 2025</div>
+                    </div>
+                    <div style="display:flex;gap:.6rem">
+                        <button class="action-btn" style="background:var(--vert)">📥 Télécharger PDF</button>
+                        <button class="action-btn">📧 Envoyer au DPO</button>
+                    </div>
+                </div>
+
+                <div class="report-grid">
+                    <div class="report-kpi">
+                        <div class="num" style="color:var(--vert)">3</div>
+                        <div class="lbl">Voyants verts</div>
+                    </div>
+                    <div class="report-kpi">
+                        <div class="num" style="color:var(--orange)">1</div>
+                        <div class="lbl">À surveiller</div>
+                    </div>
+                    <div class="report-kpi">
+                        <div class="num" style="color:var(--rouge)">1</div>
+                        <div class="lbl">Urgent</div>
+                    </div>
+                    <div class="report-kpi">
+                        <div class="num" style="color:var(--bleu)">1</div>
+                        <div class="lbl">Incident signalé</div>
+                    </div>
+                    <div class="report-kpi">
+                        <div class="num">4/4</div>
+                        <div class="lbl">Prestataires DPA OK</div>
+                    </div>
+                    <div class="report-kpi">
+                        <div class="num" style="color:var(--orange)">0%</div>
+                        <div class="lbl">Personnel formé (objectif mars 26)</div>
+                    </div>
+                </div>
+
+                <div class="card" style="background:var(--gris);border:none;margin-bottom:1rem">
+                    <div class="card-title" style="margin-bottom:.8rem">État par établissement</div>
+                    <div class="site-row">
+                        <div>
+                            <div class="site-name">ESAT Les Acacias</div>
+                            <div class="site-ref">Référent : Marie D.</div>
+                        </div>
+                        <div class="site-badges"><span class="status-badge s-alert">🚨 Sécurité urgente</span><span
+                                class="status-badge s-ok">✅ Reste OK</span></div>
+                    </div>
+                    <div class="site-row">
+                        <div>
+                            <div class="site-name">Foyer de vie Colibri</div>
+                            <div class="site-ref">Référent : Jean-Paul M.</div>
+                        </div>
+                        <div class="site-badges"><span class="status-badge s-ok">✅ Tout OK</span></div>
+                    </div>
+                    <div class="site-row">
+                        <div>
+                            <div class="site-name">IME Saint-Exupéry</div>
+                            <div class="site-ref">Référent : Sophie L.</div>
+                        </div>
+                        <div class="site-badges"><span class="status-badge s-warn">⚠️ Dossiers à nettoyer</span></div>
+                    </div>
+                    <div class="site-row" style="border:none">
+                        <div>
+                            <div class="site-name">SAVS Horizon</div>
+                            <div class="site-ref">Référent : Ahmed B.</div>
+                        </div>
+                        <div class="site-badges"><span class="status-badge s-ok">✅ Tout OK</span></div>
+                    </div>
+                </div>
+
+                <div class="card" style="background:var(--rouge-pale);border-color:#F9BBBB;margin-bottom:1rem">
+                    <div class="card-title" style="color:var(--rouge)">🚨 Actions urgentes pour la direction</div>
+                    <ul style="font-size:.85rem;color:var(--txt2);line-height:1.9;padding-left:1.2rem">
+                        <li><strong>Avant le 20 juin :</strong> bloquer les 2 accès informatiques d'anciens salariés à
+                            l'ESAT Les Acacias → contacter le prestataire informatique</li>
+                        <li><strong>Prestataire vidéosurveillance :</strong> DPA manquant — demander la signature du
+                            contrat RGPD en urgence</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="background:var(--orange-pale);border-color:#F9CCA4;margin-bottom:1rem">
+                    <div class="card-title" style="color:var(--orange)">⚠️ Points à traiter avant le 15 octobre</div>
+                    <ul style="font-size:.85rem;color:var(--txt2);line-height:1.9;padding-left:1.2rem">
+                        <li>IME Saint-Exupéry : nettoyage de 3 dossiers de résidents partis depuis + de 5 ans</li>
+                        <li>Agence de communication : envoyer l'avenant DPA (modèle disponible auprès du DPO)</li>
+                        <li>Mailchimp : vérifier les conditions RGPD ou basculer vers une solution conforme</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="background:var(--vert-pale);border-color:#A8D5C1;margin-bottom:0">
+                    <div class="card-title" style="color:var(--vert)">✅ Bonnes nouvelles du mois</div>
+                    <ul style="font-size:.85rem;color:var(--txt2);line-height:1.9;padding-left:1.2rem">
+                        <li>4/4 contrats prestataires principaux avec clause RGPD signée — aucun renouvellement avant
+                            décembre</li>
+                        <li>Incident email ESAT en cours de résolution — DPO informé, famille avertie, CNIL non
+                            concernée</li>
+                        <li>Foyer Colibri et SAVS Horizon : tous les voyants au vert ce mois-ci</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- ONGLET 7 — RAPPELS & ALERTES -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <div id="tab-rappels" class="section">
+            <div class="sec-head">
+                <h2>Rappels & alertes</h2>
+                <p>Le système de rappels automatiques à mettre en place. Copiez ces dates dans votre calendrier Outlook
+                    ou Google Calendar — une seule fois, et c'est bon pour toute l'année.</p>
+            </div>
+
+            <div class="info-strip">
+                💡 <strong>Comment mettre en place les rappels ?</strong> Dans Outlook : Créer un événement récurrent →
+                cocher "Rappel" → choisir la récurrence (mensuelle, trimestrielle, annuelle). Dans Google Calendar :
+                même principe, activez les notifications par email.
+            </div>
+
+            <div class="calendar-grid">
+                <div class="cal-card">
+                    <div class="cal-header" style="background:var(--rouge)">🔴 Rappels mensuels</div>
+                    <div class="cal-body">
+                        <div class="cal-item"><span>📅</span> 1er lundi du mois — Vérifier les demandes de droits en
+                            attente (5 min)</div>
+                        <div class="cal-item"><span>📅</span> 1er lundi du mois — Consulter la boîte rgpd@unapei92.fr
+                        </div>
+                        <div class="cal-item"><span>📅</span> 1er du mois — Coup d'œil sur les 5 voyants</div>
+                    </div>
+                </div>
+
+                <div class="cal-card">
+                    <div class="cal-header" style="background:var(--orange)">🟡 Rappels trimestriels</div>
+                    <div class="cal-body">
+                        <div class="cal-item"><span>📅</span> 1er avril — Vérification sous-traitants + DPA à renouveler
+                        </div>
+                        <div class="cal-item"><span>📅</span> 1er juillet — Rappel "pas de partage de mot de passe"
+                        </div>
+                        <div class="cal-item"><span>📅</span> 1er octobre — Grand nettoyage dossiers 🍂 + rappel annuel
+                            RGPD</div>
+                        <div class="cal-item"><span>📅</span> 1er janvier — Révision annuelle complète + vérification
+                            accès salariés</div>
+                    </div>
+                </div>
+
+                <div class="cal-card">
+                    <div class="cal-header" style="background:var(--vert)">🟢 Rappels annuels</div>
+                    <div class="cal-body">
+                        <div class="cal-item"><span>📅</span> Janvier — Validation du registre par le DPO externe</div>
+                        <div class="cal-item"><span>📅</span> Octobre — Renouvellement consentements photos (tous les 3
+                            ans)</div>
+                        <div class="cal-item"><span>📅</span> Décembre — Vérifier les contrats prestataires qui arrivent
+                            à échéance</div>
+                        <div class="cal-item"><span>📅</span> Octobre — Mois RGPD : affiche + quiz flash pour tous les
+                            salariés</div>
+                    </div>
+                </div>
+
+                <div class="cal-card">
+                    <div class="cal-header" style="background:var(--bleu)">🔵 Rappels liés aux événements</div>
+                    <div class="cal-body">
+                        <div class="cal-item"><span>⚡</span> Départ d'un salarié → bloquer ses accès le jour même</div>
+                        <div class="cal-item"><span>⚡</span> Nouveau logiciel → mettre à jour le registre avant mise en
+                            service</div>
+                        <div class="cal-item"><span>⚡</span> Nouveau prestataire → vérifier le DPA avant signature du
+                            contrat</div>
+                        <div class="cal-item"><span>⚡</span> Nouveau salarié → formation RGPD dans les 30 jours</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:1.2rem">
+                <div class="card-title"><span class="icon" style="background:var(--gris)">💾</span> Plan de sauvegarde —
+                    la règle des 3 exemplaires</div>
+                <div
+                    style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;font-size:.85rem;color:var(--txt2)">
+                    <div style="background:var(--bleu-pale);border-radius:8px;padding:.9rem">
+                        <strong style="color:var(--bleu)">📁 Exemplaire 1 — Cloud</strong><br><br>
+                        Dossier partagé SharePoint ou Google Drive nommé <em>"RGPD — NE PAS EFFACER"</em>. Accès limité
+                        au référent + DPO + direction. Sauvegarde automatique.
+                    </div>
+                    <div style="background:var(--vert-pale);border-radius:8px;padding:.9rem">
+                        <strong style="color:var(--vert)">🖨️ Exemplaire 2 — Papier</strong><br><br>
+                        Copie PDF imprimée chaque trimestre. Classée dans un classeur plastifié dans le bureau du
+                        référent, étiqueté "RGPD 2025".
+                    </div>
+                    <div style="background:var(--orange-pale);border-radius:8px;padding:.9rem">
+                        <strong style="color:var(--orange)">🔄 Plan B humain</strong><br><br>
+                        Si le référent est absent (congé, maladie), le N+1 assure la continuité. Le nom du remplaçant
+                        est noté dans la fiche de poste et connu du DPO.
+                    </div>
+                </div>
+                <div style="margin-top:1rem;font-size:.82rem;color:var(--txt3);font-style:italic;text-align:center">
+                    Règle d'or : si le cloud tombe, le papier prend le relais. Si le papier brûle, le cloud suffit.
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /content -->
+
+    <script>
+        function showTab(id) {
+            document.querySelectorAll('.tab-btn').forEach((b, i) => {
+                const ids = ['voyants', 'registre', 'memo', 'formation', 'incident', 'rapport', 'rappels'];
+                b.classList.toggle('active', ids[i] === id);
+            });
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('tab-' + id).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>

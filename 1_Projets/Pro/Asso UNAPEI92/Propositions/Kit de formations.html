@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RGPD en pratique — UNAPEI92</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:   #1A3A5C;
+    --teal:   #0A7EA4;
+    --teal2:  #0E9FC9;
+    --mint:   #E8F4F8;
+    --gold:   #F0A500;
+    --red:    #E63946;
+    --lgray:  #F5F7FA;
+    --dgray:  #334155;
+    --slate:  #64748B;
+    --white:  #FFFFFF;
+    --green:  #15803D;
+    --gbg:    #F0FDF4;
+    --rbg:    #FFF1F2;
+  }
+
+  html, body { height: 100%; overflow: hidden; font-family: 'Sora', sans-serif; background: #0d1b2a; }
+
+  /* ── DECK ── */
+  #deck { width: 100vw; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    opacity: 0; pointer-events: none;
+    transform: translateX(60px);
+    transition: opacity .45s cubic-bezier(.4,0,.2,1), transform .45s cubic-bezier(.4,0,.2,1);
+  }
+  .slide.active {
+    opacity: 1; pointer-events: auto; transform: translateX(0);
+  }
+  .slide.out {
+    opacity: 0; transform: translateX(-60px);
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: var(--gold); transition: width .4s ease; z-index: 100;
+  }
+
+  /* ── NAV ── */
+  #nav {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 16px; z-index: 100;
+    background: rgba(255,255,255,.12); backdrop-filter: blur(12px);
+    padding: 10px 20px; border-radius: 50px;
+    border: 1px solid rgba(255,255,255,.2);
+  }
+  #nav button {
+    background: none; border: none; cursor: pointer; color: #fff;
+    font-size: 20px; padding: 4px 10px; border-radius: 30px;
+    transition: background .2s;
+  }
+  #nav button:hover { background: rgba(255,255,255,.2); }
+  #nav button:disabled { opacity: .3; cursor: not-allowed; }
+  #slide-counter { color: rgba(255,255,255,.7); font-size: 13px; font-family: 'Sora', sans-serif; min-width: 55px; text-align: center; }
+
+  /* ── DOTS ── */
+  #dots { position: fixed; bottom: 24px; right: 28px; display: flex; gap: 6px; z-index: 100; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.3); cursor: pointer; transition: background .25s, transform .25s; }
+  .dot.active { background: var(--gold); transform: scale(1.35); }
+
+  /* ── KEYBOARD HINT ── */
+  #key-hint {
+    position: fixed; top: 14px; right: 20px;
+    font-size: 11px; color: rgba(255,255,255,.4);
+    font-family: 'Sora', sans-serif; z-index: 100;
+    letter-spacing: .03em;
+  }
+
+  /* ══════════════════════════════════════
+     SLIDE STYLES
+  ══════════════════════════════════════ */
+
+  /* ─ S1 TITLE ─ */
+  .s1 {
+    background: linear-gradient(135deg, #0d1b2a 0%, #1A3A5C 60%, #0A7EA4 100%);
+    padding: 64px;
+    justify-content: center;
+  }
+  .s1-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--gold); color: var(--navy);
+    font-weight: 700; font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+    padding: 6px 16px; border-radius: 30px; margin-bottom: 36px;
+  }
+  .s1-title { font-family: 'Lora', serif; font-size: clamp(52px, 7vw, 80px); color: #fff; line-height: 1.1; margin-bottom: 20px; }
+  .s1-sub { font-size: 18px; color: #A0BFD5; font-style: italic; margin-bottom: 40px; }
+  .s1-line { width: 80px; height: 3px; background: var(--gold); margin-bottom: 32px; }
+  .s1-meta { font-size: 14px; color: #7BA7C0; }
+  .s1-meta strong { color: #A0BFD5; }
+  .s1-note { margin-top: 12px; font-size: 12px; color: #557; font-style: italic; }
+  .s1-circles { position: absolute; right: 0; top: 0; width: 40%; height: 60%; overflow: hidden; pointer-events: none; }
+  .s1-circles span {
+    position: absolute; border-radius: 50%; opacity: .15;
+  }
+  .s1-circles span:nth-child(1) { width: 420px; height: 420px; background: var(--teal); top: -100px; right: -60px; }
+  .s1-circles span:nth-child(2) { width: 220px; height: 220px; background: var(--gold); top: 40px; right: 180px; }
+
+  /* ─ GENERIC SLIDE HEADER ─ */
+  .slide-header {
+    padding: 22px 48px 18px;
+    font-size: 18px; font-weight: 700; color: #fff; letter-spacing: .01em;
+    flex-shrink: 0;
+  }
+  .slide-body { flex: 1; overflow: hidden; padding: 0 48px 70px; }
+
+  /* ─ S2 WHY ─ */
+  .s2 { background: var(--lgray); }
+  .s2 .slide-header { background: var(--navy); }
+  .cards3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; height: 100%; align-items: start; padding-top: 24px; }
+  .card3 {
+    background: #fff; border-radius: 14px; padding: 28px 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.08);
+    display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px;
+  }
+  .card3-icon {
+    width: 64px; height: 64px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+  }
+  .card3-title { font-weight: 700; font-size: 15px; color: var(--dgray); }
+  .card3-body { font-size: 13px; color: var(--slate); line-height: 1.6; }
+  .tagline {
+    margin-top: 20px; font-size: 13px; color: var(--teal);
+    font-style: italic; text-align: center; padding: 10px 20px;
+    background: #E0F2FE; border-radius: 8px;
+  }
+
+  /* ─ S3 WHAT IS DATA ─ */
+  .s3 { background: #fff; }
+  .s3 .slide-header { background: var(--teal); }
+  .s3-sub { font-size: 14px; color: var(--slate); text-align: center; font-style: italic; margin: 18px 0 20px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .col-box { border-radius: 12px; padding: 22px; }
+  .col-box.green { background: #F0FDF4; border: 1.5px solid #86EFAC; }
+  .col-box.amber { background: #FFF8E1; border: 1.5px solid #FFE082; }
+  .col-box h3 { font-size: 14px; font-weight: 700; margin-bottom: 14px; }
+  .col-box.green h3 { color: var(--green); }
+  .col-box.amber h3 { color: #E65100; }
+  .col-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--dgray); margin-bottom: 10px; line-height: 1.5; }
+  .col-item::before { content: '▸'; color: var(--teal); flex-shrink: 0; margin-top: 1px; }
+  .col-box.amber .col-item::before { content: '🔒'; }
+
+  /* ─ S4 RIGHTS ─ */
+  .s4 { background: var(--lgray); }
+  .s4 .slide-header { background: var(--navy); }
+  .rights-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; padding-top: 24px; height: calc(100% - 32px); align-items: start; }
+  .right-card {
+    background: #fff; border-radius: 12px; padding: 18px 14px;
+    box-shadow: 0 3px 14px rgba(0,0,0,.07);
+    text-align: center;
+  }
+  .right-icon { font-size: 30px; margin-bottom: 10px; display: block; }
+  .right-title { font-weight: 700; font-size: 13px; color: var(--navy); margin-bottom: 8px; }
+  .right-body { font-size: 11.5px; color: var(--slate); line-height: 1.55; }
+  .right-num { width: 28px; height: 28px; border-radius: 50%; background: var(--teal); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+  .rights-tagline { margin-top: 14px; text-align: center; font-size: 12.5px; color: var(--teal); font-style: italic; }
+
+  /* ─ REFLEX SLIDES (5-9) ─ */
+  .reflex-slide { background: #fff; display: flex; flex-direction: column; }
+  .reflex-header {
+    display: flex; align-items: center; gap: 0; flex-shrink: 0;
+  }
+  .reflex-bar {
+    width: 10px; height: 100%; min-height: 72px;
+    flex-shrink: 0;
+  }
+  .reflex-title-area {
+    flex: 1; padding: 20px 40px 16px 28px;
+  }
+  .reflex-num { font-size: 10px; font-weight: 700; color: #94A3B8; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 2px; }
+  .reflex-main-title { font-family: 'Lora', serif; font-size: clamp(24px, 3.5vw, 34px); color: var(--navy); font-weight: 600; }
+  .reflex-quote { font-size: 14px; font-style: italic; margin-top: 4px; }
+  .reflex-body { flex: 1; padding: 16px 48px 70px 48px; display: flex; flex-direction: column; gap: 16px; overflow: hidden; }
+
+  /* ─ REFLEX CONTENT VARIANTS ─ */
+  /* Steps row */
+  .steps-row { display: flex; align-items: flex-start; gap: 0; }
+  .step-item { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
+  .step-item:not(:last-child)::after {
+    content: ''; position: absolute; top: 22px; left: 50%; width: 100%;
+    height: 2px; background: #CBD5E1;
+  }
+  .step-circle { width: 46px; height: 46px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; }
+  .step-label { font-weight: 700; font-size: 12.5px; color: var(--dgray); text-align: center; margin-top: 10px; }
+  .step-sub { font-size: 11px; color: var(--slate); text-align: center; margin-top: 4px; line-height: 1.4; }
+
+  /* Alarm box */
+  .alarm-box {
+    background: #FEF9C3; border: 1.5px solid var(--gold);
+    border-radius: 10px; padding: 16px 20px;
+  }
+  .alarm-box h4 { font-size: 13px; font-weight: 700; color: #92400E; margin-bottom: 6px; }
+  .alarm-box p { font-size: 12px; color: var(--dgray); line-height: 1.6; }
+
+  /* Two-col panel */
+  .two-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex: 1; }
+  .panel-box { border-radius: 12px; padding: 18px 20px; }
+  .panel-box.green { background: var(--gbg); border: 1.5px solid #86EFAC; }
+  .panel-box.red { background: var(--rbg); border: 1.5px solid #FCA5A5; }
+  .panel-box h3 { font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+  .panel-box.green h3 { color: var(--green); }
+  .panel-box.red h3 { color: var(--red); }
+  .panel-item { font-size: 12px; color: var(--dgray); margin-bottom: 9px; display: flex; gap: 8px; line-height: 1.5; }
+
+  /* Photo case */
+  .photo-case { background: #EFF6FF; border: 1.5px solid #93C5FD; border-radius: 12px; padding: 18px 20px; flex: 1; }
+  .photo-case h3 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .photo-case p { font-size: 12.5px; color: var(--dgray); margin-bottom: 10px; line-height: 1.6; }
+
+  /* Consent props */
+  .consent-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex: 1; }
+
+  /* Table */
+  .data-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+  .data-table th { background: var(--navy); color: #fff; font-size: 12px; font-weight: 600; padding: 12px 16px; text-align: left; }
+  .data-table td { font-size: 12px; color: var(--dgray); padding: 11px 16px; background: #fff; border-bottom: 1px solid #E2E8F0; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:nth-child(even) td { background: var(--lgray); }
+  .table-note { text-align: center; font-size: 12px; color: var(--teal); font-style: italic; margin-top: 12px; }
+
+  /* Contractor grid */
+  .contractor-examples { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .contractor-card { background: #E0F2FE; border-radius: 10px; padding: 14px 10px; text-align: center; font-size: 12px; color: var(--dgray); }
+  .contractor-card .cicon { font-size: 26px; display: block; margin-bottom: 8px; }
+  .dpa-box { background: #EFF6FF; border: 1.5px solid #93C5FD; border-radius: 10px; padding: 16px 20px; }
+  .dpa-box h4 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .dpa-box p { font-size: 12px; color: var(--dgray); line-height: 1.6; }
+
+  /* ─ S10 INCIDENT ─ */
+  .s10 { background: #0f1923; }
+  .s10 .slide-header { background: #1a2535; font-size: 20px; }
+  .s10-sub { font-size: 14px; color: #94A3B8; font-style: italic; margin-bottom: 24px; }
+  .timeline { display: flex; justify-content: space-around; align-items: flex-start; margin-bottom: 28px; }
+  .tl-item { display: flex; flex-direction: column; align-items: center; gap: 10px; position: relative; flex: 1; }
+  .tl-item:not(:last-child)::after {
+    content: ''; position: absolute; top: 38px; left: calc(50% + 42px); right: 0;
+    height: 2px; background: #334155;
+  }
+  .tl-circle { width: 76px; height: 76px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 24px; }
+  .tl-time { font-size: 13px; font-weight: 700; color: #fff; }
+  .tl-label { font-size: 12px; color: #CBD5E1; text-align: center; line-height: 1.5; }
+  .incident-examples { background: #1a2535; border-radius: 10px; padding: 18px 22px; }
+  .incident-examples h4 { font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 10px; }
+  .incident-examples p { font-size: 12.5px; color: #94A3B8; line-height: 1.8; }
+
+  /* ─ S11 QUIZ ─ */
+  .s11 { background: var(--lgray); }
+  .s11 .slide-header { background: var(--gold); color: var(--navy); }
+  .quiz-grid { display: flex; flex-direction: column; gap: 20px; padding-top: 18px; }
+  .quiz-q { background: #fff; border-radius: 12px; padding: 18px 22px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+  .quiz-q h4 { font-size: 13.5px; font-weight: 700; color: var(--navy); margin-bottom: 12px; }
+  .quiz-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .quiz-opt {
+    padding: 10px 12px; border-radius: 8px; font-size: 12px; color: var(--dgray);
+    background: var(--lgray); border: 1.5px solid #E2E8F0; cursor: pointer;
+    transition: background .2s, border-color .2s, transform .15s;
+    text-align: center; line-height: 1.4;
+  }
+  .quiz-opt:hover { background: #EFF6FF; border-color: #93C5FD; transform: translateY(-1px); }
+  .quiz-opt.correct { background: #F0FDF4; border-color: #86EFAC; color: var(--green); font-weight: 600; }
+  .quiz-opt.wrong { background: #FFF1F2; border-color: #FCA5A5; color: var(--red); }
+  .quiz-feedback { margin-top: 8px; font-size: 11.5px; color: var(--green); font-weight: 600; display: none; }
+  .quiz-q.revealed .quiz-feedback { display: block; }
+
+  /* ─ S12 RECAP ─ */
+  .s12 { background: linear-gradient(135deg, #0d1b2a 0%, #1A3A5C 70%, #0A7EA4 100%); padding: 40px 48px 80px; }
+  .s12-title { font-family: 'Lora', serif; font-size: clamp(26px, 3.5vw, 38px); color: #fff; margin-bottom: 28px; font-weight: 600; }
+  .recap-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 28px; }
+  .recap-card {
+    background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
+    border-radius: 12px; padding: 18px 12px; text-align: center;
+    backdrop-filter: blur(6px);
+  }
+  .recap-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+  .recap-num { font-size: 11px; color: var(--gold); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px; }
+  .recap-label { font-size: 12.5px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .recap-sub { font-size: 11px; color: #A0BFD5; line-height: 1.5; }
+  .contact-box {
+    background: rgba(10, 126, 164, .25); border: 1.5px solid var(--teal);
+    border-radius: 12px; padding: 20px 28px; text-align: center;
+    backdrop-filter: blur(6px);
+  }
+  .contact-box h3 { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .contact-box a { font-size: 16px; color: var(--gold); text-decoration: none; font-weight: 600; display: block; margin-bottom: 6px; }
+  .contact-box p { font-size: 12px; color: #94A3B8; }
+
+  /* ─ FULLSCREEN BTN ─ */
+  #fs-btn {
+    position: fixed; top: 14px; left: 20px; z-index: 100;
+    background: rgba(255,255,255,.12); backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,.2); border-radius: 8px;
+    padding: 6px 10px; color: rgba(255,255,255,.6); cursor: pointer;
+    font-size: 16px; transition: background .2s;
+  }
+  #fs-btn:hover { background: rgba(255,255,255,.22); }
+
+  /* Responsive adjustments */
+  @media (max-width: 900px) {
+    .cards3, .rights-grid, .recap-grid { grid-template-columns: 1fr; overflow-y: auto; }
+    .two-col, .two-panel, .consent-cols, .contractor-examples, .quiz-options { grid-template-columns: 1fr; }
+    .slide-body, .reflex-body { overflow-y: auto; }
+    .s1 { padding: 36px; }
+    .slide-header { padding: 16px 24px; }
+    .slide-body { padding: 0 24px 70px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<button id="fs-btn" title="Plein écran">⛶</button>
+<div id="key-hint">← → ou touches fléchées</div>
+
+<div id="deck">
+
+  <!-- ══ SLIDE 1 : TITRE ══ -->
+  <section class="slide s1 active" data-index="0">
+    <div class="s1-circles"><span></span><span></span></div>
+    <div class="s1-badge">🛡️ FORMATION RGPD</div>
+    <h1 class="s1-title">Le RGPD<br>en pratique</h1>
+    <p class="s1-sub">Pour les équipes de l'UNAPEI92</p>
+    <div class="s1-line"></div>
+    <p class="s1-meta"><strong>Durée :</strong> 20 min &nbsp;|&nbsp; <strong>Animé par :</strong> le chef de service</p>
+    <p class="s1-note">Pas besoin d'être juriste pour animer cette formation !</p>
+  </section>
+
+  <!-- ══ SLIDE 2 : POURQUOI ══ -->
+  <section class="slide s2" data-index="1">
+    <div class="slide-header">Pourquoi le RGPD nous concerne tous ?</div>
+    <div class="slide-body">
+      <div class="cards3">
+        <div class="card3">
+          <div class="card3-icon" style="background:#E0F2FE;">🏠</div>
+          <div class="card3-title">Nous gérons des données sensibles</div>
+          <div class="card3-body">Dossiers des résidents, situations médicales, coordonnées des familles, données RH des salariés…</div>
+        </div>
+        <div class="card3">
+          <div class="card3-icon" style="background:#E8EDF5;">⚖️</div>
+          <div class="card3-title">C'est une obligation légale</div>
+          <div class="card3-body">Le RGPD est en vigueur depuis 2018. Des contrôles CNIL peuvent avoir lieu à tout moment.</div>
+        </div>
+        <div class="card3">
+          <div class="card3-icon" style="background:#FEE2E2;">🤝</div>
+          <div class="card3-title">C'est une question de confiance</div>
+          <div class="card3-body">Les personnes que nous accompagnons nous confient leurs données les plus personnelles.</div>
+        </div>
+      </div>
+      <div class="tagline">💡 Image à retenir : le RGPD, c'est comme une <strong>clé de maison</strong>. Tout le monde doit savoir qui a les clés et qui peut ouvrir quelle porte.</div>
+    </div>
+  </section>
+
+  <!-- ══ SLIDE 3 : C'EST QUOI ══ -->
+  <section class="slide s3" data-index="2">
+    <div class="slide-header">C'est quoi une donnée personnelle ?</div>
+    <div class="slide-body">
+      <p class="s3-sub">Toute information qui permet d'identifier une personne, directement ou indirectement.</p>
+      <div class="two-col">
+        <div class="col-box green">
+          <h3>✅ Exemples à l'UNAPEI92</h3>
+          <div class="col-item">Nom et prénom d'un résident</div>
+          <div class="col-item">Numéro de sécurité sociale</div>
+          <div class="col-item">Photo d'une personne accompagnée</div>
+          <div class="col-item">Adresse email d'une famille</div>
+          <div class="col-item">Diagnostic médical</div>
+          <div class="col-item">Bulletins de salaire</div>
+        </div>
+        <div class="col-box amber">
+          <h3>⚠️ Attention aux données sensibles</h3>
+          <p style="font-size:12.5px;color:var(--dgray);margin-bottom:12px;line-height:1.6;">Certaines données nécessitent une protection renforcée :</p>
+          <div class="col-item">État de santé</div>
+          <div class="col-item">Handicap</div>
+          <div class="col-item">Origine ethnique</div>
+          <div class="col-item">Opinions politiques ou religieuses</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SLIDE 4 : DROITS ══ -->
+  <section class="slide s4" data-index="3">
+    <div class="slide-header">Les 5 droits des personnes que nous accompagnons</div>
+    <div class="slide-body">
+      <div class="rights-grid">
+        <div class="right-card">
+          <div class="right-num">1</div>
+          <span class="right-icon">🔍</span>
+          <div class="right-title">Droit d'accès</div>
+          <div class="right-body">Toute personne peut demander à consulter ses données. Délai de réponse : <strong>30 jours</strong>.</div>
+        </div>
+        <div class="right-card">
+          <div class="right-num">2</div>
+          <span class="right-icon">✏️</span>
+          <div class="right-title">Droit de rectification</div>
+          <div class="right-body">Corriger des données inexactes ou incomplètes.</div>
+        </div>
+        <div class="right-card">
+          <div class="right-num">3</div>
+          <span class="right-icon">🗑️</span>
+          <div class="right-title">Droit à l'effacement</div>
+          <div class="right-body">Demander la suppression de ses données dans certains cas.</div>
+        </div>
+        <div class="right-card">
+          <div class="right-num">4</div>
+          <span class="right-icon">✋</span>
+          <div class="right-title">Droit d'opposition</div>
+          <div class="right-body">S'opposer à l'utilisation de ses données pour certaines finalités.</div>
+        </div>
+        <div class="right-card">
+          <div class="right-num">5</div>
+          <span class="right-icon">📦</span>
+          <div class="right-title">Droit à la portabilité</div>
+          <div class="right-body">Récupérer ses données dans un format lisible.</div>
+        </div>
+      </div>
+      <p class="rights-tagline">🔑 Image clé : chaque personne a le droit de récupérer ses clés à tout moment.</p>
+    </div>
+  </section>
+
+  <!-- ══ SLIDE 5 : RÉFLEXE 1 ══ -->
+  <section class="slide reflex-slide" data-index="4">
+    <div class="reflex-header">
+      <div class="reflex-bar" style="background:var(--teal);"></div>
+      <div class="reflex-title-area">
+        <div class="reflex-num">Réflexe 1 / 5</div>
+        <div class="reflex-main-title">🔑 Les droits des personnes</div>
+        <div class="reflex-quote" style="color:var(--teal);">"Chaque personne a le droit de récupérer ses clés"</div>
+      </div>
+    </div>
+    <div class="reflex-body">
+      <div class="steps-row">
+        <div class="step-item">
+          <div class="step-circle">1</div>
+          <div class="step-label">La demande arrive</div>
+          <div class="step-sub">Écrit, oral ou via famille</div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">2</div>
+          <div class="step-label">Je contacte le DPO</div>
+          <div class="step-sub">Dans les 24h</div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">3</div>
+          <div class="step-label">On répond ensemble</div>
+          <div class="step-sub">Délai max : 30 jours</div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">4</div>
+          <div class="step-label">On archive la demande</div>
+          <div class="step-sub">Dans le journal des incidents</div>
+        </div>
+      </div>
+      <div class="alarm-box">
+        <h4>🚨 Signal d'alarme</h4>
+        <p>Une demande sans réponse après 1 mois = signalement immédiat au DPO.<br>Sanction CNIL possible si non respecté.</p>
+      </div>
+      <div style="background:#E0F2FE;border-radius:8px;padding:12px 16px;font-size:12.5px;color:var(--teal);font-style:italic;">
+        💬 <strong>Jeu de rôle :</strong> « Un parent demande à voir le dossier médical de son enfant adulte. Que faites-vous ? »
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SLIDE 6 : RÉFLEXE 2 ══ -->
+  <section class="slide reflex-slide" data-index="5">
+    <div class="reflex-header">
+      <div class="reflex-bar" style="background:var(--gold);"></div>
+      <div class="reflex-title-area">
+        <div class="reflex-num">Réflexe 2 / 5</div>
+        <div class="reflex-main-title">✋ Le consentement</div>
+        <div class="reflex-quote" style="color:#B45309;">"On ne rentre pas sans frapper"</div>
+      </div>
+    </div>
+    <div class="reflex-body">
+      <div class="consent-cols">
+        <div class="panel-box green">
+          <h3>✅ Un bon consentement…</h3>
+          <div class="panel-item"><span>✓</span> Est donné librement (pas d'obligation)</div>
+          <div class="panel-item"><span>✓</span> Est spécifique (on sait exactement pourquoi)</div>
+          <div class="panel-item"><span>✓</span> Est informé (on explique l'usage)</div>
+          <div class="panel-item"><span>✓</span> Peut être retiré à tout moment</div>
+        </div>
+        <div class="photo-case">
+          <h3>📸 Cas concret : les photos</h3>
+          <p>Avant de publier une photo d'un résident (journal interne, réseaux, site web) :</p>
+          <div class="panel-item"><span>▸</span> Formulaire signé par le résident ou son tuteur</div>
+          <div class="panel-item"><span>▸</span> Mentionner l'usage exact (ex : site web)</div>
+          <div class="panel-item"><span>▸</span> Conserver le formulaire signé en sécurité</div>
+        </div>
+      </div>
+      <div class="alarm-box">
+        <h4>🚨 Signal d'alarme</h4>
+        <p>Pas de formulaire de consentement avant une photo ou communication = 🚨 Arrêter immédiatement et régulariser avec le DPO.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SLIDE 7 : RÉFLEXE 3 ══ -->
+  <section class="slide reflex-slide" data-index="6">
+    <div class="reflex-header">
+      <div class="reflex-bar" style="background:var(--red);"></div>
+      <div class="reflex-title-area">
+        <div class="reflex-num">Réflexe 3 / 5</div>
+        <div class="reflex-main-title">🗑️ Les durées de conservation</div>
+        <div class="reflex-quote" style="color:var(--red);">"Le frigo se vide : on jette ce qui est périmé"</div>
+      </div>
+    </div>
+    <div class="reflex-body">
+      <table class="data-table">
+        <thead>
+          <tr><th>Type de donnée</th><th>Durée de conservation</th><th>Que faire ensuite ?</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Dossier résident (actif)</td><td>Toute la durée de l'accompagnement</td><td>Archivage sécurisé</td></tr>
+          <tr><td>Dossier résident (après départ)</td><td><strong>5 ans maximum</strong></td><td>Suppression définitive</td></tr>
+          <tr><td>Candidatures non retenues</td><td>2 ans</td><td>Suppression</td></tr>
+          <tr><td>Bulletins de salaire</td><td>5 ans</td><td>Archivage RH</td></tr>
+          <tr><td>Vidéosurveillance</td><td>30 jours</td><td>Écrasement automatique</td></tr>
+        </tbody>
+      </table>
+      <p class="table-note">📅 Nettoyage recommandé chaque <strong>octobre</strong> (nettoyage d'automne 🍂)</p>
+      <div style="background:#FFF8E1;border:1.5px solid #FFE082;border-radius:8px;padding:12px 16px;font-size:12.5px;color:var(--dgray);">
+        💬 <strong>Question :</strong> « Avez-vous des dossiers de personnes parties depuis plus de 5 ans dans vos armoires ? »
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SLIDE 8 : RÉFLEXE 4 ══ -->
+  <section class="slide reflex-slide" data-index="7">
+    <div class="reflex-header">
+      <div class="reflex-bar" style="background:var(--navy);"></div>
+      <div class="reflex-title-area">
+        <div class="reflex-num">Réflexe 4 / 5</div>
+        <div class="reflex-main-title">🔒 La sécurité des accès</div>
+        <div class="reflex-quote" style="color:var(--teal);">"La porte de la cave doit être fermée à clé"</div>
+      </div>
+    </div>
+    <div class="reflex-body">
+      <div class="two-panel">
+        <div class="panel-box green">
+          <h3>✅ Bonnes pratiques</h3>
+          <div class="panel-item"><span>✓</span> Mot de passe unique par personne</div>
+          <div class="panel-item"><span>✓</span> Au moins 12 caractères + majuscule + chiffre + symbole</div>
+          <div class="panel-item"><span>✓</span> Verrouiller l'écran quand on s'absente</div>
+          <div class="panel-item"><span>✓</span> Ne jamais partager son mot de passe</div>
+          <div class="panel-item"><span>✓</span> Signaler tout accès suspect immédiatement</div>
+        </div>
+        <div class="panel-box red">
+          <h3>❌ À ne jamais faire</h3>
+          <div class="panel-item"><span>✗</span> Mot de passe partagé entre collègues</div>
+          <div class="panel-item"><span>✗</span> Post-it avec le mot de passe sur l'écran</div>
+          <div class="panel-item"><span>✗</span> Rester connecté sur un poste commun</div>
+          <div class="panel-item"><span>✗</span> Accès d'anciens salariés non supprimés</div>
+          <div class="panel-item"><span>✗</span> Logiciels non mis à jour depuis longtemps</div>
+        </div>
+      </div>
+      <div style="background:#EFF6FF;border:1.5px solid #93C5FD;border-radius:8px;padding:12px 16px;font-size:12.5px;color:var(--dgray);">
+        💬 <strong>Question :</strong> « Si un collègue part demain, ses accès sont-ils supprimés automatiquement ou manuellement ? »
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SLIDE 9 : RÉFLEXE 5 ══ -->
+  <section class="slide reflex-slide" data-index="8">
+    <div class="reflex-header">
+      <div class="reflex-bar" style="background:var(--teal2);"></div>
+      <div class="reflex-title-area">
+        <div class="reflex-num">Réflexe 5 / 5</div>
+        <div class="reflex-main-title">📝 Les sous-traitants et prestataires</div>
+        <div class="reflex-quote" style="color:var(--teal);">"Même le plombier a besoin d'un badge"</div>
+      </div>
+    </div>
+    <div class="reflex-body">
+      <div class="contractor-examples">
+        <div class="contractor-card"><span class="cicon">💻</span>Logiciels métier<br><small>(dossiers résidents)</small></div>
+        <div class="contractor-card"><span class="cicon">📊</span>Comptabilité<br><small>& paie externalisée</small></div>
+        <div class="contractor-card"><span class="cicon">📧</span>Messagerie<br><small>& cloud</small></div>
+        <div class="contractor-card"><span class="cicon">🏥</span>Prestataires<br><small>de soins externes</small></div>
+      </div>
+      <div class="dpa-box">
+        <h4>📋 Obligation légale : le DPA (Data Processing Agreement)</h4>
+        <p>Tout prestataire qui touche à vos données <strong>DOIT signer un contrat DPA</strong>.<br>
+        <strong>Réflexe :</strong> avant tout nouveau contrat ou logiciel → vérifier avec le DPO qu'un DPA est prévu.</p>
+      </div>
+      <div class="alarm-box">
+        <h4>🚨 Signal d'alarme</h4>
+        <p>Contrat sans clause RGPD = 🚨 Ne pas signer avant validation du DPO.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SLIDE 10 : INCIDENT ══ -->
+  <section class="slide s10" data-index="9">
+    <div class="slide-header">⚠️ En cas d'incident : les 72h</div>
+    <div class="slide-body" style="padding-top:24px;">
+      <p class="s10-sub">Une violation de données = obligation légale d'agir vite</p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-circle" style="background:var(--red);">🚨<span class="tl-time">H+0</span></div>
+          <div class="tl-label">Je détecte<br>l'incident</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-circle" style="background:var(--gold);">📞<span class="tl-time">H+1</span></div>
+          <div class="tl-label">Je contacte<br>le DPO</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-circle" style="background:var(--teal);">📝<span class="tl-time">H+24</span></div>
+          <div class="tl-label">On documente<br>les faits</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-circle" style="background:#15803D;">📤<span class="tl-time">H+72</span></div>
+          <div class="tl-label">Déclaration<br>à la CNIL</div>
+        </div>
+      </div>
+      <div class="incident-examples">
+        <h4>Exemples d'incidents à signaler :</h4>
+        <p>📧 Email envoyé à la mauvaise famille &nbsp;•&nbsp; 📁 Dossier perdu ou volé &nbsp;•&nbsp; 🖥️ Accès non autorisé à un logiciel &nbsp;•&nbsp; 💾 Clé USB perdue contenant des données</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SLIDE 11 : QUIZ ══ -->
+  <section class="slide s11" data-index="10">
+    <div class="slide-header">🧠 Quiz : testez vos réflexes !</div>
+    <div class="slide-body">
+      <div class="quiz-grid">
+        <div class="quiz-q" id="q1">
+          <h4>Q1 — Un résident demande à voir son dossier. Vous avez…</h4>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="answer(this,'wrong','q1')">A. 15 jours pour répondre</div>
+            <div class="quiz-opt" onclick="answer(this,'correct','q1')">B. 30 jours pour répondre ✅</div>
+            <div class="quiz-opt" onclick="answer(this,'wrong','q1')">C. 3 mois pour répondre</div>
+          </div>
+          <div class="quiz-feedback">✅ La loi impose un délai de <strong>30 jours</strong> pour répondre à une demande d'accès.</div>
+        </div>
+        <div class="quiz-q" id="q2">
+          <h4>Q2 — Vous perdez une clé USB avec des dossiers. Vous…</h4>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="answer(this,'wrong','q2')">A. N'en parlez pas, personne ne l'a su</div>
+            <div class="quiz-opt" onclick="answer(this,'wrong','q2')">B. Attendez de voir si quelqu'un la retrouve</div>
+            <div class="quiz-opt" onclick="answer(this,'correct','q2')">C. Prévenez le DPO immédiatement ✅</div>
+          </div>
+          <div class="quiz-feedback">✅ Tout incident doit être signalé au DPO <strong>immédiatement</strong>. Délai légal CNIL : 72h.</div>
+        </div>
+        <div class="quiz-q" id="q3">
+          <h4>Q3 — Un ancien salarié part. Ses accès logiciels…</h4>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="answer(this,'wrong','q3')">A. Restent actifs 6 mois par sécurité</div>
+            <div class="quiz-opt" onclick="answer(this,'correct','q3')">B. Sont supprimés immédiatement ✅</div>
+            <div class="quiz-opt" onclick="answer(this,'wrong','q3')">C. Sont supprimés au bout d'un an</div>
+          </div>
+          <div class="quiz-feedback">✅ Les accès doivent être supprimés <strong>dès le départ</strong> du salarié, sans délai.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SLIDE 12 : RECAP ══ -->
+  <section class="slide s12" data-index="11">
+    <h2 class="s12-title">Les 5 réflexes à retenir 🛡️</h2>
+    <div class="recap-grid">
+      <div class="recap-card">
+        <span class="recap-icon">🔑</span>
+        <div class="recap-num">Réflexe 1</div>
+        <div class="recap-label">Droits des personnes</div>
+        <div class="recap-sub">30 jours pour répondre aux demandes</div>
+      </div>
+      <div class="recap-card">
+        <span class="recap-icon">✋</span>
+        <div class="recap-num">Réflexe 2</div>
+        <div class="recap-label">Consentement</div>
+        <div class="recap-sub">Formulaire signé avant toute photo ou communication</div>
+      </div>
+      <div class="recap-card">
+        <span class="recap-icon">🗑️</span>
+        <div class="recap-num">Réflexe 3</div>
+        <div class="recap-label">Durées de conservation</div>
+        <div class="recap-sub">Nettoyage annuel des dossiers périmés</div>
+      </div>
+      <div class="recap-card">
+        <span class="recap-icon">🔒</span>
+        <div class="recap-num">Réflexe 4</div>
+        <div class="recap-label">Sécurité des accès</div>
+        <div class="recap-sub">Mots de passe uniques, accès supprimés au départ</div>
+      </div>
+      <div class="recap-card">
+        <span class="recap-icon">📝</span>
+        <div class="recap-num">Réflexe 5</div>
+        <div class="recap-label">Sous-traitants</div>
+        <div class="recap-sub">DPA signé avant tout nouveau prestataire</div>
+      </div>
+    </div>
+    <div class="contact-box">
+      <h3>📬 Contact DPO — une question ? un incident ?</h3>
+      <a href="mailto:rgpd@unapei92.fr">rgpd@unapei92.fr</a>
+      <p>Disponible pour toute question ou signalement d'incident</p>
+    </div>
+  </section>
+
+</div><!-- /deck -->
+
+<!-- NAV -->
+<div id="nav">
+  <button id="btn-prev" onclick="go(-1)" disabled>←</button>
+  <span id="slide-counter">1 / 12</span>
+  <button id="btn-next" onclick="go(1)">→</button>
+</div>
+
+<!-- DOTS -->
+<div id="dots"></div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let cur = 0;
+
+  // Build dots
+  const dotsEl = document.getElementById('dots');
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+  }
+
+  function goTo(n) {
+    if (n < 0 || n >= total) return;
+    slides[cur].classList.remove('active');
+    slides[cur].classList.add('out');
+    setTimeout(() => slides[cur < n ? cur : n].classList.remove('out'), 460);
+    // Actually remove out from OLD slide
+    const prev = cur;
+    cur = n;
+    slides[cur].classList.add('active');
+    setTimeout(() => slides[prev].classList.remove('out'), 460);
+    updateUI();
+  }
+
+  function go(dir) { goTo(cur + dir); }
+
+  function updateUI() {
+    document.getElementById('slide-counter').textContent = `${cur + 1} / ${total}`;
+    document.getElementById('btn-prev').disabled = cur === 0;
+    document.getElementById('btn-next').disabled = cur === total - 1;
+    document.getElementById('progress-bar').style.width = `${((cur + 1) / total) * 100}%`;
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+  });
+
+  // Touch / swipe
+  let tx = 0;
+  document.getElementById('deck').addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  document.getElementById('deck').addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+  }, { passive: true });
+
+  // Quiz answers
+  window.answer = function(el, type, qid) {
+    const q = document.getElementById(qid);
+    if (q.classList.contains('revealed')) return;
+    q.classList.add('revealed');
+    const opts = q.querySelectorAll('.quiz-opt');
+    opts.forEach(o => {
+      if (o === el) o.classList.add(type);
+      o.style.pointerEvents = 'none';
+    });
+    // Always reveal correct
+    opts.forEach(o => {
+      if (o.onclick.toString().includes("'correct'")) {
+        setTimeout(() => o.classList.add('correct'), 300);
+      }
+    });
+  };
+
+  // Fullscreen
+  document.getElementById('fs-btn').addEventListener('click', () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  });
+
+  updateUI();
+</script>
+</body>
+</html>

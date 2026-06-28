@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit RGPD — SESSAD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F3EE;--card:#FFFFFF;--line:#E6E2D8;--ink:#23272E;--ink-soft:#6B7280;
+    --red:#B0463B;--red-bg:#F7E4E1;--orange:#BD8A35;--orange-bg:#F6ECD9;--green:#4F7A68;--green-bg:#E6EEE9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.55;}
+  .wrap{max-width:920px;margin:0 auto;padding:40px 24px 80px;}
+  .page-header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+  .page-header h1{font-size:24px;font-weight:700;margin:0;}
+  .page-header .count{font-size:14px;color:var(--ink-soft);}
+  .page-note{font-size:13px;color:var(--ink-soft);margin:0 0 28px;}
+  .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px;}
+  .kpi-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;}
+  .kpi-card .kpi-label{font-size:13.5px;color:var(--ink-soft);margin-bottom:8px;}
+  .kpi-card .kpi-value{font-size:32px;font-weight:700;}
+  .section-title{font-size:14px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:14px;}
+  .section-sub{font-size:13.5px;color:var(--ink-soft);margin:-8px 0 14px;}
+  .risk-list{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 22px;margin-bottom:36px;}
+  .risk-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);}
+  .risk-row:last-child{border-bottom:none;}
+  .risk-rank{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:var(--red-bg);color:var(--red);}
+  .risk-row:nth-child(4) .risk-rank,.risk-row:nth-child(5) .risk-rank{background:var(--orange-bg);color:var(--orange);}
+  .risk-text{font-size:14.5px;font-weight:500;}
+  .estab-card{display:block;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--orange);border-radius:10px;padding:18px 20px;text-decoration:none;color:var(--ink);transition:box-shadow .15s,transform .15s;margin-bottom:40px;}
+  .estab-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.06);transform:translateY(-1px);}
+  .estab-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:6px;}
+  .estab-card-top h3{font-size:17px;font-weight:600;margin:0;}
+  .estab-card .meta{font-size:13.5px;color:var(--ink-soft);margin-bottom:12px;}
+  .badge{display:inline-flex;align-items:center;font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:6px;white-space:nowrap;}
+  .badge-orange{background:var(--orange-bg);color:var(--orange);}
+  .estab-icons{display:flex;gap:10px;color:var(--ink-soft);}
+  .estab-icons svg{width:18px;height:18px;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--ink-soft);text-decoration:none;margin-bottom:18px;}
+  .back-link:hover{color:var(--ink);}
+  .back-link svg{width:16px;height:16px;}
+  .detail-header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:6px;}
+  .detail-header h2{font-size:22px;font-weight:700;margin:0;}
+  .detail-header .score{font-size:15px;font-weight:700;color:var(--orange);}
+  .detail-sites{font-size:13px;color:var(--ink-soft);margin-bottom:24px;}
+  .detail-section{margin-bottom:64px;}
+  .block{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 24px;margin-bottom:16px;}
+  .block-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .block-head svg{width:20px;height:20px;flex-shrink:0;}
+  .block-head h3{font-size:15.5px;font-weight:700;margin:0;}
+  .block.risques svg{color:var(--red);}
+  .block.principes svg{color:var(--ink-soft);}
+  .block.urgent svg,.block.urgent .block-head h3{color:var(--red);}
+  .block.planifier svg,.block.planifier .block-head h3{color:var(--orange);}
+  .block.recommande svg,.block.recommande .block-head h3{color:var(--green);}
+  .block ul{margin:0;padding-left:20px;font-size:14.5px;}
+  .block ul li{margin-bottom:9px;}
+  .block ul li:last-child{margin-bottom:0;}
+  ul.action-list{padding-left:0;margin:0;}
+  .action-item{padding:9px 0;border-bottom:1px solid var(--line);font-size:14.5px;list-style:none;}
+  .action-item:last-child{border-bottom:none;}
+  .highlight-box{background:var(--orange-bg);border:1px solid var(--orange);border-radius:10px;padding:16px 20px;margin-bottom:28px;font-size:14px;color:var(--ink);}
+  .highlight-box strong{color:var(--orange);}
+  .good-box{background:var(--green-bg);border:1px solid var(--green);border-radius:10px;padding:16px 20px;margin-bottom:28px;font-size:14px;color:var(--ink);}
+  .good-box strong{color:var(--green);}
+  footer{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:40px;}
+  @media(max-width:640px){.kpi-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap" id="top">
+
+  <!-- VUE GLOBALE -->
+  <div class="page-header">
+    <h1>Audit RGPD — vue globale</h1>
+    <div class="count">1 SESSAD · 1 réponse</div>
+  </div>
+  <p class="page-note">Le SESSAD Trajectoires intervient principalement dans les écoles et au domicile des enfants. Ce mode d'intervention mobile crée des risques spécifiques : appareils transportés, connexions non maîtrisées, documents partagés dans des espaces non confidentiels (salles de classe, couloirs d'école).</p>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Score moyen de conformité</div>
+      <div class="kpi-value">52 / 100</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Risques majeurs détectés</div>
+      <div class="kpi-value">5</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Actions correctives proposées</div>
+      <div class="kpi-value">16</div>
+    </div>
+  </div>
+
+  <div class="section-title">Risques majeurs identifiés</div>
+  <div class="section-sub">Classés par ordre de criticité en cas de contrôle de la CNIL</div>
+
+  <div class="risk-list">
+    <div class="risk-row">
+      <div class="risk-rank">1</div>
+      <div class="risk-text">Aucun référent RGPD désigné, ni de lien établi avec le DPO</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">2</div>
+      <div class="risk-text">Données des enfants transmises aux écoles par email classique non sécurisé</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">3</div>
+      <div class="risk-text">Ordinateurs portables utilisés dans des lieux publics sans précautions (cafés, transports) avec des données d'enfants ouverts à l'écran</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">4</div>
+      <div class="risk-text">Aucun accord des deux parents recueilli systématiquement en cas de parents séparés pour l'accompagnement SESSAD</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">5</div>
+      <div class="risk-text">Données de santé des enfants non cloisonnées — tous les professionnels accèdent à l'ensemble des informations</div>
+    </div>
+  </div>
+
+  <div class="section-title">Établissement — cliquer pour ouvrir le détail</div>
+
+  <a class="estab-card" href="#detail-trajectoires">
+    <div class="estab-card-top">
+      <h3>SESSAD Trajectoires</h3>
+      <span class="badge badge-orange">Risque modéré</span>
+    </div>
+    <div class="meta">SESSAD · 86 enfants accompagnés · 19 professionnels · Interventions en écoles et à domicile</div>
+    <div class="estab-icons" title="Points de vigilance : référent RGPD, email non sécurisé, lieux publics, parents séparés, cloisonnement données">
+      <!-- user-x -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h2.5"/><line x1="17" y1="8" x2="22" y2="13"/><line x1="22" y1="8" x2="17" y2="13"/></svg>
+      <!-- mail -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <!-- laptop -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"/></svg>
+      <!-- users -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <!-- shield-off -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.7 14a6.9 6.9 0 0 0 .3-2V5l-8-3-3.2 1.2"/><path d="M4.7 4.7 4 5v7c0 6 8 10 8 10a20.3 20.3 0 0 0 5.62-4.38"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+    </div>
+  </a>
+
+  <!-- ===== DÉTAIL SESSAD TRAJECTOIRES ===== -->
+  <div class="detail-section">
+    <a class="back-link" href="#top" id="detail-trajectoires">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour à la vue d'ensemble
+    </a>
+    <div class="detail-header">
+      <h2>SESSAD Trajectoires</h2>
+      <div class="score">Score : 52/100</div>
+    </div>
+    <div class="detail-sites">SESSAD · 86 enfants · 19 professionnels · Répondant : Aurélie (Chef de service) · Interventions principalement en écoles et à domicile</div>
+
+    <div class="highlight-box">
+      <strong>Contexte spécifique :</strong> Les 19 professionnels du SESSAD (orthophonistes, psychomotriciens, éducateurs) se déplacent quotidiennement dans des écoles et des domiciles avec des ordinateurs portables contenant les dossiers des 86 enfants. Chaque déplacement est une exposition potentielle aux données si les appareils ne sont pas correctement sécurisés.
+    </div>
+
+    <div class="good-box">
+      <strong>Points positifs déjà en place :</strong> Un incident a été signalé au DPO dans les 72h — la procédure a donc fonctionné une fois. Le VPN est activé sur les connexions. Des consentements écrits sont recueillis auprès des familles. Les signalements à l'ASE sont sécurisés. Ce sont des bases solides à consolider.
+    </div>
+
+    <div class="block risques">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3>1. Analyse des risques</h3>
+      </div>
+      <ul>
+        <li>Personne n'est officiellement responsable du RGPD au quotidien, et le DPO n'est pas connu des équipes.</li>
+        <li>Les informations sur les enfants envoyées aux écoles passent par email classique non sécurisé — comme glisser un dossier médical dans une boîte aux lettres sans enveloppe.</li>
+        <li>Les ordinateurs portables sont parfois utilisés dans des cafés ou des transports en commun, où n'importe qui peut voir l'écran.</li>
+        <li>En cas de parents séparés, on ne vérifie pas toujours que les deux parents ont bien donné leur accord pour l'accompagnement SESSAD — ce qui peut créer des conflits ou des litiges juridiques.</li>
+        <li>Les données de santé des enfants ne sont pas cloisonnées : tous les professionnels, qu'ils soient ou non soignants, ont accès à l'ensemble des informations.</li>
+        <li>Les plannings d'interventions avec les adresses des domiciles et des écoles des enfants sont partagés entre professionnels sans cadre défini.</li>
+        <li>La durée de conservation des dossiers après la fin de l'accompagnement n'est pas définie.</li>
+      </ul>
+    </div>
+
+    <div class="block principes">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+        <h3>2. Principes RGPD concernés</h3>
+      </div>
+      <ul>
+        <li><strong>Un responsable identifié et relié au DPO</strong> pour assurer un suivi régulier et réagir rapidement.</li>
+        <li><strong>Des échanges sécurisés avec les écoles</strong> : l'email classique n'est pas adapté pour transmettre des informations sur des enfants en situation de handicap.</li>
+        <li><strong>La discrétion en mobilité</strong> : un écran visible dans un café, c'est une violation de données en puissance.</li>
+        <li><strong>L'accord des deux parents</strong> : en cas de séparation, les deux parents ont en principe l'autorité parentale — ne recueillir qu'un seul accord peut être contesté.</li>
+        <li><strong>Le cloisonnement des données de santé</strong> : seuls les professionnels concernés doivent accéder aux informations médicales de chaque enfant.</li>
+        <li><strong>Des plannings protégés</strong> : les adresses et informations personnelles des familles ne doivent circuler que de façon maîtrisée.</li>
+        <li><strong>Une durée de conservation définie</strong> pour les dossiers des enfants après la fin du suivi.</li>
+      </ul>
+    </div>
+
+    <div class="block urgent">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h3>Urgent</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Désigner un référent RGPD local et organiser le lien avec le DPO.</li>
+        <li class="action-item">Remplacer les envois vers les écoles par email classique par un canal sécurisé (messagerie chiffrée ou plateforme dédiée).</li>
+        <li class="action-item">Interdire l'utilisation des ordinateurs portables dans des lieux publics (cafés, transports) ou imposer un filtre écran de confidentialité.</li>
+        <li class="action-item">Mettre en place une procédure systématique de recueil de l'accord des deux parents en cas de séparation, avant tout accompagnement.</li>
+      </ul>
+    </div>
+
+    <div class="block planifier">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <h3>À planifier</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Cloisonner les données de santé des enfants : limiter l'accès aux informations médicales aux seuls professionnels soignants concernés par chaque enfant.</li>
+        <li class="action-item">Encadrer le partage des plannings d'intervention (adresses, écoles) : définir qui peut y accéder et dans quel format.</li>
+        <li class="action-item">Définir et écrire la durée de conservation des dossiers des enfants après la fin de l'accompagnement.</li>
+        <li class="action-item">Former l'ensemble des professionnels aux risques RGPD liés à la mobilité, en priorité sur la sécurité des appareils et la confidentialité dans les écoles.</li>
+        <li class="action-item">Formaliser la procédure de signalement d'une violation de données pour que tous les professionnels sachent quoi faire, pas seulement la chef de service.</li>
+        <li class="action-item">Vérifier et faire signer les contrats RGPD avec les prestataires (intervenants extérieurs).</li>
+      </ul>
+    </div>
+
+    <div class="block recommande">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h3>Recommandé</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Sécuriser les cahiers de liaison utilisés pour communiquer avec les familles (données sensibles, accès non contrôlé).</li>
+        <li class="action-item">Vérifier que les échanges avec les enseignants référents de l'Éducation Nationale passent par un canal sécurisé.</li>
+        <li class="action-item">Clarifier si les véhicules de service sont équipés de géolocalisation et, si oui, en informer les professionnels et encadrer cet usage.</li>
+        <li class="action-item">Confirmer avec le DPO la base légale utilisée pour traiter les données de santé des enfants (soins paramédicaux).</li>
+        <li class="action-item">Vérifier le contenu du registre des traitements auprès du DPO et le partager avec l'équipe.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    Rapport 8/8 — SESSAD · Synthèse établie à partir de la réponse au questionnaire d'auto-évaluation RGPD du 04/05/2026.
+  </footer>
+
+</div>
+</body>
+</html>

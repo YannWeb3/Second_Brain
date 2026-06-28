@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit RGPD 2025 — IME · Unapei92</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue:       #1B4F8A;
+  --blue-dark:  #0F3260;
+  --blue-light: #EBF2FB;
+  --accent:     #E8A020;
+  --green:      #1A6B3C;
+  --red:        #C0392B;
+  --bg:         #F4F2EE;
+  --surface:    #FFFFFF;
+  --text:       #1C1C1C;
+  --muted:      #6B6B6B;
+  --border:     #DDD9D0;
+  --radius:     10px;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--blue);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.header-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2.25rem 2rem 1.75rem;
+  position: relative;
+  z-index: 1;
+}
+
+.header::after {
+  content: '';
+  position: absolute;
+  right: -60px; top: -80px;
+  width: 340px; height: 340px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  pointer-events: none;
+}
+
+.header-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 18px; height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.header h1 {
+  font-family: 'Instrument Serif', serif;
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+}
+
+.header h1 em {
+  font-style: italic;
+  color: rgba(255,255,255,0.72);
+}
+
+.header-sub {
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.55);
+  font-weight: 300;
+  margin-top: 0.25rem;
+}
+
+/* ── PROGRESS ── */
+.progress-wrap {
+  background: rgba(0,0,0,0.2);
+  height: 3px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 16.66%; /* 1/6 blocs */
+}
+
+/* ── BREADCRUMB BLOCS ── */
+.blocs-nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.blocs-nav::-webkit-scrollbar { display: none; }
+
+.blocs-nav-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  padding: 0 1.5rem;
+  gap: 0;
+}
+
+.bloc-tab {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--muted);
+  padding: 0.85rem 1rem;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  cursor: default;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+
+.bloc-tab.active {
+  color: var(--blue);
+  font-weight: 500;
+  border-bottom-color: var(--blue);
+}
+
+.bloc-tab.done {
+  color: var(--green);
+}
+
+/* ── CONTAINER ── */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 5rem;
+}
+
+/* ── BLOC ── */
+.bloc { display: none; animation: fadeUp 0.28s ease both; }
+.bloc.active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.bloc-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.45rem;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 0.3rem;
+}
+
+.bloc-desc {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin-bottom: 1.75rem;
+  line-height: 1.55;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── QUESTIONS ── */
+.questions { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.question {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.4rem;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.question:focus-within {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(27,79,138,0.08);
+}
+
+.question.hidden { display: none; }
+
+.q-label {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.45;
+  margin-bottom: 0.85rem;
+  display: flex;
+  gap: 0.4rem;
+  align-items: flex-start;
+}
+
+.q-required {
+  color: var(--red);
+  font-size: 0.8rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.q-hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 300;
+  margin-top: -0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="email"],
+textarea,
+select {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  padding: 0.65rem 0.9rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.18s, background 0.18s;
+  appearance: none;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--blue);
+  background: #fff;
+}
+
+input.error, textarea.error { border-color: var(--red); }
+
+textarea {
+  min-height: 88px;
+  resize: vertical;
+  line-height: 1.55;
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B6B6B' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+/* ── CHOIX RADIO / CHECKBOX ── */
+.choices { display: flex; flex-direction: column; gap: 0.45rem; }
+
+.choices.horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.choice-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.6rem 0.85rem;
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  background: var(--bg);
+  user-select: none;
+}
+
+.choice-item:hover { border-color: var(--blue); background: var(--blue-light); }
+
+.choice-item input[type="radio"],
+.choice-item input[type="checkbox"] {
+  width: 16px; height: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  accent-color: var(--blue);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.choice-item label {
+  font-size: 0.875rem;
+  cursor: pointer;
+  line-height: 1.4;
+  color: var(--text);
+  flex: 1;
+}
+
+.choice-item:has(input:checked) {
+  border-color: var(--blue);
+  background: var(--blue-light);
+}
+
+.choice-item:has(input:checked) label { font-weight: 500; }
+
+/* ── NAVIGATION BAS ── */
+.bloc-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  gap: 1rem;
+}
+
+.btn {
+  padding: 0.72rem 1.6rem;
+  border-radius: 7px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.18s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-prev {
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--muted);
+}
+.btn-prev:hover { border-color: var(--muted); color: var(--text); }
+
+.btn-next {
+  background: var(--blue);
+  color: #fff;
+  margin-left: auto;
+}
+.btn-next:hover { background: var(--blue-dark); }
+
+.btn-submit {
+  background: var(--green);
+  color: #fff;
+  margin-left: auto;
+}
+.btn-submit:hover { background: #145530; }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.step-counter {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+/* ── VALIDATION ERROR ── */
+.field-error {
+  font-size: 0.78rem;
+  color: var(--red);
+  margin-top: 0.4rem;
+  display: none;
+}
+
+.validation-banner {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 7px;
+  padding: 0.75rem 1rem;
+  font-size: 0.84rem;
+  color: var(--red);
+  margin-bottom: 1.25rem;
+  display: none;
+}
+
+/* ── SUCCÈS ── */
+.success-screen {
+  display: none;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid #B8E6CB;
+  margin-top: 1rem;
+}
+
+.success-icon {
+  width: 56px; height: 56px;
+  background: #E8F5EE;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.25rem;
+  font-size: 1.6rem;
+}
+
+.success-screen h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--green);
+  margin-bottom: 0.75rem;
+}
+
+.success-screen p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .header-inner { padding: 1.75rem 1.25rem 1.5rem; }
+  .header h1 { font-size: 1.55rem; }
+  .container { padding: 1.5rem 1rem 4rem; }
+  .question { padding: 1rem 1.1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     HEADER
+════════════════════════════════════════ -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-eyebrow">Unapei92 · Audit RGPD 2025</div>
+    <h1>Institut Médico-Éducatif <em>(IME)</em></h1>
+    <p class="header-sub">Questionnaire de conformité — à compléter par le directeur ou le référent RGPD de l'établissement</p>
+  </div>
+</header>
+<div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+
+<!-- ════════════════════════════════════════
+     ONGLETS BLOCS
+════════════════════════════════════════ -->
+<nav class="blocs-nav" aria-label="Sections du formulaire">
+  <div class="blocs-nav-inner" id="blocs-nav">
+    <div class="bloc-tab active" data-bloc="0">Identification</div>
+    <div class="bloc-tab" data-bloc="1">Données traitées</div>
+    <div class="bloc-tab" data-bloc="2">Droits des personnes</div>
+    <div class="bloc-tab" data-bloc="3">Sécurité</div>
+    <div class="bloc-tab" data-bloc="4">Sous-traitants</div>
+    <div class="bloc-tab" data-bloc="5">Incidents &amp; DPO</div>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════
+     FORMULAIRE
+════════════════════════════════════════ -->
+<main class="container">
+<form id="main-form" novalidate>
+
+<!-- ─── BLOC 0 — Identification ─── -->
+<section class="bloc active" id="bloc-0">
+  <h2 class="bloc-title">Identification de l'établissement</h2>
+  <p class="bloc-desc">Ces informations permettront de créer l'onglet correspondant dans le tableau de bord RGPD. Le nom saisi ici sera utilisé tel quel.</p>
+  <div id="banner-0" class="validation-banner">Merci de compléter les champs obligatoires avant de continuer.</div>
+  <div class="questions">
+
+    <div class="question" id="q-nom_etablissement">
+      <div class="q-label"><span class="q-required">*</span>Nom complet de l'établissement</div>
+      <div class="q-hint">Ex : IME Les Hirondelles, IME Nanterre, IME du Val de Seine…</div>
+      <input type="text" id="nom_etablissement" name="nom_etablissement" required placeholder="IME …">
+    </div>
+
+    <div class="question" id="q-adresse">
+      <div class="q-label">Adresse</div>
+      <input type="text" id="adresse" name="adresse" placeholder="Rue, code postal, ville">
+    </div>
+
+    <div class="question" id="q-directeur">
+      <div class="q-label"><span class="q-required">*</span>Nom et prénom du directeur</div>
+      <input type="text" id="directeur" name="directeur" required placeholder="Prénom NOM">
+    </div>
+
+    <div class="question" id="q-repondant">
+      <div class="q-label"><span class="q-required">*</span>Nom du répondant (si différent du directeur)</div>
+      <input type="text" id="repondant" name="repondant" required placeholder="Prénom NOM">
+    </div>
+
+    <div class="question" id="q-fonction_repondant">
+      <div class="q-label">Fonction du répondant</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="fr1" name="fonction_repondant" value="Directeur"><label for="fr1">Directeur</label></div>
+        <div class="choice-item"><input type="radio" id="fr2" name="fonction_repondant" value="Chef de service"><label for="fr2">Chef de service</label></div>
+        <div class="choice-item"><input type="radio" id="fr3" name="fonction_repondant" value="Référent RGPD"><label for="fr3">Référent RGPD</label></div>
+        <div class="choice-item"><input type="radio" id="fr4" name="fonction_repondant" value="Secrétaire de direction"><label for="fr4">Secrétaire de direction</label></div>
+        <div class="choice-item"><input type="radio" id="fr5" name="fonction_repondant" value="Autre"><label for="fr5">Autre</label></div>
+      </div>
+    </div>
+
+    <div class="question" id="q-email_contact">
+      <div class="q-label">Email de contact</div>
+      <input type="email" id="email_contact" name="email_contact" placeholder="prenom.nom@unapei92.fr">
+    </div>
+
+    <div class="question" id="q-nb_usagers">
+      <div class="q-label"><span class="q-required">*</span>Nombre d'usagers accompagnés (approximatif)</div>
+      <input type="number" id="nb_usagers" name="nb_usagers" required min="0" placeholder="0">
+    </div>
+
+    <div class="question" id="q-nb_salaries">
+      <div class="q-label">Nombre de salariés</div>
+      <input type="number" id="nb_salaries" name="nb_salaries" min="0" placeholder="0">
+    </div>
+
+  </div>
+  <div class="bloc-footer">
+    <span class="step-counter">Section 1 sur 6</span>
+    <button type="button" class="btn btn-next" onclick="navigate(1)">Suivant →</button>
+  </div>
+</section>
+
+<!-- ─── BLOC 1 — Données traitées ─── -->
+<section class="bloc" id="bloc-1">
+  <h2 class="bloc-title">Données traitées</h2>
+  <p class="bloc-desc">Recensement des catégories de données à caractère personnel collectées et traitées au sein de l'IME.</p>
+  <div id="banner-1" class="validation-banner">Merci de compléter les champs obligatoires avant de continuer.</div>
+  <div class="questions">
+
+    <div class="question" id="q-registre_traitements">
+      <div class="q-label"><span class="q-required">*</span>L'établissement dispose-t-il d'un registre des traitements ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="rt1" name="registre_traitements" value="Oui, à jour" required><label for="rt1">Oui, à jour</label></div>
+        <div class="choice-item"><input type="radio" id="rt2" name="registre_traitements" value="Oui, mais pas à jour"><label for="rt2">Oui, mais pas à jour</label></div>
+        <div class="choice-item"><input type="radio" id="rt3" name="registre_traitements" value="Non"><label for="rt3">Non</label></div>
+        <div class="choice-item"><input type="radio" id="rt4" name="registre_traitements" value="Ne sais pas"><label for="rt4">Je ne sais pas</label></div>
+      </div>
+    </div>
+
+    <div class="question" id="q-categories_donnees">
+      <div class="q-label"><span class="q-required">*</span>Quelles catégories de données sont traitées ? <small style="font-weight:300">(plusieurs choix possibles)</small></div>
+      <div class="choices">
+        <div class="choice-item"><input type="checkbox" id="cd1" name="categories_donnees" value="Données d'identité (usagers)"><label for="cd1">Données d'identité (usagers)</label></div>
+        <div class="choice-item"><input type="checkbox" id="cd2" name="categories_donnees" value="Données de santé (usagers)"><label for="cd2">Données de santé (usagers)</label></div>
+        <div class="choice-item"><input type="checkbox" id="cd3" name="categories_donnees" value="Données sociales et familiales"><label for="cd3">Données sociales et familiales</label></div>
+        <div class="choice-item"><input type="checkbox" id="cd4" name="categories_donnees" value="Données scolaires / éducatives"><label for="cd4">Données scolaires / éducatives</label></div>
+        <div class="choice-item"><input type="checkbox" id="cd5" name="categories_donnees" value="Données RH (salariés)"><label for="cd5">Données RH (salariés)</label></div>
+        <div class="choice-item"><input type="checkbox" id="cd6" name="categories_donnees" value="Photos / vidéos"><label for="cd6">Photos / vidéos</label></div>
+        <div class="choice-item"><input type="checkbox" id="cd7" name="categories_donnees" value="Données de connexion / informatiques"><label for="cd7">Données de connexion / informatiques</label></div>
+      </div>
+    </div>
+
+    <div class="question" id="q-dossier_usager_numerique">
+      <div class="q-label"><span class="q-required">*</span>Le dossier usager est-il numérique ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="dun1" name="dossier_usager_numerique" value="Oui, entièrement" required><label for="dun1">Oui, entièrement</label></div>
+        <div class="choice-item"><input type="radio" id="dun2" name="dossier_usager_numerique" value="Partiellement (mixte papier / numérique)"><label for="dun2">Partiellement (mixte papier / numérique)</label></div>
+        <div class="choice-item"><input type="radio" id="dun3" name="dossier_usager_numerique" value="Non, papier uniquement"><label for="dun3">Non, papier uniquement</label></div>
+      </div>
+    </div>
+
+    <div class="question hidden" id="q-logiciel_dossier">
+      <div class="q-label">Nom du logiciel de gestion du dossier usager</div>
+      <div class="q-hint">Ex : Ogirys, Net Séisme, Imago, Cegi…</div>
+      <input type="text" id="logiciel_dossier" name="logiciel_dossier" placeholder="Nom du logiciel">
+    </div>
+
+    <div class="question" id="q-duree_conservation">
+      <div class="q-label">Des règles de durée de conservation sont-elles définies pour les dossiers usagers ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="dc1" name="duree_conservation" value="Oui, formalisées par écrit"><label for="dc1">Oui, formalisées par écrit</label></div>
+        <div class="choice-item"><input type="radio" id="dc2" name="duree_conservation" value="Oui, mais informelles"><label for="dc2">Oui, mais informelles</label></div>
+        <div class="choice-item"><input type="radio" id="dc3" name="duree_conservation" value="Non"><label for="dc3">Non</label></div>
+        <div class="choice-item"><input type="radio" id="dc4" name="duree_conservation" value="Ne sais pas"><label for="dc4">Je ne sais pas</label></div>
+      </div>
+    </div>
+
+    <div class="question" id="q-photos_usagers">
+      <div class="q-label">Des photos ou vidéos d'usagers sont-elles prises ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="pu1" name="photos_usagers" value="Oui"><label for="pu1">Oui</label></div>
+        <div class="choice-item"><input type="radio" id="pu2" name="photos_usagers" value="Non"><label for="pu2">Non</label></div>
+      </div>
+    </div>
+
+    <div class="question hidden" id="q-photos_consentement">
+      <div class="q-label">Un consentement écrit est-il recueilli avant toute prise de vue ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="pc1" name="photos_consentement" value="Oui, systématiquement"><label for="pc1">Oui, systématiquement</label></div>
+        <div class="choice-item"><input type="radio" id="pc2" name="photos_consentement" value="Parfois"><label for="pc2">Parfois</label></div>
+        <div class="choice-item"><input type="radio" id="pc3" name="photos_consentement" value="Non"><label for="pc3">Non</label></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="bloc-footer">
+    <button type="button" class="btn btn-prev" onclick="navigate(-1)">← Précédent</button>
+    <span class="step-counter">Section 2 sur 6</span>
+    <button type="button" class="btn btn-next" onclick="navigate(1)">Suivant →</button>
+  </div>
+</section>
+
+<!-- ─── BLOC 2 — Droits des personnes ─── -->
+<section class="bloc" id="bloc-2">
+  <h2 class="bloc-title">Droits des personnes</h2>
+  <p class="bloc-desc">Vérification de la mise en œuvre des droits RGPD (information, accès, rectification, opposition) pour les usagers et leurs familles.</p>
+  <div id="banner-2" class="validation-banner">Merci de compléter les champs obligatoires avant de continuer.</div>
+  <div class="questions">
+
+    <div class="question" id="q-notice_info">
+      <div class="q-label"><span class="q-required">*</span>Une notice d'information RGPD est-elle remise aux usagers / familles à l'admission ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="ni1" name="notice_info" value="Oui" required><label for="ni1">Oui</label></div>
+        <div class="choice-item"><input type="radio" id="ni2" name="notice_info" value="En cours de mise en place"><label for="ni2">En cours de mise en place</label></div>
+        <div class="choice-item"><input type="radio" id="ni3" name="notice_info" value="Non"><label for="ni3">Non</label></div>
+      </div>
+    </div>
+
+    <div class="question hidden" id="q-notice_date">
+      <div class="q-label">Depuis quelle date cette notice est-elle remise ?</div>
+      <input type="date" id="notice_date" name="notice_date">
+    </div>
+
+    <div class="question" id="q-procedure_droits">
+      <div class="q-label"><span class="q-required">*</span>Existe-t-il une procédure pour traiter les demandes d'exercice des droits ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="pd1" name="procedure_droits" value="Oui, formalisée" required><label for="pd1">Oui, formalisée</label></div>
+        <div class="choice-item"><input type="radio" id="pd2" name="procedure_droits" value="Oui, mais non écrite"><label for="pd2">Oui, mais non écrite</label></div>
+        <div class="choice-item"><input type="radio" id="pd3" name="procedure_droits" value="Non"><label for="pd3">Non</label></div>
+      </div>
+    </div>
+
+    <div class="question" id="q-demandes_recues">
+      <div class="q-label">Des demandes d'exercice des droits ont-elles été reçues ces 12 derniers mois ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="dr1" name="demandes_recues" value="Oui"><label for="dr1">Oui</label></div>
+        <div class="choice-item"><input type="radio" id="dr2" name="demandes_recues" value="Non"><label for="dr2">Non</label></div>
+        <div class="choice-item"><input type="radio" id="dr3" name="demandes_recues" value="Ne sais pas"><label for="dr3">Je ne sais pas</label></div>
+      </div>
+    </div>
+
+    <div class="question hidden" id="q-demandes_nb">
+      <div class="q-label">Combien de demandes ont été reçues ?</div>
+      <input type="number" id="demandes_nb" name="demandes_nb" min="0" placeholder="0">
+    </div>
+
+    <div class="question" id="q-info_salaries">
+      <div class="q-label">Les salariés sont-ils informés du traitement de leurs données personnelles ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="is1" name="info_salaries" value="Oui, par notice ou contrat"><label for="is1">Oui, par notice ou contrat</label></div>
+        <div class="choice-item"><input type="radio" id="is2" name="info_salaries" value="Partiellement"><label for="is2">Partiellement</label></div>
+        <div class="choice-item"><input type="radio" id="is3" name="info_salaries" value="Non"><label for="is3">Non</label></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="bloc-footer">
+    <button type="button" class="btn btn-prev" onclick="navigate(-1)">← Précédent</button>
+    <span class="step-counter">Section 3 sur 6</span>
+    <button type="button" class="btn btn-next" onclick="navigate(1)">Suivant →</button>
+  </div>
+</section>
+
+<!-- ─── BLOC 3 — Sécurité ─── -->
+<section class="bloc" id="bloc-3">
+  <h2 class="bloc-title">Sécurité des données</h2>
+  <p class="bloc-desc">Mesures techniques et organisationnelles mises en place pour protéger les données personnelles.</p>
+  <div id="banner-3" class="validation-banner">Merci de compléter les champs obligatoires avant de continuer.</div>
+  <div class="questions">
+
+    <div class="question" id="q-acces_informatique">
+      <div class="q-label"><span class="q-required">*</span>Les accès informatiques sont-ils individualisés (identifiant + mot de passe personnel) ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="ai1" name="acces_informatique" value="Oui, pour tous" required><label for="ai1">Oui, pour tous</label></div>
+        <div class="choice-item"><input type="radio" id="ai2" name="acces_informatique" value="Oui, pour la plupart"><label for="ai2">Oui, pour la plupart</label></div>
+        <div class="choice-item"><input type="radio" id="ai3" name="acces_informatique" value="Non (comptes partagés)"><label for="ai3">Non (comptes partagés)</label></div>
+      </div>
+    </div>
+
+    <div class="question" id="q-sauvegarde">
+      <div class="q-label"><span class="q-required">*</span>Des sauvegardes régulières des données sont-elles effectuées ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="sv1" name="sauvegarde" value="Oui, automatiques et testées" required><label for="sv1">Oui, automatiques et testées</label></div>
+        <div class="choice-item"><input type="radio" id="sv2" name="sauvegarde" value="Oui, automatiques mais non testées"><label for="sv2">Oui, automatiques mais non testées</label></div>
+        <div class="choice-item"><input type="radio" id="sv3" name="sauvegarde" value="Manuelles"><label for="sv3">Manuelles</label></div>
+        <div class="choice-item"><input type="radio" id="sv4" name="sauvegarde" value="Non"><label for="sv4">Non</label></div>
+      </div>
+    </div>
+
+    <div class="question" id="q-antivirus">
+      <div class="q-label">Un antivirus / EDR est-il installé sur les postes de travail ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="av1" name="antivirus" value="Oui, sur tous les postes"><label for="av1">Oui, sur tous les postes</label></div>
+        <div class="choice-item"><input type="radio" id="av2" name="antivirus" value="Sur certains postes seulement"><label for="av2">Sur certains postes seulement</label></div>
+        <div class="choice-item"><input type="radio" id="av3" name="antivirus" value="Non"><label for="av3">Non</label></div>
+        <div class="choice-item"><input type="radio" id="av4" name="antivirus" value="Ne sais pas"><label for="av4">Je ne sais pas</label></div>
+      </div>
+    </div>
+
+    <div class="question" id="q-chiffrement">
+      <div class="q-label">Les données sont-elles chiffrées (disques, clés USB, messagerie) ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="ch1" name="chiffrement" value="Oui, systématiquement"><label for="ch1">Oui, systématiquement</label></div>
+        <div class="choice-item"><input type="radio" id="ch2" name="chiffrement" value="Partiellement"><label for="ch2">Partiellement</label></div>
+        <div class="choice-item"><input type="radio" id="ch3" name="chiffrement" value="Non"><label for="ch3">Non</label></div>
+        <div class="choice-item"><input type="radio" id="ch4" name="chiffrement" value="Ne sais pas"><label for="ch4">Je ne sais pas</label></div>
+      </div>
+    </div>
+
+    <div class="question" id="q-destruction_docs">
+      <div class="q-label"><span class="q-required">*</span>Les documents papier contenant des données personnelles sont-ils détruits de façon sécurisée (broyeur, prestataire agréé) ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="dd1" name="destruction_docs" value="Oui, systématiquement" required><label for="dd1">Oui, systématiquement</label></div>
+        <div class="choice-item"><input type="radio" id="dd2" name="destruction_docs" value="Parfois"><label for="dd2">Parfois</label></div>
+        <div class="choice-item"><input type="radio" id="dd3" name="destruction_docs" value="Non"><label for="dd3">Non</label></div>
+      </div>
+    </div>
+
+    <div class="question" id="q-formation_secu">
+      <div class="q-label">Les salariés ont-ils été sensibilisés / formés à la sécurité des données ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="fs1" name="formation_secu" value="Oui, formation formelle"><label for="fs1">Oui, formation formelle</label></div>
+        <div class="choice-item"><input type="radio" id="fs2" name="formation_secu" value="Oui, sensibilisation informelle"><label for="fs2">Oui, sensibilisation informelle</label></div>
+        <div class="choice-item"><input type="radio" id="fs3" name="formation_secu" value="Non"><label for="fs3">Non</label></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="bloc-footer">
+    <button type="button" class="btn btn-prev" onclick="navigate(-1)">← Précédent</button>
+    <span class="step-counter">Section 4 sur 6</span>
+    <button type="button" class="btn btn-next" onclick="navigate(1)">Suivant →</button>
+  </div>
+</section>
+
+<!-- ─── BLOC 4 — Sous-traitants ─── -->
+<section class="bloc" id="bloc-4">
+  <h2 class="bloc-title">Sous-traitants &amp; prestataires</h2>
+  <p class="bloc-desc">Identification des tiers qui accèdent ou traitent des données personnelles pour le compte de l'établissement.</p>
+  <div id="banner-4" class="validation-banner">Merci de compléter les champs obligatoires avant de continuer.</div>
+  <div class="questions">
+
+    <div class="question" id="q-liste_prestataires">
+      <div class="q-label"><span class="q-required">*</span>Avez-vous identifié les prestataires ayant accès à des données personnelles ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="lp1" name="liste_prestataires" value="Oui, liste formalisée" required><label for="lp1">Oui, liste formalisée</label></div>
+        <div class="choice-item"><input type="radio" id="lp2" name="liste_prestataires" value="Oui, informellement"><label for="lp2">Oui, informellement</label></div>
+        <div class="choice-item"><input type="radio" id="lp3" name="liste_prestataires" value="Non"><label for="lp3">Non</label></div>
+      </div>
+    </div>
+
+    <div class="question" id="q-contrats_dpa">
+      <div class="q-label"><span class="q-required">*</span>Des contrats de sous-traitance incluant des clauses RGPD (DPA) sont-ils signés avec ces prestataires ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="dpa1" name="contrats_dpa" value="Oui, pour tous" required><label for="dpa1">Oui, pour tous</label></div>
+        <div class="choice-item"><input type="radio" id="dpa2" name="contrats_dpa" value="Oui, pour certains"><label for="dpa2">Oui, pour certains</label></div>
+        <div class="choice-item"><input type="radio" id="dpa3" name="contrats_dpa" value="Non"><label for="dpa3">Non</label></div>
+        <div class="choice-item"><input type="radio" id="dpa4" name="contrats_dpa" value="Ne sais pas"><label for="dpa4">Je ne sais pas</label></div>
+      </div>
+    </div>
+
+    <div class="question" id="q-cloud">
+      <div class="q-label">Des données personnelles sont-elles hébergées dans le cloud (Drive, OneDrive, Dropbox…) ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="cl1" name="cloud" value="Oui"><label for="cl1">Oui</label></div>
+        <div class="choice-item"><input type="radio" id="cl2" name="cloud" value="Non"><label for="cl2">Non</label></div>
+        <div class="choice-item"><input type="radio" id="cl3" name="cloud" value="Ne sais pas"><label for="cl3">Je ne sais pas</label></div>
+      </div>
+    </div>
+
+    <div class="question hidden" id="q-cloud_detail">
+      <div class="q-label">Préciser quel service cloud et quelles données</div>
+      <textarea id="cloud_detail" name="cloud_detail" placeholder="Ex : Google Drive pour les comptes-rendus de réunion, OneDrive pour les plannings salariés…"></textarea>
+    </div>
+
+    <div class="question" id="q-transfert_hors_ue">
+      <div class="q-label">Des données sont-elles transférées hors de l'Union Européenne ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="thu1" name="transfert_hors_ue" value="Oui"><label for="thu1">Oui</label></div>
+        <div class="choice-item"><input type="radio" id="thu2" name="transfert_hors_ue" value="Non"><label for="thu2">Non</label></div>
+        <div class="choice-item"><input type="radio" id="thu3" name="transfert_hors_ue" value="Ne sais pas"><label for="thu3">Je ne sais pas</label></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="bloc-footer">
+    <button type="button" class="btn btn-prev" onclick="navigate(-1)">← Précédent</button>
+    <span class="step-counter">Section 5 sur 6</span>
+    <button type="button" class="btn btn-next" onclick="navigate(1)">Suivant →</button>
+  </div>
+</section>
+
+<!-- ─── BLOC 5 — Incidents & DPO ─── -->
+<section class="bloc" id="bloc-5">
+  <h2 class="bloc-title">Incidents &amp; DPO</h2>
+  <p class="bloc-desc">Gestion des violations de données et relation avec le Délégué à la Protection des Données.</p>
+  <div id="banner-5" class="validation-banner">Merci de compléter les champs obligatoires avant de continuer.</div>
+  <div class="questions">
+
+    <div class="question" id="q-connaissance_dpo">
+      <div class="q-label"><span class="q-required">*</span>Connaissez-vous les coordonnées du DPO d'Unapei92 ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="dpo1" name="connaissance_dpo" value="Oui" required><label for="dpo1">Oui</label></div>
+        <div class="choice-item"><input type="radio" id="dpo2" name="connaissance_dpo" value="Non"><label for="dpo2">Non</label></div>
+      </div>
+    </div>
+
+    <div class="question" id="q-incident_12mois">
+      <div class="q-label"><span class="q-required">*</span>Y a-t-il eu un incident de sécurité ou une violation de données ces 12 derniers mois ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="inc1" name="incident_12mois" value="Oui" required><label for="inc1">Oui</label></div>
+        <div class="choice-item"><input type="radio" id="inc2" name="incident_12mois" value="Non"><label for="inc2">Non</label></div>
+        <div class="choice-item"><input type="radio" id="inc3" name="incident_12mois" value="Ne sais pas"><label for="inc3">Je ne sais pas</label></div>
+      </div>
+    </div>
+
+    <div class="question hidden" id="q-incident_type">
+      <div class="q-label">Quel type d'incident ? <small style="font-weight:300">(plusieurs choix possibles)</small></div>
+      <div class="choices">
+        <div class="choice-item"><input type="checkbox" id="it1" name="incident_type" value="Perte ou vol de document papier"><label for="it1">Perte ou vol de document papier</label></div>
+        <div class="choice-item"><input type="checkbox" id="it2" name="incident_type" value="Perte ou vol d'équipement informatique"><label for="it2">Perte ou vol d'équipement informatique</label></div>
+        <div class="choice-item"><input type="checkbox" id="it3" name="incident_type" value="Envoi d'email à un mauvais destinataire"><label for="it3">Envoi d'email à un mauvais destinataire</label></div>
+        <div class="choice-item"><input type="checkbox" id="it4" name="incident_type" value="Intrusion informatique / rançongiciel"><label for="it4">Intrusion informatique / rançongiciel</label></div>
+        <div class="choice-item"><input type="checkbox" id="it5" name="incident_type" value="Accès non autorisé à des dossiers"><label for="it5">Accès non autorisé à des dossiers</label></div>
+        <div class="choice-item"><input type="checkbox" id="it6" name="incident_type" value="Autre"><label for="it6">Autre</label></div>
+      </div>
+    </div>
+
+    <div class="question hidden" id="q-incident_notifie">
+      <div class="q-label">L'incident a-t-il été notifié au DPO ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="in1" name="incident_notifie" value="Oui"><label for="in1">Oui</label></div>
+        <div class="choice-item"><input type="radio" id="in2" name="incident_notifie" value="Non"><label for="in2">Non</label></div>
+      </div>
+    </div>
+
+    <div class="question" id="q-procedure_incident">
+      <div class="q-label">Existe-t-il une procédure interne pour déclarer un incident de sécurité ?</div>
+      <div class="choices">
+        <div class="choice-item"><input type="radio" id="pi1" name="procedure_incident" value="Oui"><label for="pi1">Oui</label></div>
+        <div class="choice-item"><input type="radio" id="pi2" name="procedure_incident" value="Non"><label for="pi2">Non</label></div>
+        <div class="choice-item"><input type="radio" id="pi3" name="procedure_incident" value="Ne sais pas"><label for="pi3">Je ne sais pas</label></div>
+      </div>
+    </div>
+
+    <div class="question" id="q-commentaires">
+      <div class="q-label">Commentaires libres, difficultés rencontrées, besoins identifiés</div>
+      <textarea id="commentaires" name="commentaires" placeholder="Tout ce qui vous semble utile à partager avec le DPO…"></textarea>
+    </div>
+
+  </div>
+  <div class="bloc-footer">
+    <button type="button" class="btn btn-prev" onclick="navigate(-1)">← Précédent</button>
+    <span class="step-counter">Section 6 sur 6</span>
+    <button type="submit" class="btn btn-submit" id="btn-submit">Soumettre le questionnaire →</button>
+  </div>
+</section>
+
+<!-- ─── ÉCRAN DE SUCCÈS ─── -->
+<div class="success-screen" id="success-screen">
+  <div class="success-icon">✓</div>
+  <h2>Questionnaire soumis</h2>
+  <p>Merci pour vos réponses. Elles ont bien été enregistrées dans le tableau de bord RGPD.<br>
+  Le DPO d'Unapei92 en prendra connaissance prochainement.</p>
+</div>
+
+</form>
+</main>
+
+<script>
+// ════════════════════════════════════════
+// CONFIGURATION
+// ════════════════════════════════════════
+const SHEETS_URL = "";  // ← Coller ici l'URL Apps Script après déploiement
+const FORM_TYPE  = "IME";
+const TOTAL_BLOCS = 6;
+
+// ════════════════════════════════════════
+// CONDITIONS D'AFFICHAGE (show/hide)
+// id_champ_cible : { trigger: "id_du_champ_déclencheur", value: "valeur_qui_active" }
+// ════════════════════════════════════════
+const CONDITIONS = {
+  "logiciel_dossier":    { trigger: "dossier_usager_numerique", values: ["Oui, entièrement", "Partiellement (mixte papier / numérique)"] },
+  "photos_consentement": { trigger: "photos_usagers",           values: ["Oui"] },
+  "notice_date":         { trigger: "notice_info",              values: ["Oui"] },
+  "demandes_nb":         { trigger: "demandes_recues",          values: ["Oui"] },
+  "cloud_detail":        { trigger: "cloud",                    values: ["Oui"] },
+  "incident_type":       { trigger: "incident_12mois",          values: ["Oui"] },
+  "incident_notifie":    { trigger: "incident_12mois",          values: ["Oui"] },
+};
+
+// ════════════════════════════════════════
+// ÉTAT
+// ════════════════════════════════════════
+let currentBloc = 0;
+
+// ════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════
+function navigate(dir) {
+  if (dir === 1 && !validateBloc(currentBloc)) return;
+  const next = currentBloc + dir;
+  if (next < 0 || next >= TOTAL_BLOCS) return;
+
+  document.getElementById(`bloc-${currentBloc}`).classList.remove('active');
+  currentBloc = next;
+  document.getElementById(`bloc-${currentBloc}`).classList.add('active');
+
+  updateProgress();
+  updateTabs();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  applyConditions();
+}
+
+function updateProgress() {
+  const pct = ((currentBloc + 1) / TOTAL_BLOCS) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+function updateTabs() {
+  document.querySelectorAll('.bloc-tab').forEach((tab, i) => {
+    tab.classList.remove('active', 'done');
+    if (i === currentBloc) tab.classList.add('active');
+    else if (i < currentBloc) tab.classList.add('done');
+  });
+}
+
+// ════════════════════════════════════════
+// CONDITIONS SHOW/HIDE
+// ════════════════════════════════════════
+function getFieldValue(name) {
+  // Radio
+  const radios = document.querySelectorAll(`[name="${name}"]:checked`);
+  if (radios.length > 0) return radios[0].value;
+  // Texte/date/number
+  const input = document.querySelector(`input[name="${name}"], textarea[name="${name}"], select[name="${name}"]`);
+  return input ? input.value : '';
+}
+
+function applyConditions() {
+  Object.entries(CONDITIONS).forEach(([targetId, cond]) => {
+    const qEl = document.getElementById(`q-${targetId}`);
+    if (!qEl) return;
+    const val = getFieldValue(cond.trigger);
+    const show = cond.values.includes(val);
+    qEl.classList.toggle('hidden', !show);
+    // Retirer required sur les champs cachés
+    qEl.querySelectorAll('[required]').forEach(f => {
+      f.dataset.wasRequired = 'true';
+      if (!show) f.removeAttribute('required');
+      else if (f.dataset.wasRequired) f.setAttribute('required', '');
+    });
+  });
+}
+
+document.addEventListener('change', applyConditions);
+
+// ════════════════════════════════════════
+// VALIDATION
+// ════════════════════════════════════════
+function validateBloc(idx) {
+  const bloc = document.getElementById(`bloc-${idx}`);
+  const banner = document.getElementById(`banner-${idx}`);
+  let valid = true;
+
+  // Textes, dates, numbers
+  bloc.querySelectorAll('input[required]:not(.hidden), textarea[required]:not(.hidden)').forEach(field => {
+    const qEl = field.closest('.question');
+    if (qEl && qEl.classList.contains('hidden')) return;
+    if (field.type === 'radio' || field.type === 'checkbox') return;
+    if (!field.value.trim()) {
+      valid = false;
+      field.classList.add('error');
+      field.addEventListener('input', () => field.classList.remove('error'), { once: true });
+    }
+  });
+
+  // Radios requis
+  const radioGroups = new Set();
+  bloc.querySelectorAll('input[type="radio"][required]').forEach(r => radioGroups.add(r.name));
+  radioGroups.forEach(name => {
+    const qEl = bloc.querySelector(`[name="${name}"]`)?.closest('.question');
+    if (qEl && qEl.classList.contains('hidden')) return;
+    const checked = bloc.querySelectorAll(`[name="${name}"]:checked`);
+    if (checked.length === 0) {
+      valid = false;
+      const choices = bloc.querySelector(`[name="${name}"]`)?.closest('.choices');
+      if (choices) {
+        choices.style.outline = '2px solid var(--red)';
+        choices.style.borderRadius = '7px';
+        const reset = () => { choices.style.outline = ''; document.removeEventListener('change', reset); };
+        document.addEventListener('change', reset);
+      }
+    }
+  });
+
+  if (banner) banner.style.display = valid ? 'none' : 'block';
+  if (!valid) window.scrollTo({ top: 0, behavior: 'smooth' });
+  return valid;
+}
+
+// ════════════════════════════════════════
+// COLLECTE DES RÉPONSES
+// Envoie { id, question, answer } pour chaque champ visible
+// ════════════════════════════════════════
+function collectResponses() {
+  const responses = [];
+  const seen = new Set();
+
+  document.querySelectorAll('.question:not(.hidden)').forEach(qEl => {
+    const labelEl = qEl.querySelector('.q-label');
+    if (!labelEl) return;
+    // Nettoyer le libellé (enlever l'étoile required)
+    const question = labelEl.innerText.replace(/^\*\s*/, '').replace(/\s+/g, ' ').trim();
+
+    const inputs = qEl.querySelectorAll('input, textarea, select');
+    if (inputs.length === 0) return;
+
+    // Récupérer l'id du premier input (= name= dans le HTML)
+    const firstInput = inputs[0];
+    const fieldId = firstInput.name || firstInput.id || '';
+
+    // Éviter les doublons (radio group)
+    if (seen.has(fieldId)) return;
+    seen.add(fieldId);
+
+    let answer = '';
+    const type = firstInput.type;
+
+    if (type === 'radio') {
+      const checked = qEl.querySelector('input[type="radio"]:checked');
+      answer = checked ? checked.value : '';
+    } else if (type === 'checkbox') {
+      const checkeds = qEl.querySelectorAll('input[type="checkbox"]:checked');
+      answer = Array.from(checkeds).map(c => c.value).join(' | ');
+    } else {
+      answer = firstInput.value.trim();
+    }
+
+    responses.push({ id: fieldId, question, answer });
+  });
+
+  return responses;
+}
+
+// ════════════════════════════════════════
+// SOUMISSION
+// ════════════════════════════════════════
+document.getElementById('main-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!validateBloc(currentBloc)) return;
+
+  const btn = document.getElementById('btn-submit');
+  btn.textContent = 'Envoi en cours…';
+  btn.disabled = true;
+
+  const payload = {
+    type: FORM_TYPE,
+    timestamp: new Date().toISOString(),
+    responses: collectResponses()
+  };
+
+  try {
+    await fetch(SHEETS_URL, { method: 'POST', body: JSON.stringify(payload) });
+    // Masquer tous les blocs + nav
+    document.querySelectorAll('.bloc').forEach(b => b.classList.remove('active'));
+    document.querySelector('.blocs-nav').style.display = 'none';
+    document.getElementById('success-screen').style.display = 'block';
+    document.getElementById('progress-bar').style.width = '100%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch(err) {
+    btn.textContent = 'Soumettre le questionnaire →';
+    btn.disabled = false;
+    alert('Une erreur est survenue. Vérifiez votre connexion et réessayez, ou contactez le DPO.');
+  }
+});
+
+// ════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════
+updateProgress();
+applyConditions();
+</script>
+</body>
+</html>

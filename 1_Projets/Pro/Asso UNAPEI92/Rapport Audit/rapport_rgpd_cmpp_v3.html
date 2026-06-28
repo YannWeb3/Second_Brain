@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit RGPD — CMPP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F3EE;
+    --card:#FFFFFF;
+    --line:#E6E2D8;
+    --ink:#23272E;
+    --ink-soft:#6B7280;
+
+    --red:#B0463B;
+    --red-bg:#F7E4E1;
+    --orange:#BD8A35;
+    --orange-bg:#F6ECD9;
+    --green:#4F7A68;
+    --green-bg:#E6EEE9;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    line-height:1.55;
+  }
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:40px 24px 80px;
+  }
+
+  /* ===== HEADER ===== */
+  .page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:28px;
+  }
+  .page-header h1{
+    font-size:24px;
+    font-weight:700;
+    margin:0;
+  }
+  .page-header .count{
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+
+  /* ===== KPI ROW ===== */
+  .kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:16px;
+    margin-bottom:36px;
+  }
+  .kpi-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:20px 22px;
+  }
+  .kpi-card .kpi-label{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .kpi-card .kpi-value{
+    font-size:32px;
+    font-weight:700;
+  }
+
+  /* ===== SECTION TITLE ===== */
+  .section-title{
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    margin-bottom:14px;
+  }
+  .section-sub{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin:-8px 0 14px;
+  }
+
+  /* ===== RISQUES MAJEURS (vue globale) ===== */
+  .risk-list{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:6px 22px;
+    margin-bottom:36px;
+  }
+  .risk-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .risk-row:last-child{border-bottom:none;}
+  .risk-rank{
+    flex-shrink:0;
+    width:26px; height:26px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:700;
+    background:var(--red-bg); color:var(--red);
+  }
+  .risk-row:nth-child(4) .risk-rank,
+  .risk-row:nth-child(5) .risk-rank{
+    background:var(--orange-bg); color:var(--orange);
+  }
+  .risk-text{
+    font-size:14.5px;
+    font-weight:500;
+  }
+  .risk-text .estab-tag{
+    display:inline-block;
+    margin-left:8px;
+    font-size:12px;
+    font-weight:600;
+    color:var(--ink-soft);
+  }
+
+  /* ===== ESTABLISHMENT CARD (overview) ===== */
+  .estab-card{
+    display:block;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-left:4px solid var(--red);
+    border-radius:10px;
+    padding:18px 20px;
+    text-decoration:none;
+    color:var(--ink);
+    transition:box-shadow .15s ease, transform .15s ease;
+    margin-bottom:40px;
+  }
+  .estab-card:hover{
+    box-shadow:0 4px 16px rgba(0,0,0,0.06);
+    transform:translateY(-1px);
+  }
+  .estab-card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:6px;
+  }
+  .estab-card-top h3{
+    font-size:17px;
+    font-weight:600;
+    margin:0;
+  }
+  .estab-card .meta{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin-bottom:12px;
+  }
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    font-size:12.5px;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:6px;
+    white-space:nowrap;
+  }
+  .badge-red{background:var(--red-bg); color:var(--red);}
+  .badge-orange{background:var(--orange-bg); color:var(--orange);}
+  .badge-green{background:var(--green-bg); color:var(--green);}
+
+  .estab-icons{
+    display:flex;
+    gap:10px;
+    color:var(--ink-soft);
+  }
+  .estab-icons svg{width:18px; height:18px;}
+
+  /* ===== DETAIL PAGE ===== */
+  .back-link{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+    text-decoration:none;
+    margin-bottom:18px;
+  }
+  .back-link:hover{color:var(--ink);}
+  .back-link svg{width:16px; height:16px;}
+
+  .detail-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:24px;
+  }
+  .detail-header h2{
+    font-size:22px;
+    font-weight:700;
+    margin:0;
+  }
+  .detail-header .score{
+    font-size:15px;
+    font-weight:700;
+    color:var(--red);
+  }
+
+  .block{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:22px 24px;
+    margin-bottom:16px;
+  }
+  .block-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .block-head svg{
+    width:20px; height:20px;
+    flex-shrink:0;
+  }
+  .block-head h3{
+    font-size:15.5px;
+    font-weight:700;
+    margin:0;
+  }
+  .block.risques svg{color:var(--red);}
+  .block.principes svg{color:var(--ink-soft);}
+  .block.urgent svg{color:var(--red);}
+  .block.planifier svg{color:var(--orange);}
+  .block.recommande svg{color:var(--green);}
+
+  .block.urgent .block-head h3{color:var(--red);}
+  .block.planifier .block-head h3{color:var(--orange);}
+  .block.recommande .block-head h3{color:var(--green);}
+
+  .block ul{
+    margin:0;
+    padding-left:20px;
+    font-size:14.5px;
+  }
+  .block ul li{
+    margin-bottom:9px;
+  }
+  .block ul li:last-child{margin-bottom:0;}
+
+  .action-item{
+    padding:9px 0;
+    border-bottom:1px solid var(--line);
+    font-size:14.5px;
+    list-style:none;
+    padding-left:0;
+  }
+  .action-item:last-child{border-bottom:none;}
+  ul.action-list{padding-left:0;}
+
+  footer{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    text-align:center;
+    margin-top:40px;
+  }
+
+  @media (max-width:640px){
+    .kpi-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="top">
+
+  <!-- ===================== MAQUETTE 1 — VUE GLOBALE ===================== -->
+  <div class="page-header">
+    <h1>Audit RGPD — vue globale</h1>
+    <div class="count">1 CMPP · 1 réponse</div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Score moyen de conformité</div>
+      <div class="kpi-value">45 / 100</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Risques majeurs détectés</div>
+      <div class="kpi-value">5</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Actions correctives proposées</div>
+      <div class="kpi-value">14</div>
+    </div>
+  </div>
+
+  <div class="section-title">Risques majeurs identifiés</div>
+  <div class="section-sub">Classés par ordre de criticité en cas de contrôle de la CNIL</div>
+
+  <div class="risk-list">
+    <div class="risk-row">
+      <div class="risk-rank">1</div>
+      <div class="risk-text">Aucun référent RGPD désigné, ni de lien établi avec le DPO <span class="estab-tag">— CMPP Les Provinces Françaises</span></div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">2</div>
+      <div class="risk-text">Base légale fragile pour traiter des données de santé d'enfants (simple consentement) <span class="estab-tag">— CMPP Les Provinces Françaises</span></div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">3</div>
+      <div class="risk-text">Aucune information RGPD remise aux familles à l'admission <span class="estab-tag">— CMPP Les Provinces Françaises</span></div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">4</div>
+      <div class="risk-text">Accès aux dossiers thérapeutiques trop large (direction, secrétariat) <span class="estab-tag">— CMPP Les Provinces Françaises</span></div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">5</div>
+      <div class="risk-text">Dossiers papier jamais détruits de façon sécurisée <span class="estab-tag">— CMPP Les Provinces Françaises</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Établissements — cliquer pour ouvrir le détail</div>
+
+  <a class="estab-card" href="#detail-provinces">
+    <div class="estab-card-top">
+      <h3>CMPP Les Provinces Françaises</h3>
+      <span class="badge badge-red">Risque élevé</span>
+    </div>
+    <div class="meta">CMPP · 317 enfants suivis · 15 professionnels</div>
+    <div class="estab-icons" title="Points de vigilance : référent RGPD, base légale, accès dossiers, destruction papier, information familles">
+      <!-- user-x (no referent) -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h2.5"/><line x1="17" y1="8" x2="22" y2="13"/><line x1="22" y1="8" x2="17" y2="13"/></svg>
+      <!-- file-warning (base légale) -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="12" y1="13" x2="12" y2="16"/><circle cx="12" cy="19" r="0.5" fill="currentColor"/></svg>
+      <!-- shield-off (accès dossiers) -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.7 14a6.9 6.9 0 0 0 .3-2V5l-8-3-3.2 1.2"/><path d="M4.7 4.7 4 5v7c0 6 8 10 8 10a20.3 20.3 0 0 0 5.62-4.38"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+      <!-- trash-2 (destruction papier) -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      <!-- megaphone (information familles) -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+    </div>
+  </a>
+
+  <!-- ===================== MAQUETTE 2 — DÉTAIL ÉTABLISSEMENT ===================== -->
+  <a class="back-link" href="#top" id="detail-provinces">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Retour à la vue d'ensemble
+  </a>
+
+  <div class="detail-header">
+    <h2>CMPP Les Provinces Françaises</h2>
+    <div class="score">Score : 45/100</div>
+  </div>
+
+  <!-- 1. ANALYSE DES RISQUES -->
+  <div class="block risques">
+    <div class="block-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <h3>1. Analyse des risques</h3>
+    </div>
+    <ul>
+      <li>Personne n'est officiellement responsable du RGPD : en cas de souci, on ne sait pas qui prévenir ni qui appeler.</li>
+      <li>Les dossiers des enfants reposent sur un simple accord des parents, alors qu'il s'agit d'informations médicales très sensibles — un peu comme garder des clés sous le paillasson plutôt que dans un coffre.</li>
+      <li>Les familles ne reçoivent aucune explication, à l'arrivée de l'enfant, sur ce qui est fait de ses données psychologiques.</li>
+      <li>La direction et le secrétariat peuvent lire le contenu complet des dossiers thérapeutiques, comme s'ils étaient soignants.</li>
+      <li>Les dossiers papier s'accumulent et ne sont jamais détruits, comme une armoire qui ne se vide jamais.</li>
+    </ul>
+  </div>
+
+  <!-- 2. PRINCIPES RGPD CONCERNÉS -->
+  <div class="block principes">
+    <div class="block-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+      <h3>2. Principes RGPD concernés</h3>
+    </div>
+    <ul>
+      <li><strong>Un responsable identifié</strong> : quelqu'un doit être chargé du RGPD pour réagir vite en cas de problème.</li>
+      <li><strong>Une base légale solide</strong> : traiter des données de santé doit s'appuyer sur autre chose qu'un simple accord oral.</li>
+      <li><strong>De la transparence</strong> : les familles doivent savoir, simplement et clairement, ce qui est fait des informations de leur enfant.</li>
+      <li><strong>Le bon accès aux bonnes personnes</strong> : seules les personnes qui en ont besoin pour leur mission doivent voir les informations sensibles.</li>
+      <li><strong>Une durée de vie limitée pour les documents</strong> : les dossiers ne doivent pas être gardés indéfiniment, et leur destruction doit être faite proprement.</li>
+    </ul>
+  </div>
+
+  <!-- 3. PLAN D'ACTIONS — URGENT -->
+  <div class="block urgent">
+    <div class="block-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <h3>Urgent</h3>
+    </div>
+    <ul class="action-list">
+      <li class="action-item">Désigner un référent RGPD local et organiser le lien avec le DPO externe.</li>
+      <li class="action-item">Sécuriser, avec le DPO, la base légale utilisée pour les dossiers thérapeutiques.</li>
+      <li class="action-item">Limiter l'accès aux dossiers thérapeutiques : direction et secrétariat ne voient que les informations administratives.</li>
+      <li class="action-item">Mettre en place une destruction sécurisée des dossiers papier en fin de conservation.</li>
+      <li class="action-item">Remettre aux familles, dès l'admission, une notice RGPD claire incluant le volet psychologique.</li>
+    </ul>
+  </div>
+
+  <!-- 3. PLAN D'ACTIONS — À PLANIFIER -->
+  <div class="block planifier">
+    <div class="block-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <h3>À planifier</h3>
+    </div>
+    <ul class="action-list">
+      <li class="action-item">Définir et écrire la durée de conservation des dossiers thérapeutiques après la fin du suivi.</li>
+      <li class="action-item">Former les psychologues et psychiatres au RGPD appliqué au secret professionnel.</li>
+      <li class="action-item">Apprendre à l'équipe à repérer une violation de données et à la signaler dans les 72h.</li>
+      <li class="action-item">Anonymiser les situations d'enfants évoquées lors des supervisions d'équipe.</li>
+      <li class="action-item">Ranger les tests psychométriques (WISC, etc.) dans une armoire dédiée fermée à clé.</li>
+      <li class="action-item">Écrire la procédure à suivre en cas de parents séparés et pour les jeunes de 15 ans et plus.</li>
+    </ul>
+  </div>
+
+  <!-- 3. PLAN D'ACTIONS — RECOMMANDÉ -->
+  <div class="block recommande">
+    <div class="block-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <h3>Recommandé</h3>
+    </div>
+    <ul class="action-list">
+      <li class="action-item">Réduire le délai de verrouillage automatique des postes informatiques (5–10 min → 2–5 min).</li>
+      <li class="action-item">Vérifier avec le DPO que le CMPP figure bien dans le registre des traitements.</li>
+      <li class="action-item">Relire le contenu des dossiers pour repérer des informations qui ne sont pas nécessaires.</li>
+    </ul>
+  </div>
+
+  <footer>
+    Rapport 1/8 — CMPP · Synthèse établie à partir de la réponse au questionnaire d'auto-évaluation RGPD du 06/05/2026.
+  </footer>
+
+</div>
+</body>
+</html>

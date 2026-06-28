@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNAPEI92 — Qualité (Questionnaire RGPD)</title>
+  <style>
+    :root {
+      --primary: #0055A4;
+      --primary-dark: #003d7a;
+      --secondary: #E60028;
+      --bg: #f5f7fa;
+      --card: #fff;
+      --text: #333;
+      --text-light: #666;
+      --border: #e0e0e0;
+      --success: #28a745;
+      --error: #dc3545;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+    header p { opacity: 0.9; font-size: 0.95rem; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    .nav-blocks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 25px;
+      padding: 15px;
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+    }
+
+    .nav-block {
+      padding: 8px 16px;
+      background: var(--bg);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .nav-block:hover, .nav-block.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .section {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      scroll-margin-top: 80px;
+    }
+
+    .section-title {
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .question {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .question:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .question-label {
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: block;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .question-id {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: normal;
+      margin-left: 5px;
+    }
+
+    .required::after {
+      content: ' *';
+      color: var(--secondary);
+    }
+
+    input, select, textarea {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .radio-group, .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .radio-group label, .checkbox-group label {
+      font-weight: normal;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .radio-group label:hover, .checkbox-group label:hover {
+      background: var(--bg);
+    }
+
+    input[type="radio"], input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      padding: 14px 40px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .message {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .message.show { display: block; }
+
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid var(--primary);
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+    }
+
+    .note-box {
+      background: #fff3e0;
+      border-left: 4px solid #ff9800;
+      padding: 10px 15px;
+      margin-top: 8px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.85rem;
+      color: #e65100;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.4rem; }
+      .nav-blocks { justify-content: center; }
+      .nav-block { font-size: 0.8rem; padding: 6px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="back-link">← Retour à l'accueil</a>
+
+    <header>
+      <h1>Questionnaire RGPD — Service Qualité</h1>
+      <p>Protection des données dans le cadre de la démarche qualité</p>
+    </header>
+
+    <nav class="nav-blocks">
+      <a href="#identification" class="nav-block">Identification</a>
+      <a href="#gouvernance" class="nav-block">Gouvernance</a>
+      <a href="#collecte" class="nav-block">Collecte & Données sensibles</a>
+      <a href="#stockage" class="nav-block">Stockage & Sécurité</a>
+      <a href="#conservation" class="nav-block">Conservation</a>
+      <a href="#sous-traitants" class="nav-block">Sous-traitants</a>
+      <a href="#evaluations" class="nav-block">Évaluations</a>
+      <a href="#droits" class="nav-block">Droits usagers</a>
+      <a href="#incidents" class="nav-block">Incidents</a>
+      <a href="#ouvertes" class="nav-block">Questions ouvertes</a>
+    </nav>
+
+    <div class="info-box">
+      <strong>Instructions :</strong> Ce questionnaire porte sur la conformité RGPD du service Qualité. Répondez en fonction de votre situation actuelle. Les champs marqués d'une étoile (*) sont obligatoires.
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <form id="formulaire">
+      <!-- Bloc 1 : Identification -->
+      <section class="section" id="identification">
+        <h2 class="section-title">Identification</h2>
+
+        <div class="question">
+          <label class="question-label required">Nom de l'association <span class="question-id">Q1.1</span></label>
+           <input type="text" name="q1_1_nom_association" required>
+           <input type="hidden" id="nom_etablissement" name="nom_etablissement">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nom et prénom du répondant <span class="question-id">Q1.2</span></label>
+          <input type="text" name="q1_2_nom_prenom_repondant" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Fonction du répondant <span class="question-id">Q1.3</span></label>
+          <input type="text" name="q1_3_fonction_repondant" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Date de remplissage <span class="question-id">Q1.4</span></label>
+          <input type="date" name="q1_4_date_remplissage" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nombre approximatif de dossiers usagers / bénéficiaires traités par le service qualité <span class="question-id">Q1.5</span></label>
+          <input type="number" name="q1_5_nb_dossiers" min="0" required>
+        </div>
+      </section>
+
+      <!-- Bloc 2 : Gouvernance -->
+      <section class="section" id="gouvernance">
+        <h2 class="section-title">Gouvernance</h2>
+
+        <div class="question">
+          <label class="question-label required">Un référent RGPD est-il identifié au sein du service qualité ? <span class="question-id">Q2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_1_referent_rgpd" value="oui" required> Oui</label>
+            <label><input type="radio" name="q2_1_referent_rgpd" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Connaissez-vous le DPO externe de votre organisation et savez-vous comment le contacter ? <span class="question-id">Q2.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_2_connaissance_dpo" value="oui" required> Oui</label>
+            <label><input type="radio" name="q2_2_connaissance_dpo" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le service qualité a-t-il reçu une formation RGPD spécifique ? <span class="question-id">Q2.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_3_formation_rgpd" value="oui" required> Oui (joindre attestation ou preuve de formation)</label>
+            <label><input type="radio" name="q2_3_formation_rgpd" value="non"> Non</label>
+          </div>
+          <div class="note-box">Si oui, joindre attestation ou preuve de formation</div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les traitements du service qualité sont-ils recensés dans le registre des traitements ? <span class="question-id">Q2.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_4_registre_traitements" value="oui" required> Oui (joindre un extrait du registre si disponible)</label>
+            <label><input type="radio" name="q2_4_registre_traitements" value="non"> Non</label>
+          </div>
+          <div class="note-box">Joindre un extrait du registre si disponible</div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous un document qui précise la base légale de chaque traitement qualité ? <span class="question-id">Q2.5</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_5_base_legale" value="oui" required> Oui</label>
+            <label><input type="radio" name="q2_5_base_legale" value="non"> Non</label>
+          </div>
+          <div class="note-box">Base légale principale attendue : mission d'intérêt public ou obligation légale</div>
+        </div>
+      </section>
+
+      <!-- Bloc 3 : Collecte & Données sensibles -->
+      <section class="section" id="collecte">
+        <h2 class="section-title">Collecte & Données sensibles</h2>
+
+        <div class="question">
+          <label class="question-label required">Quelles catégories de données personnelles traitez-vous dans le cadre de la démarche qualité ? (données usagers, évaluations, enquêtes de satisfaction, réclamations...) <span class="question-id">Q3.1</span></label>
+          <textarea name="q3_1_categories_donnees" required></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Traitez-vous des données de santé ou médico-sociales dans le cadre de vos missions qualité ? <span class="question-id">Q3.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_donnees_sante" value="oui" required> Oui</label>
+            <label><input type="radio" name="q3_2_donnees_sante" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si oui : ces données sont-elles isolées et soumises à des accès restreints ? <span class="question-id">Q3.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_3_isolation_donnees" value="oui" required> Oui</label>
+            <label><input type="radio" name="q3_3_isolation_donnees" value="non"> Non</label>
+            <label><input type="radio" name="q3_3_isolation_donnees" value="na"> N/A</label>
+          </div>
+          <div class="note-box">Données de santé = catégorie sensible Art. 9 RGPD — protection renforcée obligatoire</div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Réalisez-vous des enquêtes de satisfaction auprès des usagers ou de leurs familles ? <span class="question-id">Q3.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_4_enquetes_satisfaction" value="oui" required> Oui</label>
+            <label><input type="radio" name="q3_4_enquetes_satisfaction" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si oui : les participants sont-ils informés de l'utilisation de leurs réponses et de leur droit à rester anonymes ? <span class="question-id">Q3.5</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_5_info_participants" value="oui" required> Oui</label>
+            <label><input type="radio" name="q3_5_info_participants" value="non"> Non</label>
+            <label><input type="radio" name="q3_5_info_participants" value="na"> N/A</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Traitez-vous des données relatives aux réclamations ou incidents impliquant des usagers identifiables ? <span class="question-id">Q3.6</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_6_reclamations" value="oui" required> Oui</label>
+            <label><input type="radio" name="q3_6_reclamations" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les usagers ou leurs représentants légaux sont-ils informés que leurs données sont utilisées dans le cadre de la démarche qualité ? <span class="question-id">Q3.7</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_7_info_usagers" value="oui" required> Oui</label>
+            <label><input type="radio" name="q3_7_info_usagers" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 4 : Stockage & Sécurité -->
+      <section class="section" id="stockage">
+        <h2 class="section-title">Stockage & Sécurité</h2>
+
+        <div class="question">
+          <label class="question-label required">Sur quel(s) outil(s) stockez-vous les données qualité contenant des informations personnelles ? (logiciel qualité, Excel, serveur partagé, cloud...) <span class="question-id">Q4.1</span></label>
+          <textarea name="q4_1_outils_stockage" required></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Combien de personnes ont accès aux données qualité incluant des données d'usagers identifiables ? Précisez les fonctions concernées <span class="question-id">Q4.2</span></label>
+          <textarea name="q4_2_acces_personnes" required></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les données qualité sont-elles sauvegardées régulièrement ? (fréquence + lieu) <span class="question-id">Q4.3</span></label>
+          <textarea name="q4_3_sauvegardes" required></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les données anonymisées sont-elles bien distinguées des données identifiantes dans vos outils ? <span class="question-id">Q4.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_4_anonymisation" value="oui" required> Oui</label>
+            <label><input type="radio" name="q4_4_anonymisation" value="non"> Non</label>
+          </div>
+          <div class="note-box">L'anonymisation réelle supprime tout risque de ré-identification — vérifier que c'est effectivement le cas</div>
+        </div>
+      </section>
+
+      <!-- Bloc 5 : Conservation -->
+      <section class="section" id="conservation">
+        <h2 class="section-title">Conservation & Suppression</h2>
+
+        <div class="question">
+          <label class="question-label required">Quelle est la durée de conservation des données qualité contenant des informations personnelles identifiables ? <span class="question-id">Q5.1</span></label>
+          <textarea name="q5_1_duree_conservation" required></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les données des enquêtes de satisfaction sont-elles anonymisées après traitement ? Dans quel délai ? <span class="question-id">Q5.2</span></label>
+          <textarea name="q5_2_anonymisation_enquetes" required></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous une procédure de suppression ou d'archivage des données qualité obsolètes ? <span class="question-id">Q5.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_3_procedure_suppression" value="oui" required> Oui</label>
+            <label><input type="radio" name="q5_3_procedure_suppression" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 6 : Sous-traitants -->
+      <section class="section" id="sous-traitants">
+        <h2 class="section-title">Sous-traitants</h2>
+
+        <div class="question">
+          <label class="question-label required">Utilisez-vous un logiciel ou prestataire externe pour la gestion qualité (outil d'évaluation, plateforme d'enquête, cabinet de conseil...) ? <span class="question-id">Q6.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_1_prestataires" value="oui" required> Oui</label>
+            <label><input type="radio" name="q6_1_prestataires" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si oui : listez ces prestataires <span class="question-id">Q6.2</span></label>
+          <textarea name="q6_2_liste_prestataires"></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Pour chacun de ces prestataires, avez-vous signé un contrat incluant des clauses RGPD (Art. 28) ? <span class="question-id">Q6.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_3_clauses_rgpd" value="oui" required> Oui</label>
+            <label><input type="radio" name="q6_3_clauses_rgpd" value="non"> Non</label>
+            <label><input type="radio" name="q6_3_clauses_rgpd" value="na"> N/A</label>
+          </div>
+          <div class="note-box">Un simple CGU NE suffit PAS — surtout si les données concernent des usagers vulnérables</div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Ces prestataires sont-ils hébergés en France / UE ou aux USA / autre pays ? <span class="question-id">Q6.4</span></label>
+          <textarea name="q6_4_emplacement_prestataires"></textarea>
+        </div>
+      </section>
+
+      <!-- Bloc 7 : Évaluations -->
+      <section class="section" id="evaluations">
+        <h2 class="section-title">Évaluations & Certifications</h2>
+
+        <div class="question">
+          <label class="question-label required">Dans le cadre des évaluations externes (HAS, organismes certificateurs...) des données d'usagers identifiables sont-elles transmises à des tiers évaluateurs ? <span class="question-id">Q7.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7_1_transmission_evaluateurs" value="oui" required> Oui</label>
+            <label><input type="radio" name="q7_1_transmission_evaluateurs" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si oui : les usagers ou leurs représentants sont-ils informés de cette transmission ? <span class="question-id">Q7.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7_2_info_transmission" value="oui" required> Oui</label>
+            <label><input type="radio" name="q7_2_info_transmission" value="non"> Non</label>
+            <label><input type="radio" name="q7_2_info_transmission" value="na"> N/A</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Un accord de confidentialité ou DPA est-il signé avec les organismes évaluateurs ? <span class="question-id">Q7.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7_3_dpa_evaluateurs" value="oui" required> Oui</label>
+            <label><input type="radio" name="q7_3_dpa_evaluateurs" value="non"> Non</label>
+            <label><input type="radio" name="q7_3_dpa_evaluateurs" value="na"> N/A</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 8 : Droits usagers -->
+      <section class="section" id="droits">
+        <h2 class="section-title">Droits des usagers</h2>
+
+        <div class="question">
+          <label class="question-label required">Les usagers ou leurs représentants légaux peuvent-ils accéder aux données qualité les concernant sur demande ? <span class="question-id">Q8.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q8_1_acces_donnees" value="oui" required> Oui</label>
+            <label><input type="radio" name="q8_1_acces_donnees" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Existe-t-il une procédure pour traiter ces demandes ? Qui en est responsable ? <span class="question-id">Q8.2</span></label>
+          <textarea name="q8_2_procedure_demandes" required></textarea>
+          <div class="note-box">Délai légal de réponse : 1 mois maximum</div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous reçu des demandes d'exercice de droits liées aux données qualité au cours des 12 derniers mois ? <span class="question-id">Q8.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q8_3_demandes_recues" value="oui" required> Oui</label>
+            <label><input type="radio" name="q8_3_demandes_recues" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 9 : Incidents -->
+      <section class="section" id="incidents">
+        <h2 class="section-title">Violations & Incidents</h2>
+
+        <div class="question">
+          <label class="question-label required">Des violations ou incidents liés aux données qualité ont-ils eu lieu au cours des 24 derniers mois ? (données d'usagers transmises à un tiers non habilité, perte de fichier, accès non autorisé...) <span class="question-id">Q9.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q9_1_incidents" value="oui" required> Oui</label>
+            <label><input type="radio" name="q9_1_incidents" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si OUI : quel(s) type(s) d'incident(s) ? (brève description) <span class="question-id">Q9.2</span></label>
+          <textarea name="q9_2_types_incidents"></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Ces incidents ont-ils été notifiés en interne au DPO ou au siège dans les 72 heures ? <span class="question-id">Q9.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q9_3_notification_dpo" value="oui" required> Oui</label>
+            <label><input type="radio" name="q9_3_notification_dpo" value="non"> Non</label>
+            <label><input type="radio" name="q9_3_notification_dpo" value="na"> N/A</label>
+          </div>
+          <div class="note-box">La notification CNIL (72h) est distincte de la notification interne</div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Existe-t-il une procédure en cas de fuite de données d'usagers dans le cadre qualité ? <span class="question-id">Q9.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q9_4_procedure_fuite" value="oui" required> Oui</label>
+            <label><input type="radio" name="q9_4_procedure_fuite" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 10 : Questions ouvertes -->
+      <section class="section" id="ouvertes">
+        <h2 class="section-title">Questions ouvertes</h2>
+
+        <div class="question">
+          <label class="question-label required">Quelles sont selon vous les principales difficultés pour assurer la conformité RGPD dans vos activités qualité ? <span class="question-id">Q10.1</span></label>
+          <textarea name="q10_1_difficultes" required></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Y a-t-il des points spécifiques à votre organisation que ce questionnaire n'a pas abordés ? <span class="question-id">Q10.2</span></label>
+          <textarea name="q10_2_points_specifiques" required></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Y a-t-il des pratiques dont vous n'êtes pas sûr(e) de la conformité et sur lesquelles vous souhaitez un avis ? <span class="question-id">Q10.3</span></label>
+          <textarea name="q10_3_pratiques_douteuses" required></textarea>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="btn-submit">Envoyer le questionnaire</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQBhjBdwuEBtj5Ef63L_5ej3eyXB15DLmpnDBxqM5u0EdVRgoLK6NR1Hkn682obuvN7Q/exec';
+const FORM_TYPE = 'Qualite_RGPD';
+
+// Navigation sticky
+const navBlocks = document.querySelectorAll('.nav-block');
+const sections = document.querySelectorAll('.section');
+function updateActiveNav() {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - 100) current = section.getAttribute('id');
+  });
+  navBlocks.forEach(block => {
+    block.classList.remove('active');
+    if (block.getAttribute('href') === '#' + current) block.classList.add('active');
+  });
+}
+if (navBlocks.length > 0) {
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
+}
+
+// Collecte des réponses (format array v2.0)
+function collectResponses() {
+  const responses = [];
+  const seen = new Set();
+  document.querySelectorAll('.question:not(.hidden)').forEach(qEl => {
+    const labelEl = qEl.querySelector('.q-label, .question-label');
+    if (!labelEl) return;
+    const question = labelEl.innerText.replace(/^\*\s*/, '').replace(/\s+/g, ' ').trim();
+    const inputs = qEl.querySelectorAll('input, textarea, select');
+    if (inputs.length === 0) return;
+    const firstInput = inputs[0];
+    const fieldId = firstInput.name || firstInput.id || '';
+    if (seen.has(fieldId)) return;
+    seen.add(fieldId);
+    let answer = '';
+    const type = firstInput.type;
+    if (type === 'radio') {
+      const checked = qEl.querySelector('input[type="radio"]:checked');
+      answer = checked ? checked.value : '';
+    } else if (type === 'checkbox') {
+      const checkeds = qEl.querySelectorAll('input[type="checkbox"]:checked');
+      answer = Array.from(checkeds).map(c => c.value).join(' | ');
+    } else {
+      answer = firstInput.value.trim();
+    }
+    responses.push({ id: fieldId, question, answer });
+  });
+  const nomEtabEl = document.getElementById('nom_etablissement');
+  if (nomEtabEl) {
+    responses.push({ id: 'nom_etablissement', question: 'Nom de l\'établissement', answer: nomEtabEl.value || '' });
+  }
+  return responses;
+}
+
+// Soumission
+document.getElementById('formulaire').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!this.checkValidity()) return;
+  const btn = document.getElementById('btn-submit');
+  const message = document.getElementById('message');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+  const payload = { type: FORM_TYPE, responses: collectResponses() };
+  try {
+    const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const result = await res.json();
+    if (result.status === 'success') {
+      message.className = 'message success show';
+      message.textContent = 'Questionnaire envoyé avec succès ! Merci pour votre participation.';
+      this.reset();
+      const dateField = document.querySelector('[name*="date"]');
+      if (dateField && dateField.type === 'date') dateField.valueAsDate = new Date();
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (err) {
+    message.className = 'message error show';
+    message.textContent = 'Erreur lors de l\'envoi : ' + err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Envoyer le questionnaire';
+  }
+});
+
+// Date par défaut
+const dateField = document.querySelector('[name*="date"]');
+if (dateField && dateField.type === 'date') dateField.valueAsDate = new Date();
+</script>
+</body>
+</html>

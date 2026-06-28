@@ -1,0 +1,56 @@
+Entité_Cible	Bloc	Question_ID	Question_Libellé	Type_Réponse	Choix_Réponses
+EANM	0-Identification	Q0.1	Nom de l'établissement EANM (Foyer de vie Foyer d'hébergement)	Text	N/A
+EANM	0-Identification	Q0.2	Personne répondant au questionnaire (Nom Prénom)	Text	N/A
+EANM	0-Identification	Q0.3	Fonction du répondant	Single select	Directeur/trice établissement|Chef de service éducatif|Éducateur/trice spécialisé(e)|Responsable administratif|Autre
+EANM	0-Identification	Q0.4	Date de remplissage	Date	N/A
+EANM	0-Identification	Q0.5	Nombre de résidents accueillis dans l'EANM	Number	N/A
+EANM	0-Identification	Q0.6	Nombre de salariés dans l'établissement	Number	N/A
+EANM	1-Gouvernance locale	Q1.1.1	Un référent RGPD est-il identifié dans votre établissement EANM ?	Single select	Oui identifié et connu des équipes|Oui identifié mais informel|Non personne n'est identifiée
+EANM	1-Gouvernance locale	Q1.1.2	Nom et fonction du référent RGPD local	Text	N/A
+EANM	1-Gouvernance locale	Q1.2.1	Le référent RGPD local sait-il contacter le DPO externe ?	Single select	Oui coordonnées connues et DPO déjà contacté|Oui coordonnées connues mais jamais contacté|Non ne connaît pas le DPO
+EANM	1-Gouvernance locale	Q1.3.1	Les équipes de l'EANM ont-elles reçu une sensibilisation ou formation RGPD ?	Single select	Oui formation/sensibilisation récente (<2 ans)|Oui ancienne (>2 ans)|Sensibilisation rapide uniquement|Non jamais
+EANM	1-Gouvernance locale	Q1.4.1	L'établissement connaît-il les procédures RGPD du siège (gestion demandes incidents) ?	Single select	Oui procédures connues et appliquées|Oui connues mais non appliquées|Procédures existent mais non connues|Pas de procédures siège
+EANM	1-Gouvernance locale	Q1.5.1	L'établissement remonte-t-il les incidents/questions RGPD au siège ?	Single select	Oui remontées systématiques|Remontées occasionnelles|Non jamais de remontée|N/A (jamais incident)
+EANM	2-Registre local	Q2.1.1	Connaissez-vous les traitements de données recensés pour votre EANM dans le registre ?	Single select	Oui je connais les traitements EANM du registre|Vaguement|Non je ne connais pas le registre
+EANM	2-Registre local	Q2.2.1	Utilisez-vous des fichiers ou outils locaux non fournis par le siège ?	Single select	Oui fichiers/outils locaux (Excel cahiers papier)|Non uniquement outils siège
+EANM	2-Registre local	Q2.2.2	Si OUI précisez quels fichiers/outils locaux vous utilisez	Text	N/A
+EANM	2bis-Bases légales	Q2B.1	Sur quelle base légale repose le traitement des dossiers des résidents de votre EANM ?	Single select	Mission d'intérêt public / autorité publique (Art. 6.1.e)|Consentement résidents (Art. 6.1.a)|Obligation légale CASF (Art. 6.1.c)|Inconnu
+EANM	2ter-PIA	Q2T.1	Avez-vous identifié des traitements à risque élevé dans votre EANM nécessitant une PIA ?	Single select	Oui PIA réalisées|Oui traitements identifiés mais PIA non réalisées|Non aucun traitement à risque identifié|Inconnu (ne sait pas ce qu'est une PIA)
+EANM	2ter-PIA	Q2T.2	Parmi ces traitements lesquels sont présents dans votre EANM ?	Multiple select	Vidéosurveillance résidents/espaces communs|Géolocalisation sorties (bracelets GPS smartphones)|Suivi comportemental détaillé (crises incidents)|Données biométriques (badgeuse cantine)|Aucun de ces traitements
+EANM	2ter-PIA	Q2T.3	Si vidéosurveillance où sont placées les caméras ?	Multiple select	Extérieurs uniquement (parkings entrées)|Espaces communs (couloirs réfectoire)|Salles d'activités|Chambres résidents|Sanitaires|Aucune vidéosurveillance
+EANM	3-Sécurité terrain	Q3.1.1	Où sont stockés les dossiers des résidents papier ?	Single select	Armoires fermées à clé dans bureau dédié sécurisé|Armoires fermées à clé dans bureau partagé|Armoires non fermées à clé|Classeurs dans bureaux éducateurs|Autre
+EANM	3-Sécurité terrain	Q3.1.2	Combien de personnes ont les clés des armoires dossiers résidents ?	Number	N/A
+EANM	3-Sécurité terrain	Q3.1.3	Les dossiers papier sont-ils détruits de manière sécurisée en fin de conservation ?	Single select	Oui déchiqueteuse sur site|Oui prestataire spécialisé avec certificat|Poubelle classique|Jamais détruits (conservation indéfinie)
+EANM	3-Sécurité terrain	Q3.2.1	Où sont stockés les dossiers des résidents informatiques ?	Single select	Serveur centralisé siège (accès sécurisé)|Ordinateurs locaux EANM|Logiciel métier dédié|Fichiers Excel locaux|Cloud non sécurisé
+EANM	3-Sécurité terrain	Q3.2.2	Quel logiciel métier utilisez-vous pour la gestion des résidents ?	Text	N/A
+EANM	3-Sécurité terrain	Q3.2.3	Qui a accès aux dossiers informatiques complets des résidents ?	Multiple select	Directeur/trice|Chef de service éducatif|Éducateurs (tous)|Éducateurs (référents résident uniquement)|Personnel administratif|Personnel soignant si présent|Autre
+EANM	3-Sécurité terrain	Q3.2.4	Les ordinateurs de l'EANM ont-ils un verrouillage automatique après inactivité ?	Single select	Oui verrouillage auto <5 minutes|Oui mais >10 minutes|Verrouillage manuel uniquement
+EANM	3-Sécurité terrain	Q3.3.1	Comment transmettez-vous des informations sur les résidents à l'extérieur ?	Multiple select	Email classique non sécurisé|Email crypté/sécurisé|Plateforme sécurisée|Courrier postal|Remise main propre|Autre
+EANM	3-Sécurité terrain	Q3.3.2	À qui transmettez-vous régulièrement des données sur les résidents ?	Multiple select	MDPH|Familles/représentants légaux|Tuteurs/curateurs (si protection juridique)|Services sociaux|Médecins si applicable|Autre|Aucune transmission externe
+EANM	3-Sécurité terrain	Q3.4.1	Des documents avec données résidents sont-ils parfois visibles dans espaces communs ?	Single select	Non jamais documents visibles|Parfois (planning activités tableaux)|Oui fréquemment
+EANM	3-Sécurité terrain	Q3.5.1	Les cahiers de transmission contiennent-ils des données comportementales détaillées ?	Single select	Oui très détaillés (crises incidents intimes)|Modérément détaillés|Peu détaillés (activités uniquement)|Pas de cahiers
+EANM	3-Sécurité terrain	Q3.5.2	Les cahiers de transmission sont-ils sécurisés (armoire fermée) quand non utilisés ?	Single select	Oui rangement sécurisé systématique|Parfois laissés sur bureaux|Souvent accessibles espaces communs
+EANM	4-Droits usagers	Q4.1.1	Les résidents reçoivent-ils une information RGPD claire à l'admission ?	Single select	Oui document dédié notice RGPD adapté (FALC si besoin)|Oui document standard|Information orale uniquement|Non pas d'information
+EANM	4-Droits usagers	Q4.2.1	Avez-vous déjà reçu des demandes de résidents pour consulter leur dossier ?	Single select	Oui (nombre sur 12 derniers mois)|Non jamais
+EANM	4-Droits usagers	Q4.2.2	Si OUI quel délai pour répondre aux demandes d'accès au dossier ?	Single select	Moins de 1 mois systématiquement|Entre 1 et 2 mois|Plus de 2 mois|N/A (pas de demande)
+EANM	4-Droits usagers	Q4.3.1	Savez-vous comment traiter une demande d'exercice de droits des résidents ?	Single select	Oui procédure claire connue|Vaguement je contacterais le siège|Non je ne sais pas
+EANM	4-Droits usagers	Q4.4.1	Les résidents sous protection juridique peuvent-ils exercer leurs droits RGPD ?	Single select	Oui selon niveau mesure (curatelle = oui avec assistance)|Toujours via tuteur/curateur uniquement|Non pas prévu|Inconnu
+EANM	5-Sous-traitants locaux	Q5.1.1	Quels sous-traitants locaux utilisez-vous ayant accès aux données des résidents ?	Multiple select	Logiciel métier (Imago Concerto)|Prestataires repas|Transporteurs|Entreprise nettoyage (accès locaux)|Intervenants externes (activités animateurs)|Autre|Aucun
+EANM	5-Sous-traitants locaux	Q5.2.1	Ces sous-traitants locaux ont-ils signé une clause de confidentialité ou contrat RGPD ?	Single select	Oui tous ont clauses|Certains seulement|Non aucun|Inconnu (géré par siège)
+EANM	5-Sous-traitants locaux	Q5.3.1	Le logiciel métier a-t-il un contrat avec clauses RGPD (Art. 28) ?	Single select	Oui contrat Art. 28 signé|Non pas de contrat|Inconnu (géré par siège)
+EANM	6-Incidents locaux	Q6.1.1	Des incidents de données ont-ils eu lieu dans votre EANM sur 24 derniers mois ?	Single select	Oui|Non|Inconnu
+EANM	6-Incidents locaux	Q6.1.2	Si OUI type(s) d'incident(s)	Multiple select	Perte/vol dossiers résidents papier|Perte cahiers de transmission|Email avec données à mauvais destinataire|Divulgation accidentelle données comportementales|Photos résidents sans consentement|Autre|N/A
+EANM	6-Incidents locaux	Q6.1.3	Avez-vous immédiatement informé le siège/DPO (dans les 72h) ?	Single select	Oui tous incidents remontés <72h|Certains seulement|Non jamais informé|N/A (pas incident)
+EANM	6-Incidents locaux	Q6.2.1	Savez-vous reconnaître une violation de données concernant les résidents ?	Single select	Oui formé à reconnaître violations|Incertain|Non
+EANM	7-Spécificités EANM	Q7N.1	Gérez-vous l'argent de poche des résidents ?	Single select	Oui pour la majorité des résidents|Oui pour certains résidents|Non jamais
+EANM	7-Spécificités EANM	Q7N.2	Si gestion argent poche où sont stockés les documents de traçabilité (registre dépenses) ?	Single select	Armoire fermée à clé ou coffre|Classeur bureau accessible|Fichier Excel ordinateur|Cahier papier non sécurisé|N/A (pas de gestion argent poche)
+EANM	7-Spécificités EANM	Q7N.3	Des sorties/activités extérieures sont-elles organisées pour les résidents ?	Single select	Oui régulièrement (hebdomadaires)|Occasionnellement|Rarement|Jamais
+EANM	7-Spécificités EANM	Q7N.4	Utilisez-vous des dispositifs de géolocalisation pour les sorties (bracelets GPS smartphones) ?	Single select	Oui avec consentement et PIA réalisée|Oui sans PIA|Non jamais de géolocalisation
+EANM	7-Spécificités EANM	Q7N.5	Des photos de résidents lors de sorties/activités sont-elles prises et partagées ?	Single select	Oui avec consentements écrits systématiques|Oui consentements oraux|Oui sans consentement (considéré implicite)|Non jamais de photos
+EANM	7-Spécificités EANM	Q7N.6	À qui les photos de sorties sont-elles transmises/diffusées ?	Multiple select	Familles uniquement (avec consentement)|Site web / réseaux sociaux établissement|Journal interne établissement|Affiches/communication externe|Photos non diffusées (usage interne uniquement)|N/A (pas de photos)
+EANM	7-Spécificités EANM	Q7N.7	Les résidents sont-ils majoritairement sous protection juridique (tutelle curatelle) ?	Single select	Oui majorité sous protection|Environ la moitié|Minorité sous protection|Non aucun
+EANM	7-Spécificités EANM	Q7N.8	Les tuteurs/curateurs reçoivent-ils des comptes-rendus réguliers sur la vie quotidienne du résident ?	Single select	Oui comptes-rendus réguliers sécurisés|Oui mais canaux non sécurisés (email classique)|Rarement|Non jamais|N/A (pas de majeurs protégés)
+EANM	7-Spécificités EANM	Q7N.9	Les familles peuvent-elles accéder aux données du résident majeur (si pas sous tutelle) ?	Single select	Oui uniquement avec accord écrit du résident|Accès systématique sans vérifier accord|Non jamais|Dépend des situations
+EANM	7-Spécificités EANM	Q7N.10	Quelle durée de conservation appliquez-vous aux dossiers après départ d'un résident ?	Single select	5 ans après départ|Autre durée (préciser)|Conservation indéfinie|Inconnu
+EANM	Synthèse	Q_SYNTH.1	Principales difficultés EANM pour conformité RGPD	Long text	N/A
+EANM	Synthèse	Q_SYNTH.2	Commentaires libres ou points EANM non abordés	Long text	N/A

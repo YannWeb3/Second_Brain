@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avancement Audit RGPD — Unapei 92</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --secondary: #10b981;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .logo-placeholder {
+            width: 80px;
+            height: 80px;
+            background: var(--primary);
+            border-radius: 20px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 2rem;
+            box-shadow: 0 10px 25px rgba(2, 132, 199, 0.2);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .tagline {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        /* Main Progress */
+        .progress-section {
+            background: var(--card);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .progress-circle-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            flex-shrink: 0;
+        }
+
+        .progress-circle {
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle-bg {
+            fill: none;
+            stroke: var(--border);
+            stroke-width: 12;
+        }
+
+        .progress-circle-bar {
+            fill: none;
+            stroke: var(--secondary);
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-dasharray: 440;
+            stroke-dashoffset: 325; /* 26% of 440 */
+            transition: stroke-dashoffset 2s ease-out;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text);
+            display: block;
+        }
+
+        .progress-total {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .progress-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .progress-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Next Steps List */
+        .steps-section {
+            background: var(--card);
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-dark);
+        }
+
+        .step-list {
+            list-style: none;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .step-item:last-child {
+            border-bottom: none;
+        }
+
+        .step-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--bg);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        .step-content h4 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .step-content p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .badge-status {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-top: 8px;
+            display: inline-block;
+        }
+
+        .badge-waiting { background: #fff7ed; color: #9a3412; }
+        .badge-process { background: #eff6ff; color: #1e40af; }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 600px) {
+            .progress-section { flex-direction: column; text-align: center; }
+            .progress-stats { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-placeholder">U92</div>
+            <h1>Audit de Conformité RGPD</h1>
+            <p class="tagline">Unapei 92 — Rapport d'avancement</p>
+        </header>
+
+        <section class="progress-section">
+            <div class="progress-circle-container">
+                <svg class="progress-circle" width="180" height="180">
+                    <circle class="progress-circle-bg" cx="90" cy="90" r="70" />
+                    <circle class="progress-circle-bar" cx="90" cy="90" r="70" />
+                </svg>
+                <div class="progress-text">
+                    <span class="progress-value">26%</span>
+                    <span class="progress-total">14 / 54</span>
+                </div>
+            </div>
+            <div class="progress-info">
+                <h2>Collecte des données</h2>
+                <p style="color: var(--text-light); margin-bottom: 20px;">
+                    Le taux de réponse actuel est de 26%. Les formulaires sont actifs et les établissements commencent à renseigner leurs pratiques.
+                </p>
+                <div class="progress-stats">
+                    <div class="stat-card">
+                        <span class="stat-value">14</span>
+                        <span class="stat-label">Réponses validées</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value">40</span>
+                        <span class="stat-label">En attente</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="steps-section">
+            <h3 class="section-title">🚀 Étapes suivantes</h3>
+            <ul class="step-list">
+                <li class="step-item">
+                    <div class="step-icon">01</div>
+                    <div class="step-content">
+                        <h4>Analyse des résultats</h4>
+                        <p>Traitement des 14 premières réponses pour identifier les tendances et les écarts majeurs.</p>
+                        <span class="badge-status badge-process">EN COURS</span>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-icon">02</div>
+                    <div class="step-content">
+                        <h4>Entretiens individuels</h4>
+                        <p>Seuls 2 entretiens ont été réalisés à ce jour. Nécessité de planifier les sessions restantes.</p>
+                        <span class="badge-status badge-waiting">À PLANIFIER</span>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-icon">03</div>
+                    <div class="step-content">
+                        <h4>Présentation aux fonctions Support</h4>
+                        <p>Soumettre le formulaire spécifique aux services supports (RH, DAF, Communication, etc.) pour audit.</p>
+                        <span class="badge-status badge-waiting">À FAIRE</span>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-icon">04</div>
+                    <div class="step-content">
+                        <h4>Préparation Support de Formation</h4>
+                        <p>Élaboration du matériel pédagogique basé sur les premiers retours du terrain.</p>
+                        <span class="badge-status badge-waiting">À FAIRE</span>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <footer>
+            Dernière mise à jour : 06 Mai 2026 — Projet Audit RGPD Unapei 92
+        </footer>
+    </div>
+
+    <script>
+        // Start progress animation
+        window.onload = function() {
+            const circle = document.querySelector('.progress-circle-bar');
+            const percent = 26;
+            const offset = 440 - (440 * percent / 100);
+            circle.style.strokeDashoffset = offset;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "mcp": {
+    "airtable": {
+      "type": "remote",
+      "url": "https://mcp.airtable.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${AIRTABLE_PERSONAL_ACCESS_TOKEN}"
+      },
+      "enabled": true
+    },
+    "n8n-admin": {
+      "type": "remote",
+      "url": "${N8N_API_URL}/mcp-server/http",
+      "headers": {
+        "Authorization": "Bearer ${N8N_API_KEY}"
+      },
+      "enabled": true
+    }
+  }
+}

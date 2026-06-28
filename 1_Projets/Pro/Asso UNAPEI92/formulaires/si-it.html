@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNAPEI92 — SI-IT (Questionnaire RGPD)</title>
+  <style>
+    :root {
+      --primary: #0055A4;
+      --primary-dark: #003d7a;
+      --secondary: #E60028;
+      --bg: #f5f7fa;
+      --card: #fff;
+      --text: #333;
+      --text-light: #666;
+      --border: #e0e0e0;
+      --success: #28a745;
+      --error: #dc3545;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+    header p { opacity: 0.9; font-size: 0.95rem; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    .nav-blocks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 25px;
+      padding: 15px;
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+    }
+
+    .nav-block {
+      padding: 8px 16px;
+      background: var(--bg);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .nav-block:hover, .nav-block.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .section {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      scroll-margin-top: 80px;
+    }
+
+    .section-title {
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .question {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .question:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .question-label {
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: block;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .question-id {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: normal;
+      margin-left: 5px;
+    }
+
+    .required::after {
+      content: ' *';
+      color: var(--secondary);
+    }
+
+    input, select, textarea {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .radio-group, .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .radio-group label, .checkbox-group label {
+      font-weight: normal;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .radio-group label:hover, .checkbox-group label:hover {
+      background: var(--bg);
+    }
+
+    input[type="radio"], input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      padding: 14px 40px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .message {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .message.show { display: block; }
+
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid var(--primary);
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.4rem; }
+      .nav-blocks { justify-content: center; }
+      .nav-block { font-size: 0.8rem; padding: 6px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="back-link">← Retour à l'accueil</a>
+
+    <header>
+      <h1>Questionnaire RGPD — SI-IT</h1>
+      <p>Systèmes d'Information &amp; Informatique — Sécurité et conformité RGPD</p>
+    </header>
+
+    <nav class="nav-blocks">
+      <a href="#identification" class="nav-block">Identification</a>
+      <a href="#infrastructure" class="nav-block">Infrastructure SI</a>
+      <a href="#sauvegardes" class="nav-block">Sauvegardes</a>
+      <a href="#antivirus" class="nav-block">Antivirus</a>
+      <a href="#mots-de-passe" class="nav-block">Mots de passe</a>
+      <a href="#verrouillage" class="nav-block">Verrouillage</a>
+      <a href="#gestion-acces" class="nav-block">Gestion accès</a>
+      <a href="#chiffrement" class="nav-block">Chiffrement</a>
+      <a href="#reseau" class="nav-block">Réseau</a>
+      <a href="#mises-a-jour" class="nav-block">Mises à jour</a>
+      <a href="#sous-traitants" class="nav-block">Sous-traitants IT</a>
+      <a href="#incidents" class="nav-block">Incidents cyber</a>
+      <a href="#synthese" class="nav-block">Synthèse</a>
+    </nav>
+
+    <div class="info-box">
+      <strong>Instructions :</strong> Ce questionnaire porte sur la conformité RGPD et la sécurité informatique de votre association. Répondez en fonction de votre situation actuelle. Les champs marqués d'une étoile (*) sont obligatoires.
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <form id="formulaire">
+      <!-- Bloc 0 : Identification -->
+      <section class="section" id="identification">
+        <h2 class="section-title">Identification</h2>
+
+        <div class="question">
+          <label class="question-label required">Nom de l'association <span class="question-id">Q0.1</span></label>
+           <input type="text" name="q0_1_nom_association" required>
+           <input type="hidden" id="nom_etablissement" name="nom_etablissement">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Personne répondant au questionnaire (Nom Prénom) <span class="question-id">Q0.2</span></label>
+          <input type="text" name="q0_2_nom_prenom_repondant" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Fonction du répondant <span class="question-id">Q0.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q0_3_fonction" value="responsable_informatique" required> Responsable informatique</label>
+            <label><input type="radio" name="q0_3_fonction" value="dsi"> DSI</label>
+            <label><input type="radio" name="q0_3_fonction" value="administrateur_systeme"> Administrateur système</label>
+            <label><input type="radio" name="q0_3_fonction" value="prestataire_infogerance"> Prestataire infogérance externe</label>
+            <label><input type="radio" name="q0_3_fonction" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Date de remplissage <span class="question-id">Q0.4</span></label>
+          <input type="date" name="q0_4_date_remplissage" required>
+        </div>
+      </section>
+
+      <!-- Bloc 3 : Infrastructure SI -->
+      <section class="section" id="infrastructure">
+        <h2 class="section-title">Infrastructure SI</h2>
+
+        <div class="question">
+          <label class="question-label required">L'infrastructure informatique est-elle gérée en interne ou externalisée ? <span class="question-id">Q3.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_1_1_gestion_infra" value="interne" required> Interne avec équipe IT dédiée</label>
+            <label><input type="radio" name="q3_1_1_gestion_infra" value="mixte"> Mixte (interne + prestataire)</label>
+            <label><input type="radio" name="q3_1_1_gestion_infra" value="externalisee"> Totalement externalisée (infogérance)</label>
+            <label><input type="radio" name="q3_1_1_gestion_infra" value="non_formalisee"> Pas de gestion IT formalisée</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Une politique de sécurité des systèmes d'information (PSSI) existe-t-elle ? <span class="question-id">Q3.1.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_1_2_pssi" value="ecrite_validee" required> Oui PSSI écrite validée et appliquée</label>
+            <label><input type="radio" name="q3_1_2_pssi" value="ecrite_non_appliquee"> Oui PSSI écrite mais non appliquée</label>
+            <label><input type="radio" name="q3_1_2_pssi" value="en_projet"> PSSI en projet</label>
+            <label><input type="radio" name="q3_1_2_pssi" value="pas_pssi"> Non pas de PSSI</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Quel type d'infrastructure héberge les données de l'association ? <span class="question-id">Q3.2.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q3_2_1_infrastructure" value="serveurs_on_site"> Serveurs sur site (siège ou établissements)</label>
+            <label><input type="checkbox" name="q3_2_1_infrastructure" value="datacenter_ext"> Datacenters externalisés France</label>
+            <label><input type="checkbox" name="q3_2_1_infrastructure" value="cloud_public"> Cloud public (AWS Azure Google Cloud)</label>
+            <label><input type="checkbox" name="q3_2_1_infrastructure" value="cloud_prive"> Cloud privé/hybride</label>
+            <label><input type="checkbox" name="q3_2_1_infrastructure" value="hebergement_mutualise"> Hébergement mutualisé</label>
+            <label><input type="checkbox" name="q3_2_1_infrastructure" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si cloud où sont localisées physiquement les données ? <span class="question-id">Q3.2.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_2_localisation_cloud" value="france" required> France uniquement</label>
+            <label><input type="radio" name="q3_2_2_localisation_cloud" value="ue"> Union Européenne/EEE</label>
+            <label><input type="radio" name="q3_2_2_localisation_cloud" value="hors_ue_garanties"> Hors UE avec garanties (USA UK Suisse avec CCT/DPF)</label>
+            <label><input type="radio" name="q3_2_2_localisation_cloud" value="hors_ue_sans"> Hors UE sans garanties</label>
+            <label><input type="radio" name="q3_2_2_localisation_cloud" value="inconnu"> Inconnu</label>
+            <label><input type="radio" name="q3_2_2_localisation_cloud" value="na"> N/A (pas de cloud)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">L'hébergeur cloud a-t-il fourni des garanties documentées sur la localisation des données ? <span class="question-id">Q3.2.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_3_garanties_cloud" value="confirmation_ecrite" required> Oui confirmation écrite data residency EU/France</label>
+            <label><input type="radio" name="q3_2_3_garanties_cloud" value="verbales"> Garanties verbales uniquement</label>
+            <label><input type="radio" name="q3_2_3_garanties_cloud" value="jamais_verifie"> Non jamais vérifié</label>
+            <label><input type="radio" name="q3_2_3_garanties_cloud" value="na"> N/A</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3-Sauvegardes -->
+      <section class="section" id="sauvegardes">
+        <h2 class="section-title">Sauvegardes</h2>
+
+        <div class="question">
+          <label class="question-label required">Des sauvegardes régulières des données sont-elles effectuées ? <span class="question-id">Q3.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_3_1_sauvegardes" value="automatiques_quotidiennes" required> Oui automatiques quotidiennes</label>
+            <label><input type="radio" name="q3_3_1_sauvegardes" value="automatiques_hebdo"> Oui automatiques hebdomadaires</label>
+            <label><input type="radio" name="q3_3_1_sauvegardes" value="manuelles"> Sauvegardes manuelles irrégulières</label>
+            <label><input type="radio" name="q3_3_1_sauvegardes" value="non"> Non pas de sauvegardes</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les sauvegardes sont-elles testées régulièrement (tests de restauration) ? <span class="question-id">Q3.3.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_3_2_tests_sauvegardes" value="trimestriels" required> Oui tests restauration trimestriels ou plus fréquents</label>
+            <label><input type="radio" name="q3_3_2_tests_sauvegardes" value="annuels"> Oui tests annuels</label>
+            <label><input type="radio" name="q3_3_2_tests_sauvegardes" value="ponctuels"> Tests ponctuels (&gt;1 an)</label>
+            <label><input type="radio" name="q3_3_2_tests_sauvegardes" value="jamais"> Jamais testées</label>
+            <label><input type="radio" name="q3_3_2_tests_sauvegardes" value="na"> N/A (pas de sauvegardes)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Où sont stockées les sauvegardes ? <span class="question-id">Q3.3.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_3_3_stockage_sauvegardes" value="site_distant" required> Site distant géographiquement séparé (datacenter cloud autre ville)</label>
+            <label><input type="radio" name="q3_3_3_stockage_sauvegardes" value="support_separe"> Sur site mais support physique séparé (disque externe coffre)</label>
+            <label><input type="radio" name="q3_3_3_stockage_sauvegardes" value="meme_serveur"> Même serveur/NAS que données principales</label>
+            <label><input type="radio" name="q3_3_3_stockage_sauvegardes" value="na"> Pas de sauvegardes</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Quelle est la fréquence de rotation/rétention des sauvegardes ? <span class="question-id">Q3.3.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_3_4_retention" value="multiples_versions" required> Multiples versions (quotidiennes 7j + hebdo 4sem + mensuelles 12mois)</label>
+            <label><input type="radio" name="q3_3_4_retention" value="versions_courtes"> Versions multiples mais courtes (7-30j)</label>
+            <label><input type="radio" name="q3_3_4_retention" value="version_unique"> Version unique écrasée à chaque sauvegarde</label>
+            <label><input type="radio" name="q3_3_4_retention" value="inconnu"> Inconnu</label>
+            <label><input type="radio" name="q3_3_4_retention" value="na"> N/A</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3-Antivirus -->
+      <section class="section" id="antivirus">
+        <h2 class="section-title">Antivirus &amp; Pare-feu</h2>
+
+        <div class="question">
+          <label class="question-label required">Un antivirus/EDR est-il déployé sur TOUS les postes de travail et serveurs ? <span class="question-id">Q3.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_4_1_antivirus" value="tous_centralise" required> Oui tous postes et serveurs avec gestion centralisée</label>
+            <label><input type="radio" name="q3_4_1_antivirus" value="gestion_locale"> Oui mais gestion locale (non centralisée)</label>
+            <label><input type="radio" name="q3_4_1_antivirus" value="certains"> Certains postes seulement</label>
+            <label><input type="radio" name="q3_4_1_antivirus" value="non"> Non pas d'antivirus</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">L'antivirus est-il à jour et les définitions virus actualisées automatiquement ? <span class="question-id">Q3.4.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_4_2_maj_antivirus" value="auto_verifiees" required> Oui MAJ automatiques quotidiennes vérifiées</label>
+            <label><input type="radio" name="q3_4_2_maj_antivirus" value="auto_non_verifiees"> Oui MAJ auto mais non vérifiées</label>
+            <label><input type="radio" name="q3_4_2_maj_antivirus" value="manuelles"> MAJ manuelles irrégulières</label>
+            <label><input type="radio" name="q3_4_2_maj_antivirus" value="non"> Non pas à jour</label>
+            <label><input type="radio" name="q3_4_2_maj_antivirus" value="na"> N/A</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Un pare-feu (firewall) protège-t-il le réseau de l'association ? <span class="question-id">Q3.4.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_4_3_firewall" value="professionnel" required> Oui pare-feu professionnel configuré et maintenu</label>
+            <label><input type="radio" name="q3_4_3_firewall" value="box_internet"> Oui pare-feu basique (box internet)</label>
+            <label><input type="radio" name="q3_4_3_firewall" value="non"> Non pas de pare-feu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des outils de détection d'intrusion (IDS/IPS) sont-ils déployés ? <span class="question-id">Q3.4.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_4_4_ids" value="actifs" required> Oui IDS/IPS actifs et monitorés</label>
+            <label><input type="radio" name="q3_4_4_ids" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3-Mots de passe -->
+      <section class="section" id="mots-de-passe">
+        <h2 class="section-title">Mots de passe</h2>
+
+        <div class="question">
+          <label class="question-label required">Une politique de mots de passe est-elle imposée techniquement sur tous les systèmes ? <span class="question-id">Q3.5.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_5_1_politique_mdp" value="stricte" required> Oui politique stricte imposée (12+ caractères complexité expiration)</label>
+            <label><input type="radio" name="q3_5_1_politique_mdp" value="faible"> Oui politique faible (&lt;12 caractères ou pas de complexité)</label>
+            <label><input type="radio" name="q3_5_1_politique_mdp" value="recommandations"> Recommandations seulement (non imposées)</label>
+            <label><input type="radio" name="q3_5_1_politique_mdp" value="non"> Non aucune politique</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les mots de passe des comptes administrateurs sont-ils renforcés ? <span class="question-id">Q3.5.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_5_2_mdp_admin" value="complexes_2fa" required> Oui mots de passe très complexes + double authentification (2FA/MFA)</label>
+            <label><input type="radio" name="q3_5_2_mdp_admin" value="complexes"> Mots de passe complexes uniquement</label>
+            <label><input type="radio" name="q3_5_2_mdp_admin" value="standards"> Mots de passe standards</label>
+            <label><input type="radio" name="q3_5_2_mdp_admin" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les mots de passe sont-ils stockés de manière sécurisée (hachés salés) ? <span class="question-id">Q3.5.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_5_3_stockage_mdp" value="hachage_salt" required> Oui hachage avec salt (bcrypt argon2 PBKDF2)</label>
+            <label><input type="radio" name="q3_5_3_stockage_mdp" value="hachage_simple"> Oui hachage simple (MD5 SHA1)</label>
+            <label><input type="radio" name="q3_5_3_stockage_mdp" value="clair"> Stockage en clair ou chiffrement réversible</label>
+            <label><input type="radio" name="q3_5_3_stockage_mdp" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3-Verrouillage -->
+      <section class="section" id="verrouillage">
+        <h2 class="section-title">Verrouillage des sessions</h2>
+
+        <div class="question">
+          <label class="question-label required">Les postes de travail ont-ils un verrouillage automatique après inactivité ? <span class="question-id">Q3.6.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_6_1_verrouillage" value="moins_5min" required> Oui tous postes verrouillage auto &lt;5 minutes</label>
+            <label><input type="radio" name="q3_6_1_verrouillage" value="plus_10min"> Oui mais délai &gt;10 minutes</label>
+            <label><input type="radio" name="q3_6_1_verrouillage" value="manuel"> Verrouillage manuel uniquement (pas auto)</label>
+            <label><input type="radio" name="q3_6_1_verrouillage" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les sessions serveurs/applications critiques ont-elles un timeout automatique ? <span class="question-id">Q3.6.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_6_2_timeout" value="timeout_30min" required> Oui timeout configuré (&lt;30 min inactivité)</label>
+            <label><input type="radio" name="q3_6_2_timeout" value="timeout_long"> Timeout long (&gt;1h)</label>
+            <label><input type="radio" name="q3_6_2_timeout" value="illimite"> Pas de timeout (sessions illimitées)</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3-Gestion accès -->
+      <section class="section" id="gestion-acces">
+        <h2 class="section-title">Gestion des accès</h2>
+
+        <div class="question">
+          <label class="question-label required">Les accès aux systèmes sont-ils différenciés par profils utilisateurs ? <span class="question-id">Q3.7.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_7_1_profils_acces" value="rbac" required> Oui gestion fine des droits par profil (RBAC)</label>
+            <label><input type="radio" name="q3_7_1_profils_acces" value="grossiers"> Droits différenciés mais grossiers</label>
+            <label><input type="radio" name="q3_7_1_profils_acces" value="memes_droits"> Tous utilisateurs ont mêmes droits</label>
+            <label><input type="radio" name="q3_7_1_profils_acces" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les accès aux données sensibles (santé usagers RH) sont-ils journalisés (logs) ? <span class="question-id">Q3.7.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_7_2_logs_acces" value="conserves_analyses" required> Oui logs accès conservés et analysés régulièrement</label>
+            <label><input type="radio" name="q3_7_2_logs_acces" value="jamais_analyses"> Oui logs mais jamais analysés</label>
+            <label><input type="radio" name="q3_7_2_logs_acces" value="partiels"> Logs partiels</label>
+            <label><input type="radio" name="q3_7_2_logs_acces" value="non"> Non pas de logs</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Quelle est la durée de conservation des logs d'accès ? <span class="question-id">Q3.7.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_7_3_conservation_logs" value="6_12_mois" required> 6-12 mois minimum</label>
+            <label><input type="radio" name="q3_7_3_conservation_logs" value="1_6_mois"> 1-6 mois</label>
+            <label><input type="radio" name="q3_7_3_conservation_logs" value="moins_1_mois"> Moins de 1 mois</label>
+            <label><input type="radio" name="q3_7_3_conservation_logs" value="pas_logs"> Pas de logs</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les départs de salariés déclenchent-ils la désactivation immédiate de tous leurs accès IT ? <span class="question-id">Q3.7.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_7_4_desactivation" value="automatisee" required> Oui procédure automatisée (jour du départ)</label>
+            <label><input type="radio" name="q3_7_4_desactivation" value="manuelle_48h"> Oui procédure manuelle (délai 24-48h)</label>
+            <label><input type="radio" name="q3_7_4_desactivation" value="manuelle_long"> Procédure manuelle avec délais (plusieurs jours)</label>
+            <label><input type="radio" name="q3_7_4_desactivation" value="non"> Non pas de procédure</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les comptes inactifs (non utilisés depuis &gt;6 mois) sont-ils désactivés automatiquement ? <span class="question-id">Q3.7.5</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_7_5_comptes_inactifs" value="auto" required> Oui désactivation automatique comptes inactifs</label>
+            <label><input type="radio" name="q3_7_5_comptes_inactifs" value="revue_annuelle"> Revue manuelle régulière (annuelle)</label>
+            <label><input type="radio" name="q3_7_5_comptes_inactifs" value="jamais"> Non jamais désactivés</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3-Chiffrement -->
+      <section class="section" id="chiffrement">
+        <h2 class="section-title">Chiffrement</h2>
+
+        <div class="question">
+          <label class="question-label required">Les données sensibles (santé usagers RH paie) sont-elles chiffrées au repos (sur serveurs/disques) ? <span class="question-id">Q3.8.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_8_1_chiffrement_repos" value="integral" required> Oui chiffrement intégral (full disk encryption ou fichiers)</label>
+            <label><input type="radio" name="q3_8_1_chiffrement_repos" value="partiel"> Chiffrement partiel (certaines données seulement)</label>
+            <label><input type="radio" name="q3_8_1_chiffrement_repos" value="non"> Non pas de chiffrement</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les ordinateurs portables et supports amovibles (clés USB disques externes) sont-ils chiffrés ? <span class="question-id">Q3.8.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_8_2_chiffrement_nomade" value="systematique" required> Oui chiffrement systématique imposé (BitLocker FileVault VeraCrypt)</label>
+            <label><input type="radio" name="q3_8_2_chiffrement_nomade" value="recommande"> Recommandé mais non imposé</label>
+            <label><input type="radio" name="q3_8_2_chiffrement_nomade" value="non"> Non pas de chiffrement</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3-Réseau -->
+      <section class="section" id="reseau">
+        <h2 class="section-title">Réseau</h2>
+
+        <div class="question">
+          <label class="question-label required">Les réseaux WiFi de l'association sont-ils sécurisés ? <span class="question-id">Q3.9.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_9_1_wifi_securise" value="wpa3" required> Oui WiFi WPA3 ou WPA2-Enterprise avec authentification</label>
+            <label><input type="radio" name="q3_9_1_wifi_securise" value="wpa2_complexe"> WPA2-PSK avec mot de passe complexe changé régulièrement</label>
+            <label><input type="radio" name="q3_9_1_wifi_securise" value="wpa2_faible"> WPA2-PSK mot de passe faible ou jamais changé</label>
+            <label><input type="radio" name="q3_9_1_wifi_securise" value="wep"> WEP ou WiFi ouvert</label>
+            <label><input type="radio" name="q3_9_1_wifi_securise" value="na"> N/A (pas de WiFi)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Un réseau WiFi invités séparé existe-t-il (isolé du réseau interne) ? <span class="question-id">Q3.9.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_9_2_wifi_invites" value="isole" required> Oui WiFi invités isolé (VLAN séparé)</label>
+            <label><input type="radio" name="q3_9_2_wifi_invites" value="unique"> WiFi unique pour tous</label>
+            <label><input type="radio" name="q3_9_2_wifi_invites" value="na"> N/A (pas de WiFi invités)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les accès VPN distants sont-ils sécurisés avec authentification forte ? <span class="question-id">Q3.9.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_9_3_vpn" value="certificats_2fa" required> Oui VPN avec certificats + 2FA</label>
+            <label><input type="radio" name="q3_9_3_vpn" value="identifiants"> VPN avec identifiants uniquement</label>
+            <label><input type="radio" name="q3_9_3_vpn" value="non_securise"> Pas de VPN ou accès distants non sécurisés</label>
+            <label><input type="radio" name="q3_9_3_vpn" value="na"> N/A (pas d'accès distants)</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3-Mises à jour -->
+      <section class="section" id="mises-a-jour">
+        <h2 class="section-title">Mises à jour</h2>
+
+        <div class="question">
+          <label class="question-label required">Les systèmes d'exploitation (Windows serveurs postes) sont-ils maintenus à jour (patchs sécurité) ? <span class="question-id">Q3.10.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_10_1_patch_os" value="moins_1mois" required> Oui MAJ automatiques sécurité déployées &lt;1 mois</label>
+            <label><input type="radio" name="q3_10_1_patch_os" value="1_3mois"> MAJ déployées mais délais longs (1-3 mois)</label>
+            <label><input type="radio" name="q3_10_1_patch_os" value="plus_3mois"> MAJ irrégulières (&gt;3 mois)</label>
+            <label><input type="radio" name="q3_10_1_patch_os" value="jamais"> Non jamais de MAJ</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les logiciels métiers et applications sont-ils maintenus à jour ? <span class="question-id">Q3.10.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_10_2_patch_logiciels" value="regulieres" required> Oui MAJ régulières vérifiées</label>
+            <label><input type="radio" name="q3_10_2_patch_logiciels" value="occasionnelles"> MAJ occasionnelles</label>
+            <label><input type="radio" name="q3_10_2_patch_logiciels" value="obsoletes"> Versions obsolètes (&gt;2 ans)</label>
+            <label><input type="radio" name="q3_10_2_patch_logiciels" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 5 : Sous-traitants IT -->
+      <section class="section" id="sous-traitants">
+        <h2 class="section-title">Sous-traitants IT</h2>
+
+        <div class="question">
+          <label class="question-label required">Quels sous-traitants IT/Cloud utilisez-vous ? <span class="question-id">Q5.1.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q5_1_1_sous_traitants_it" value="hebergeur"> Hébergeur serveurs/datacenter</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants_it" value="cloud_iaas"> Cloud IaaS (AWS Azure Google Cloud)</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants_it" value="cloud_saas"> Cloud SaaS (Office 365 Google Workspace)</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants_it" value="infogerance"> Prestataire infogérance/maintenance</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants_it" value="editeur"> Éditeur logiciels métier</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants_it" value="telecom"> Opérateur télécom/internet</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants_it" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Ces sous-traitants IT ont-ils TOUS signé un contrat avec clauses RGPD (Art. 28) ? <span class="question-id">Q5.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_2_1_clauses_art28" value="tous" required> Oui tous ont clauses Art. 28</label>
+            <label><input type="radio" name="q5_2_1_clauses_art28" value="certains"> Certains seulement (préciser lesquels manquent)</label>
+            <label><input type="radio" name="q5_2_1_clauses_art28" value="non"> Non aucun contrat RGPD</label>
+            <label><input type="radio" name="q5_2_1_clauses_art28" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Précisez lesquels n'ont PAS de contrat RGPD <span class="question-id">Q5.2.2</span></label>
+          <textarea name="q5_2_2_precisions_contrats" placeholder="Précisez les sous-traitants sans contrat RGPD..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous vérifié les certifications sécurité de vos hébergeurs/cloud providers ? <span class="question-id">Q5.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_3_1_certifications" value="verifiees" required> Oui vérification certifications (ISO 27001 HDS SOC2)</label>
+            <label><input type="radio" name="q5_3_1_certifications" value="partiellement"> Partiellement vérifié</label>
+            <label><input type="radio" name="q5_3_1_certifications" value="jamais"> Non jamais vérifié</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si vous hébergez des données de santé l'hébergeur est-il certifié HDS (Hébergeur Données Santé) ? <span class="question-id">Q5.3.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_3_2_certif_hds" value="oui" required> Oui certifié HDS</label>
+            <label><input type="radio" name="q5_3_2_certif_hds" value="non"> Non pas certifié HDS</label>
+            <label><input type="radio" name="q5_3_2_certif_hds" value="inconnu"> Inconnu</label>
+            <label><input type="radio" name="q5_3_2_certif_hds" value="na"> N/A (pas de données santé hébergées)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Utilisez-vous Microsoft 365 ou Google Workspace ? <span class="question-id">Q5.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_4_1_office365" value="m365_eu" required> Oui Microsoft 365 avec EU Data Boundary activé</label>
+            <label><input type="radio" name="q5_4_1_office365" value="m365_standard"> Oui Microsoft 365 standard (sans Data Boundary)</label>
+            <label><input type="radio" name="q5_4_1_office365" value="google"> Oui Google Workspace</label>
+            <label><input type="radio" name="q5_4_1_office365" value="non"> Non</label>
+            <label><input type="radio" name="q5_4_1_office365" value="autre"> Autre suite bureautique</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous vérifié et documenté les garanties de transferts hors UE pour vos clouds providers ? <span class="question-id">Q5.4.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_4_2_garanties_transfert" value="verifie" required> Oui vérification et documentation garanties (CCT DPF BCR)</label>
+            <label><input type="radio" name="q5_4_2_garanties_transfert" value="partiellement"> Partiellement vérifié</label>
+            <label><input type="radio" name="q5_4_2_garanties_transfert" value="jamais"> Non jamais vérifié</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 6 : Incidents cyber -->
+      <section class="section" id="incidents">
+        <h2 class="section-title">Incidents cyber</h2>
+
+        <div class="question">
+          <label class="question-label required">Des incidents de sécurité ont-ils eu lieu sur 24 derniers mois ? <span class="question-id">Q6.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_1_1_incidents" value="oui" required> Oui</label>
+            <label><input type="radio" name="q6_1_1_incidents" value="non"> Non</label>
+            <label><input type="radio" name="q6_1_1_incidents" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si OUI type(s) d'incident(s) cyber <span class="question-id">Q6.1.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="ransomware"> Ransomware / chiffrement données</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="phishing"> Phishing / usurpation identité</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="malware"> Infection malware/virus</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="intrusion"> Intrusion réseau/serveurs</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="ddos"> Déni de service (DDoS)</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="panne_prolongee"> Panne système prolongée (&gt;24h)</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="vol_materiel"> Vol/perte matériel informatique</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="autre"> Autre</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="na"> N/A</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">En cas de ransomware avez-vous pu restaurer les données sans payer la rançon ? <span class="question-id">Q6.1.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_1_3_restauration_ransomware" value="complete" required> Oui restauration complète depuis sauvegardes</label>
+            <label><input type="radio" name="q6_1_3_restauration_ransomware" value="partielle"> Restauration partielle</label>
+            <label><input type="radio" name="q6_1_3_restauration_ransomware" value="perdues"> Non données perdues ou rançon payée</label>
+            <label><input type="radio" name="q6_1_3_restauration_ransomware" value="na"> N/A (pas de ransomware)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Un plan de continuité d'activité (PCA) et reprise après sinistre (PRA) existe-t-il ? <span class="question-id">Q6.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_2_1_pca_pra" value="documente_teste" required> Oui PCA/PRA documenté et testé régulièrement</label>
+            <label><input type="radio" name="q6_2_1_pca_pra" value="documente_non_teste"> Oui PCA/PRA documenté mais jamais testé</label>
+            <label><input type="radio" name="q6_2_1_pca_pra" value="en_projet"> PCA/PRA en projet</label>
+            <label><input type="radio" name="q6_2_1_pca_pra" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des tests d'intrusion ou audits de sécurité externes sont-ils réalisés ? <span class="question-id">Q6.2.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_2_2_audits" value="annuels" required> Oui tests annuels ou plus fréquents</label>
+            <label><input type="radio" name="q6_2_2_audits" value="ponctuels"> Tests ponctuels (&gt;1 an)</label>
+            <label><input type="radio" name="q6_2_2_audits" value="jamais"> Jamais</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Une procédure de gestion des incidents cyber existe-t-elle ? <span class="question-id">Q6.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_3_1_procedure" value="ecrite" required> Oui procédure écrite connue équipe IT</label>
+            <label><input type="radio" name="q6_3_1_procedure" value="partielle"> Procédure partielle</label>
+            <label><input type="radio" name="q6_3_1_procedure" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">L'équipe IT sait-elle comment réagir en cas de ransomware ? <span class="question-id">Q6.3.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_3_2_reaction" value="formee" required> Oui formation et procédure claire (isolation déconnexion réseau alerte)</label>
+            <label><input type="radio" name="q6_3_2_reaction" value="partiellement"> Partiellement formée</label>
+            <label><input type="radio" name="q6_3_2_reaction" value="non"> Non aucune formation</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc Synthèse -->
+      <section class="section" id="synthese">
+        <h2 class="section-title">Synthèse et commentaires</h2>
+
+        <div class="question">
+          <label class="question-label">Principales difficultés IT pour conformité RGPD et sécurité <span class="question-id">Q_SYNTH.1</span></label>
+          <textarea name="qsynth_1_difficultes" placeholder="Décrivez les principales difficultés rencontrées..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Commentaires libres ou points IT/sécurité non abordés <span class="question-id">Q_SYNTH.2</span></label>
+          <textarea name="qsynth_2_commentaires" placeholder="Toute information complémentaire..."></textarea>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="btn-submit">Envoyer le questionnaire</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQBhjBdwuEBtj5Ef63L_5ej3eyXB15DLmpnDBxqM5u0EdVRgoLK6NR1Hkn682obuvN7Q/exec';
+const FORM_TYPE = 'SIIT_RGPD';
+
+// Navigation sticky
+const navBlocks = document.querySelectorAll('.nav-block');
+const sections = document.querySelectorAll('.section');
+function updateActiveNav() {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - 100) current = section.getAttribute('id');
+  });
+  navBlocks.forEach(block => {
+    block.classList.remove('active');
+    if (block.getAttribute('href') === '#' + current) block.classList.add('active');
+  });
+}
+if (navBlocks.length > 0) {
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
+}
+
+// Collecte des réponses (format array v2.0)
+function collectResponses() {
+  const responses = [];
+  const seen = new Set();
+  document.querySelectorAll('.question:not(.hidden)').forEach(qEl => {
+    const labelEl = qEl.querySelector('.q-label, .question-label');
+    if (!labelEl) return;
+    const question = labelEl.innerText.replace(/^\*\s*/, '').replace(/\s+/g, ' ').trim();
+    const inputs = qEl.querySelectorAll('input, textarea, select');
+    if (inputs.length === 0) return;
+    const firstInput = inputs[0];
+    const fieldId = firstInput.name || firstInput.id || '';
+    if (seen.has(fieldId)) return;
+    seen.add(fieldId);
+    let answer = '';
+    const type = firstInput.type;
+    if (type === 'radio') {
+      const checked = qEl.querySelector('input[type="radio"]:checked');
+      answer = checked ? checked.value : '';
+    } else if (type === 'checkbox') {
+      const checkeds = qEl.querySelectorAll('input[type="checkbox"]:checked');
+      answer = Array.from(checkeds).map(c => c.value).join(' | ');
+    } else {
+      answer = firstInput.value.trim();
+    }
+    responses.push({ id: fieldId, question, answer });
+  });
+  const nomEtabEl = document.getElementById('nom_etablissement');
+  if (nomEtabEl) {
+    responses.push({ id: 'nom_etablissement', question: 'Nom de l\'établissement', answer: nomEtabEl.value || '' });
+  }
+  return responses;
+}
+
+// Soumission
+document.getElementById('formulaire').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!this.checkValidity()) return;
+  const btn = document.getElementById('btn-submit');
+  const message = document.getElementById('message');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+  const payload = { type: FORM_TYPE, responses: collectResponses() };
+  try {
+    const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const result = await res.json();
+    if (result.status === 'success') {
+      message.className = 'message success show';
+      message.textContent = 'Questionnaire envoyé avec succès ! Merci pour votre participation.';
+      this.reset();
+      const dateField = document.querySelector('[name*="date"]');
+      if (dateField && dateField.type === 'date') dateField.valueAsDate = new Date();
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (err) {
+    message.className = 'message error show';
+    message.textContent = 'Erreur lors de l\'envoi : ' + err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Envoyer le questionnaire';
+  }
+});
+
+// Date par défaut
+const dateField = document.querySelector('[name*="date"]');
+if (dateField && dateField.type === 'date') dateField.valueAsDate = new Date();
+</script>
+</body>
+</html>

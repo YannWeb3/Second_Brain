@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit RGPD — IME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F3EE;--card:#FFFFFF;--line:#E6E2D8;--ink:#23272E;--ink-soft:#6B7280;
+    --red:#B0463B;--red-bg:#F7E4E1;--orange:#BD8A35;--orange-bg:#F6ECD9;--green:#4F7A68;--green-bg:#E6EEE9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.55;}
+  .wrap{max-width:920px;margin:0 auto;padding:40px 24px 80px;}
+  .page-header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+  .page-header h1{font-size:24px;font-weight:700;margin:0;}
+  .page-header .count{font-size:14px;color:var(--ink-soft);}
+  .page-note{font-size:13px;color:var(--ink-soft);margin:0 0 28px;}
+  .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px;}
+  .kpi-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;}
+  .kpi-card .kpi-label{font-size:13.5px;color:var(--ink-soft);margin-bottom:8px;}
+  .kpi-card .kpi-value{font-size:32px;font-weight:700;}
+  .section-title{font-size:14px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:14px;}
+  .section-sub{font-size:13.5px;color:var(--ink-soft);margin:-8px 0 14px;}
+  .risk-list{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 22px;margin-bottom:36px;}
+  .risk-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);}
+  .risk-row:last-child{border-bottom:none;}
+  .risk-rank{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:var(--red-bg);color:var(--red);}
+  .risk-row:nth-child(4) .risk-rank,.risk-row:nth-child(5) .risk-rank{background:var(--orange-bg);color:var(--orange);}
+  .risk-text{font-size:14.5px;font-weight:500;}
+  .risk-text .estab-tag{display:inline-block;margin-left:8px;font-size:12px;font-weight:600;color:var(--ink-soft);}
+  .estab-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:40px;}
+  .estab-card{display:block;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--red);border-radius:10px;padding:18px 20px;text-decoration:none;color:var(--ink);transition:box-shadow .15s,transform .15s;}
+  .estab-card.modere{border-left-color:var(--orange);}
+  .estab-card.maitrise{border-left-color:var(--green);}
+  .estab-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.06);transform:translateY(-1px);}
+  .estab-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:6px;}
+  .estab-card-top h3{font-size:17px;font-weight:600;margin:0;}
+  .estab-card .meta{font-size:13.5px;color:var(--ink-soft);margin-bottom:12px;}
+  .badge{display:inline-flex;align-items:center;font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:6px;white-space:nowrap;}
+  .badge-red{background:var(--red-bg);color:var(--red);}
+  .badge-orange{background:var(--orange-bg);color:var(--orange);}
+  .badge-green{background:var(--green-bg);color:var(--green);}
+  .estab-icons{display:flex;gap:10px;color:var(--ink-soft);}
+  .estab-icons svg{width:18px;height:18px;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--ink-soft);text-decoration:none;margin-bottom:18px;}
+  .back-link:hover{color:var(--ink);}
+  .back-link svg{width:16px;height:16px;}
+  .detail-header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:6px;}
+  .detail-header h2{font-size:22px;font-weight:700;margin:0;}
+  .detail-header .score{font-size:15px;font-weight:700;}
+  .detail-header .score.red{color:var(--red);}
+  .detail-header .score.orange{color:var(--orange);}
+  .detail-header .score.green{color:var(--green);}
+  .detail-sites{font-size:13px;color:var(--ink-soft);margin-bottom:24px;}
+  .detail-section{margin-bottom:64px;}
+  .detail-section:last-child{margin-bottom:0;}
+  .block{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 24px;margin-bottom:16px;}
+  .block-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .block-head svg{width:20px;height:20px;flex-shrink:0;}
+  .block-head h3{font-size:15.5px;font-weight:700;margin:0;}
+  .block.risques svg{color:var(--red);}
+  .block.principes svg{color:var(--ink-soft);}
+  .block.urgent svg,.block.urgent .block-head h3{color:var(--red);}
+  .block.planifier svg,.block.planifier .block-head h3{color:var(--orange);}
+  .block.recommande svg,.block.recommande .block-head h3{color:var(--green);}
+  .block ul{margin:0;padding-left:20px;font-size:14.5px;}
+  .block ul li{margin-bottom:9px;}
+  .block ul li:last-child{margin-bottom:0;}
+  ul.action-list{padding-left:0;margin:0;}
+  .action-item{padding:9px 0;border-bottom:1px solid var(--line);font-size:14.5px;list-style:none;}
+  .action-item:last-child{border-bottom:none;}
+  footer{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:40px;}
+  @media(max-width:640px){.kpi-grid{grid-template-columns:1fr;}.estab-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap" id="top">
+
+  <!-- VUE GLOBALE -->
+  <div class="page-header">
+    <h1>Audit RGPD — vue globale</h1>
+    <div class="count">6 IME (regroupés) · 10 réponses</div>
+  </div>
+  <p class="page-note">Doublons traités : La Tissanderie a répondu 3 fois avec des données identiques → 1 seule fiche. Espoir Châtillonnais et Châtillonnais partagent le même répondant et les mêmes données → 1 fiche regroupée sur 3 réponses.</p>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Score moyen de conformité</div>
+      <div class="kpi-value">42 / 100</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Risques majeurs détectés</div>
+      <div class="kpi-value">16</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Actions correctives proposées</div>
+      <div class="kpi-value">44</div>
+    </div>
+  </div>
+
+  <div class="section-title">Risques majeurs identifiés</div>
+  <div class="section-sub">Classés par ordre de criticité en cas de contrôle de la CNIL</div>
+
+  <div class="risk-list">
+    <div class="risk-row">
+      <div class="risk-rank">1</div>
+      <div class="risk-text">Aucun référent RGPD désigné dans la totalité des IME <span class="estab-tag">— tous les établissements</span></div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">2</div>
+      <div class="risk-text">Données génétiques d'enfants collectées sans analyse de risque formalisée (PIA) <span class="estab-tag">— IME Neuilly, La Maillerie, La Tissanderie, Le Fil de Soi, Châtillonnais</span></div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">3</div>
+      <div class="risk-text">Informations médicales transmises aux écoles par email classique non sécurisé <span class="estab-tag">— La Maillerie, La Tissanderie, Châtillonnais</span></div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">4</div>
+      <div class="risk-text">Dossiers papier dans des armoires non fermées, accessibles à tous <span class="estab-tag">— IME Neuilly, Châtillonnais, Bourg-la-Reine</span></div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">5</div>
+      <div class="risk-text">Durée de conservation des dossiers des enfants non définie après leur départ <span class="estab-tag">— IME Neuilly, La Maillerie, La Tissanderie, Le Fil de Soi</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Établissements — cliquer pour ouvrir le détail</div>
+
+  <div class="estab-grid">
+
+    <a class="estab-card" href="#detail-neuilly">
+      <div class="estab-card-top">
+        <h3>IME Neuilly sur Seine</h3>
+        <span class="badge badge-red">Risque élevé</span>
+      </div>
+      <div class="meta">IME · 58 enfants · 25 salariés</div>
+      <div class="estab-icons">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h2.5"/><line x1="17" y1="8" x2="22" y2="13"/><line x1="22" y1="8" x2="17" y2="13"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="12" y1="13" x2="12" y2="16"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+    </a>
+
+    <a class="estab-card" href="#detail-maillerie-tissanderie">
+      <div class="estab-card-top">
+        <h3>IME La Maillerie / La Tissanderie</h3>
+        <span class="badge badge-red">Risque élevé</span>
+      </div>
+      <div class="meta">2 IME · 18 + 24 enfants · 22 + 24 salariés</div>
+      <div class="estab-icons">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h2.5"/><line x1="17" y1="8" x2="22" y2="13"/><line x1="22" y1="8" x2="17" y2="13"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.69 3.4 2 2 0 0 1 3.66 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l1-.99a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.72 16z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+    </a>
+
+    <a class="estab-card" href="#detail-fildesoi">
+      <div class="estab-card-top">
+        <h3>IME Le Fil de Soi</h3>
+        <span class="badge badge-red">Risque élevé</span>
+      </div>
+      <div class="meta">IME · 55 enfants · 26 salariés</div>
+      <div class="estab-icons">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h2.5"/><line x1="17" y1="8" x2="22" y2="13"/><line x1="22" y1="8" x2="17" y2="13"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="9.5" y1="12.5" x2="14.5" y2="17.5"/><line x1="14.5" y1="12.5" x2="9.5" y2="17.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+    </a>
+
+    <a class="estab-card modere" href="#detail-chatillonnais">
+      <div class="estab-card-top">
+        <h3>IME Châtillonnais / Espoir Châtillonnais</h3>
+        <span class="badge badge-orange">Risque modéré</span>
+      </div>
+      <div class="meta">2 IME · 36 + 36 enfants · 25 + 25 salariés (3 réponses reçues)</div>
+      <div class="estab-icons">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h2.5"/><line x1="17" y1="8" x2="22" y2="13"/><line x1="22" y1="8" x2="17" y2="13"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.69 3.4 2 2 0 0 1 3.66 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l1-.99a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.72 16z"/></svg>
+      </div>
+    </a>
+
+    <a class="estab-card modere" href="#detail-bourglreine">
+      <div class="estab-card-top">
+        <h3>IME Bourg-la-Reine</h3>
+        <span class="badge badge-orange">Risque modéré</span>
+      </div>
+      <div class="meta">IME · 44 enfants · 18 salariés</div>
+      <div class="estab-icons">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h2.5"/><line x1="17" y1="8" x2="22" y2="13"/><line x1="22" y1="8" x2="17" y2="13"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.69 3.4 2 2 0 0 1 3.66 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l1-.99a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.72 16z"/></svg>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ===== IME NEUILLY SUR SEINE ===== -->
+  <div class="detail-section">
+    <a class="back-link" href="#top" id="detail-neuilly">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour à la vue d'ensemble
+    </a>
+    <div class="detail-header">
+      <h2>IME Neuilly sur Seine</h2>
+      <div class="score red">Score : 38/100</div>
+    </div>
+    <div class="detail-sites">IME · 58 enfants · 25 salariés · Répondant : Mélanie Martinez (Chef de service)</div>
+
+    <div class="block risques">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3>1. Analyse des risques</h3>
+      </div>
+      <ul>
+        <li>Personne n'est officiellement responsable du RGPD, et l'équipe n'a reçu aucune formation.</li>
+        <li>Des données génétiques d'enfants sont collectées, sans qu'une analyse de risque formelle ait été réalisée — c'est le type de donnée le plus sensible qui existe dans le RGPD.</li>
+        <li>Les dossiers papier sont dans une armoire non fermée à clé — n'importe qui peut y accéder.</li>
+        <li>Les dossiers papier ne sont jamais détruits de façon sécurisée, et la durée de conservation après la fin du suivi n'est pas connue.</li>
+        <li>En cas de parents séparés, un seul parent suffit pour accéder au dossier de l'enfant — ce qui peut créer des conflits ou des fuites d'information.</li>
+        <li>L'information RGPD remise aux familles à l'admission ne mentionne pas la mention « contrat » dans les conditions.</li>
+      </ul>
+    </div>
+
+    <div class="block principes">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+        <h3>2. Principes RGPD concernés</h3>
+      </div>
+      <ul>
+        <li><strong>Un responsable identifié et formé</strong> pour piloter le RGPD sur l'établissement.</li>
+        <li><strong>Une analyse d'impact obligatoire</strong> avant de collecter des données génétiques — la loi l'exige sans exception.</li>
+        <li><strong>Des dossiers fermés à clé</strong> et détruits proprement à l'échéance.</li>
+        <li><strong>Une durée de conservation définie</strong> pour chaque type de document.</li>
+        <li><strong>Une procédure claire pour les parents séparés</strong> afin de protéger l'enfant et éviter les conflits.</li>
+      </ul>
+    </div>
+
+    <div class="block urgent">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h3>Urgent</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Désigner un référent RGPD local et organiser le lien avec le DPO.</li>
+        <li class="action-item">Réaliser une analyse d'impact (PIA) pour le traitement des données génétiques des enfants.</li>
+        <li class="action-item">Fermer à clé l'armoire contenant les dossiers papier des enfants.</li>
+      </ul>
+    </div>
+
+    <div class="block planifier">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <h3>À planifier</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Mettre en place une destruction sécurisée des dossiers papier et définir la durée de conservation.</li>
+        <li class="action-item">Former l'équipe au RGPD et aux situations à risque dans un IME.</li>
+        <li class="action-item">Formaliser la procédure d'accès au dossier de l'enfant en cas de parents séparés (recueil de l'accord des deux parents).</li>
+        <li class="action-item">Vérifier que le logiciel métier dispose bien d'un contrat avec clauses RGPD (article 28).</li>
+      </ul>
+    </div>
+
+    <div class="block recommande">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h3>Recommandé</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Vérifier le contenu du registre des traitements auprès du DPO et en informer l'équipe.</li>
+        <li class="action-item">Sensibiliser l'équipe soignante à la reconnaissance d'une violation de données.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== IME LA MAILLERIE / LA TISSANDERIE ===== -->
+  <div class="detail-section">
+    <a class="back-link" href="#top" id="detail-maillerie-tissanderie">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour à la vue d'ensemble
+    </a>
+    <div class="detail-header">
+      <h2>IME La Maillerie / La Tissanderie</h2>
+      <div class="score red">Score : 35/100</div>
+    </div>
+    <div class="detail-sites">2 IME du même gestionnaire · La Maillerie : 18 enfants, 22 salariés · La Tissanderie : 24 enfants, 24 salariés · Répondant : Emma Tebib — <strong>La Tissanderie a soumis 3 réponses identiques, regroupées ici en une seule fiche.</strong></div>
+
+    <div class="block risques">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3>1. Analyse des risques</h3>
+      </div>
+      <ul>
+        <li>Personne n'est officiellement responsable du RGPD dans aucun des deux établissements.</li>
+        <li>Des données génétiques d'enfants sont collectées sans analyse de risque formelle.</li>
+        <li>Les transmissions aux écoles et aux services sociaux se font par email classique non sécurisé, comme envoyer une lettre médicale dans une enveloppe transparente.</li>
+        <li>Les dossiers sont accessibles à 8 personnes sur les deux sites — trop large par rapport aux missions de chacun.</li>
+        <li>La durée de conservation des dossiers après le départ de l'enfant n'est pas définie.</li>
+        <li>Il n'existe aucune procédure en cas de demande d'accès au dossier par les familles.</li>
+        <li>L'équipe manque de temps et de connaissances pour s'organiser sur le RGPD.</li>
+      </ul>
+    </div>
+
+    <div class="block principes">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+        <h3>2. Principes RGPD concernés</h3>
+      </div>
+      <ul>
+        <li><strong>Un responsable identifié</strong> : sans pilote, rien ne peut avancer.</li>
+        <li><strong>Une analyse d'impact obligatoire</strong> avant de traiter des données génétiques.</li>
+        <li><strong>Des échanges sécurisés avec les écoles et services sociaux</strong> : un email non protégé peut être intercepté.</li>
+        <li><strong>Le bon accès aux bonnes personnes</strong> : 8 clés pour deux IME, c'est trop.</li>
+        <li><strong>Une procédure connue de tous</strong> pour répondre aux demandes d'accès des familles.</li>
+        <li><strong>Une durée de conservation définie</strong> pour les dossiers des enfants.</li>
+      </ul>
+    </div>
+
+    <div class="block urgent">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h3>Urgent</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Désigner un référent RGPD commun aux deux IME et organiser le lien avec le DPO.</li>
+        <li class="action-item">Réaliser une analyse d'impact (PIA) pour le traitement des données génétiques des enfants.</li>
+        <li class="action-item">Remplacer les envois par email classique vers les écoles et services sociaux par un canal sécurisé.</li>
+      </ul>
+    </div>
+
+    <div class="block planifier">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <h3>À planifier</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Réduire le nombre de personnes ayant accès aux dossiers papier (limiter les clés).</li>
+        <li class="action-item">Définir et écrire la durée de conservation des dossiers après le départ de l'enfant.</li>
+        <li class="action-item">Écrire et diffuser à l'équipe la procédure de traitement des demandes d'accès des familles au dossier.</li>
+        <li class="action-item">Former l'équipe au RGPD, en priorité sur les droits des familles et la sécurité des échanges.</li>
+      </ul>
+    </div>
+
+    <div class="block recommande">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h3>Recommandé</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Mettre en place une organisation dédiée à la gestion administrative RGPD (recruter ou désigner une assistante administrative référente).</li>
+        <li class="action-item">Vérifier et faire signer les contrats RGPD avec les prestataires (transporteurs, restauration, intervenants médicaux).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== IME LE FIL DE SOI ===== -->
+  <div class="detail-section">
+    <a class="back-link" href="#top" id="detail-fildesoi">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour à la vue d'ensemble
+    </a>
+    <div class="detail-header">
+      <h2>IME Le Fil de Soi</h2>
+      <div class="score red">Score : 38/100</div>
+    </div>
+    <div class="detail-sites">IME · 55 enfants · 26 salariés · Répondant : Lucie Voisard (Responsable administrative)</div>
+
+    <div class="block risques">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3>1. Analyse des risques</h3>
+      </div>
+      <ul>
+        <li>Personne n'est officiellement responsable du RGPD, et l'équipe ne sait pas comment joindre le DPO.</li>
+        <li>Des données génétiques d'enfants sont collectées sans analyse de risque formelle.</li>
+        <li>4 personnes ont accès aux dossiers dans un bureau partagé — l'accès n'est pas assez restreint.</li>
+        <li>Les dossiers papier ne sont jamais détruits de façon sécurisée, et la durée de conservation n'est pas définie.</li>
+        <li>Les transmissions aux écoles se font par email classique non sécurisé.</li>
+        <li>Il n'existe aucune procédure formelle pour les demandes d'accès au dossier par les familles.</li>
+      </ul>
+    </div>
+
+    <div class="block principes">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+        <h3>2. Principes RGPD concernés</h3>
+      </div>
+      <ul>
+        <li><strong>Un responsable identifié relié au DPO</strong> pour ne pas être seul face aux questions.</li>
+        <li><strong>Une analyse d'impact obligatoire</strong> avant de traiter des données génétiques.</li>
+        <li><strong>Un accès restreint aux dossiers</strong> et une destruction sécurisée en fin de conservation.</li>
+        <li><strong>Des échanges sécurisés avec les écoles</strong> plutôt qu'un email standard.</li>
+        <li><strong>Une procédure claire pour les familles</strong> qui souhaitent consulter le dossier de leur enfant.</li>
+      </ul>
+    </div>
+
+    <div class="block urgent">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h3>Urgent</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Désigner un référent RGPD local et organiser le lien avec le DPO.</li>
+        <li class="action-item">Réaliser une analyse d'impact (PIA) pour le traitement des données génétiques des enfants.</li>
+        <li class="action-item">Remplacer les envois par email classique vers les écoles par un canal sécurisé.</li>
+      </ul>
+    </div>
+
+    <div class="block planifier">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <h3>À planifier</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Mettre en place une destruction sécurisée des dossiers papier et définir la durée de conservation.</li>
+        <li class="action-item">Restreindre l'accès aux dossiers aux seules personnes nécessaires.</li>
+        <li class="action-item">Écrire et diffuser la procédure de traitement des demandes d'accès au dossier par les familles.</li>
+        <li class="action-item">Former l'équipe au RGPD, en priorité sur les droits des familles et la sécurité des transmissions.</li>
+      </ul>
+    </div>
+
+    <div class="block recommande">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h3>Recommandé</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Vérifier et faire signer les contrats RGPD avec les prestataires (transporteurs, restauration, intervenants médicaux).</li>
+        <li class="action-item">Confirmer avec le DPO la durée de conservation adaptée aux dossiers des enfants IME.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== IME CHÂTILLONNAIS / ESPOIR CHÂTILLONNAIS ===== -->
+  <div class="detail-section">
+    <a class="back-link" href="#top" id="detail-chatillonnais">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour à la vue d'ensemble
+    </a>
+    <div class="detail-header">
+      <h2>IME Châtillonnais / Espoir Châtillonnais</h2>
+      <div class="score orange">Score : 47/100</div>
+    </div>
+    <div class="detail-sites">2 IME du même gestionnaire · 36 + 36 enfants · 25 + 25 salariés · Répondant : Karine JANAS (Directrice Adjointe) — <strong>3 réponses reçues dont 2 quasi-identiques (mai et mai), regroupées ici.</strong></div>
+
+    <div class="block risques">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3>1. Analyse des risques</h3>
+      </div>
+      <ul>
+        <li>Personne n'est officiellement responsable du RGPD, et le DPO n'est pas connu des équipes.</li>
+        <li>Des données génétiques d'enfants sont collectées, mais sans analyse d'impact formalisée.</li>
+        <li>Les dossiers papier sont dans des armoires non fermées à clé — n'importe qui peut y accéder.</li>
+        <li>Les transmissions aux écoles se font principalement par email classique non sécurisé.</li>
+        <li>Des documents avec des informations sur les enfants sont parfois visibles dans les espaces communs.</li>
+        <li>En cas de parents séparés, un seul parent peut suffire à accéder au dossier de l'enfant, sans que la procédure soit formalisée.</li>
+      </ul>
+    </div>
+
+    <div class="block principes">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+        <h3>2. Principes RGPD concernés</h3>
+      </div>
+      <ul>
+        <li><strong>Un responsable identifié relié au DPO</strong> pour assurer un suivi régulier.</li>
+        <li><strong>Une analyse d'impact</strong> avant tout traitement de données génétiques d'enfants.</li>
+        <li><strong>Des armoires fermées à clé</strong> et des documents rangés hors de la vue.</li>
+        <li><strong>Des échanges sécurisés avec les écoles</strong> en remplacement de l'email standard.</li>
+        <li><strong>Une procédure formalisée pour les parents séparés</strong> afin de protéger l'enfant.</li>
+      </ul>
+    </div>
+
+    <div class="block urgent">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h3>Urgent</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Désigner un référent RGPD commun aux deux IME et organiser le lien avec le DPO.</li>
+        <li class="action-item">Réaliser une analyse d'impact (PIA) pour le traitement des données génétiques des enfants.</li>
+        <li class="action-item">Fermer à clé les armoires contenant les dossiers papier des enfants.</li>
+        <li class="action-item">Remplacer les envois par email classique vers les écoles par un canal sécurisé.</li>
+      </ul>
+    </div>
+
+    <div class="block planifier">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <h3>À planifier</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Ranger systématiquement les documents hors des espaces communs.</li>
+        <li class="action-item">Formaliser la procédure d'accès au dossier en cas de parents séparés ou conflictuels.</li>
+        <li class="action-item">Former l'équipe au RGPD, notamment sur la sécurité des transmissions et les droits des familles.</li>
+      </ul>
+    </div>
+
+    <div class="block recommande">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h3>Recommandé</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Définir et documenter la durée de conservation des dossiers des enfants après leur départ.</li>
+        <li class="action-item">Vérifier que le logiciel métier dispose d'un contrat avec clauses RGPD (article 28).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== IME BOURG-LA-REINE ===== -->
+  <div class="detail-section">
+    <a class="back-link" href="#top" id="detail-bourglreine">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour à la vue d'ensemble
+    </a>
+    <div class="detail-header">
+      <h2>IME Bourg-la-Reine</h2>
+      <div class="score orange">Score : 48/100</div>
+    </div>
+    <div class="detail-sites">IME · 44 enfants · 18 salariés · Répondant : Karine JANAS (Directrice Adjointe)</div>
+
+    <div class="block risques">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3>1. Analyse des risques</h3>
+      </div>
+      <ul>
+        <li>Personne n'est officiellement responsable du RGPD.</li>
+        <li>Les dossiers papier sont dans des armoires non fermées à clé.</li>
+        <li>Les transmissions aux écoles et à la MDPH se font par email classique non sécurisé.</li>
+        <li>En cas de parents séparés, un seul parent peut accéder au dossier, sans procédure formalisée.</li>
+        <li>Les dossiers papier ne sont jamais détruits de façon sécurisée.</li>
+      </ul>
+    </div>
+
+    <div class="block principes">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+        <h3>2. Principes RGPD concernés</h3>
+      </div>
+      <ul>
+        <li><strong>Un responsable identifié</strong> pour suivre le RGPD au quotidien.</li>
+        <li><strong>Des armoires fermées à clé</strong> et une destruction sécurisée des dossiers.</li>
+        <li><strong>Des échanges sécurisés</strong> avec les écoles et la MDPH.</li>
+        <li><strong>Une procédure claire pour les parents séparés</strong> afin de protéger l'intérêt de l'enfant.</li>
+      </ul>
+    </div>
+
+    <div class="block urgent">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h3>Urgent</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Désigner un référent RGPD local et organiser le lien avec le DPO.</li>
+        <li class="action-item">Fermer à clé les armoires contenant les dossiers papier des enfants.</li>
+        <li class="action-item">Remplacer les envois par email classique (écoles, MDPH) par un canal sécurisé.</li>
+      </ul>
+    </div>
+
+    <div class="block planifier">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <h3>À planifier</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Mettre en place une destruction sécurisée des dossiers papier.</li>
+        <li class="action-item">Formaliser la procédure d'accès au dossier en cas de parents séparés ou conflictuels.</li>
+        <li class="action-item">Former l'équipe au RGPD, en priorité sur la sécurité des transmissions et les droits des familles.</li>
+      </ul>
+    </div>
+
+    <div class="block recommande">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h3>Recommandé</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Définir et documenter la durée de conservation des dossiers des enfants après leur départ.</li>
+        <li class="action-item">Vérifier et faire signer les contrats RGPD avec le prestataire de transport.</li>
+        <li class="action-item">Vérifier les logiciels complémentaires mentionnés (Trajectoire/MDPH, Ageval) et leur encadrement contractuel RGPD.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    Rapport 5/8 — IME · Synthèse établie à partir de 10 réponses au questionnaire d'auto-évaluation RGPD (mai 2026), doublons regroupés.
+  </footer>
+
+</div>
+</body>
+</html>

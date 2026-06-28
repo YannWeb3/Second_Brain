@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNAPEI92 — Donateurs (Questionnaire RGPD)</title>
+  <style>
+    :root {
+      --primary: #0055A4;
+      --primary-dark: #003d7a;
+      --secondary: #E60028;
+      --bg: #f5f7fa;
+      --card: #fff;
+      --text: #333;
+      --text-light: #666;
+      --border: #e0e0e0;
+      --success: #28a745;
+      --error: #dc3545;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+    header p { opacity: 0.9; font-size: 0.95rem; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    .nav-blocks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 25px;
+      padding: 15px;
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+    }
+
+    .nav-block {
+      padding: 8px 16px;
+      background: var(--bg);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .nav-block:hover, .nav-block.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .section {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      scroll-margin-top: 80px;
+    }
+
+    .section-title {
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .question {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .question:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .question-label {
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: block;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .question-id {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: normal;
+      margin-left: 5px;
+    }
+
+    .question-note {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      font-style: italic;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+
+    .required::after {
+      content: ' *';
+      color: var(--secondary);
+    }
+
+    input, select, textarea {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .radio-group, .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .radio-group label, .checkbox-group label {
+      font-weight: normal;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .radio-group label:hover, .checkbox-group label:hover {
+      background: var(--bg);
+    }
+
+    input[type="radio"], input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      padding: 14px 40px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .message {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .message.show { display: block; }
+
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid var(--primary);
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.4rem; }
+      .nav-blocks { justify-content: center; }
+      .nav-block { font-size: 0.8rem; padding: 6px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="back-link">← Retour à l'accueil</a>
+
+    <header>
+      <h1>Questionnaire RGPD — Donateurs & Communication</h1>
+      <p>Gestion des donateurs, prospection et conformité RGPD</p>
+    </header>
+
+    <nav class="nav-blocks">
+      <a href="#identification" class="nav-block">Identification</a>
+      <a href="#gouvernance" class="nav-block">Gouvernance RGPD</a>
+      <a href="#collecte" class="nav-block">Collecte & Bases légales</a>
+      <a href="#stockage" class="nav-block">Stockage & Sécurité</a>
+      <a href="#sous-traitants" class="nav-block">Sous-traitants</a>
+      <a href="#cookies" class="nav-block">Cookies & Site web</a>
+      <a href="#droits" class="nav-block">Droits des donateurs</a>
+      <a href="#photos" class="nav-block">Photos & Témoignages</a>
+      <a href="#violations" class="nav-block">Violations</a>
+      <a href="#ouverts" class="nav-block">Questions ouvertes</a>
+    </nav>
+
+    <div class="info-box">
+      <strong>Instructions :</strong> Ce questionnaire porte sur la conformité RGPD des activités de communication et de collecte de dons. Répondez en fonction de votre situation actuelle. Les champs marqués d'une étoile (*) sont obligatoires.
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <form id="formulaire">
+      <!-- Bloc 0 : Fiche d'identification -->
+      <section class="section" id="identification">
+        <h2 class="section-title">Fiche d'identification</h2>
+
+        <div class="question">
+          <label class="question-label required">Nom de l'association <span class="question-id">ID-1</span></label>
+           <input type="text" name="id_1_nom_association" required>
+           <input type="hidden" id="nom_etablissement" name="nom_etablissement">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nom et prénom du répondant <span class="question-id">ID-2</span></label>
+          <input type="text" name="id_2_nom_prenom_repondant" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Fonction du répondant <span class="question-id">ID-3</span></label>
+          <input type="text" name="id_3_fonction_repondant" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Date de remplissage <span class="question-id">ID-4</span></label>
+          <input type="date" name="id_4_date_remplissage" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nombre approximatif de contacts dans la base prospects <span class="question-id">ID-5</span></label>
+          <input type="number" name="id_5_nb_contacts" min="0" required>
+        </div>
+      </section>
+
+      <!-- Bloc 1 : Gouvernance RGPD -->
+      <section class="section" id="gouvernance">
+        <h2 class="section-title">Gouvernance RGPD</h2>
+
+        <div class="question">
+          <label class="question-label required">Un référent RGPD est-il identifié au sein du service communication/donateurs ? <span class="question-id">Q1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_referent_rgpd" value="oui" required> Oui</label>
+            <label><input type="radio" name="q1_referent_rgpd" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Connaissez-vous le DPO externe de votre organisation et savez-vous comment le contacter ? <span class="question-id">Q2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_dpo_contact" value="oui" required> Oui</label>
+            <label><input type="radio" name="q2_dpo_contact" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le service communication a-t-il reçu une formation RGPD spécifique (prospection, cookies, consentement) ? <span class="question-id">Q3</span></label>
+          <p class="question-note">Si oui, joindre attestation ou preuve de formation</p>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_formation_rgpd" value="oui" required> Oui</label>
+            <label><input type="radio" name="q3_formation_rgpd" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le fichier prospects est-il recensé dans le registre des traitements de l'organisation ? <span class="question-id">Q4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_registre_prospects" value="oui" required> Oui</label>
+            <label><input type="radio" name="q4_registre_prospects" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les traitements liés à la communication (emailing, prospection, réseaux sociaux) sont-ils également dans le registre ? <span class="question-id">Q5</span></label>
+          <p class="question-note">Joindre un extrait du registre si disponible</p>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_registre_communication" value="oui" required> Oui</label>
+            <label><input type="radio" name="q5_registre_communication" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 2 : Collecte & Bases légales -->
+      <section class="section" id="collecte">
+        <h2 class="section-title">Collecte & Bases légales</h2>
+
+        <div class="question">
+          <label class="question-label required">D'où proviennent les contacts de votre base prospects ? <span class="question-id">Q6</span></label>
+          <p class="question-note">Formulaire site web / dons directs / fichiers achetés / partenaires / événements / autres</p>
+          <textarea name="q6_origine_contacts" required placeholder="Décrivez l'origine de vos contacts..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous un document qui précise la base légale de chaque traitement communication ? Si oui, pouvez-vous nous le transmettre ? <span class="question-id">Q7</span></label>
+          <p class="question-note">Ne répondez pas 'consentement' par réflexe — nous validerons ensemble</p>
+          <div class="radio-group">
+            <label><input type="radio" name="q7_base_legale" value="oui" required> Oui</label>
+            <label><input type="radio" name="q7_base_legale" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si vous utilisez des fichiers de contacts achetés ou loués : avez-vous vérifié que ces fichiers comportaient des consentements opt-in valides ? <span class="question-id">Q8</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q8_fichiers_achetes" value="oui" required> Oui</label>
+            <label><input type="radio" name="q8_fichiers_achetes" value="non"> Non</label>
+            <label><input type="radio" name="q8_fichiers_achetes" value="na"> N/A (pas de fichiers achetés)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Quelle est votre politique concernant les donateurs inactifs depuis plus de 3 ans ? <span class="question-id">Q9</span></label>
+          <p class="question-note">Question clé : absence de réponse = non-conformité probable</p>
+          <textarea name="q9_donateurs_inactifs" required placeholder="Supprimés / archivés / conservés indéfiniment..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les donateurs/prospects reçoivent-ils une information RGPD claire au moment de la collecte de leurs données ? (mention légale sur formulaire, email de confirmation...) <span class="question-id">Q10</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q10_info_rgpd" value="oui" required> Oui</label>
+            <label><input type="radio" name="q10_info_rgpd" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3 : Stockage & Sécurité -->
+      <section class="section" id="stockage">
+        <h2 class="section-title">Stockage & Sécurité</h2>
+
+        <div class="question">
+          <label class="question-label required">Sur quel outil est stocké le fichier donateurs/prospects ? <span class="question-id">Q11</span></label>
+          <p class="question-note">Excel local / CRM / logiciel dédié / autre</p>
+          <input type="text" name="q11_outil_stockage" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Combien de personnes ont accès au fichier donateurs complet ? (salariés + bénévoles) <span class="question-id">Q12</span></label>
+          <p class="question-note">Précisez si des bénévoles ont accès au fichier complet</p>
+          <textarea name="q12_acces_fichier" required placeholder="Nombre de personnes et précisions sur les bénévoles..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le fichier donateurs est-il sauvegardé régulièrement ? (fréquence + lieu de sauvegarde) <span class="question-id">Q13</span></label>
+          <textarea name="q13_sauvegarde" required placeholder="Fréquence et lieu de sauvegarde..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les emails de prospection sont-ils envoyés via un outil professionnel sécurisé ? (Mailchimp, Brevo, Sarbacane...) ou depuis une boîte mail personnelle/Gmail ? <span class="question-id">Q14</span></label>
+          <textarea name="q14_outil_emailing" required placeholder="Précisez l'outil utilisé..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Utilisez-vous un outil de collecte de dons en ligne ? (HelloAsso, Stripe, PayPal...) Si oui, lequel ? <span class="question-id">Q15</span></label>
+          <p class="question-note">Ces outils sont des sous-traitants — un contrat RGPD est requis</p>
+          <input type="text" name="q15_outil_dons" required>
+        </div>
+      </section>
+
+      <!-- Bloc 4 : Sous-traitants -->
+      <section class="section" id="sous-traitants">
+        <h2 class="section-title">Sous-traitants & Transferts hors UE</h2>
+
+        <div class="question">
+          <label class="question-label required">Listez tous les prestataires/outils qui accèdent à votre base donateurs ou à vos communications (emailing, CRM, plateforme de dons, réseaux sociaux, hébergeur site...) <span class="question-id">Q16</span></label>
+          <textarea name="q16_liste_prestataires" required placeholder="Liste des prestataires..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Pour chacun de ces prestataires, avez-vous signé un contrat incluant des clauses RGPD spécifiques (contrat de sous-traitance Art. 28) ? <span class="question-id">Q17</span></label>
+          <p class="question-note">Un simple CGU ou contrat commercial NE suffit PAS</p>
+          <div class="radio-group">
+            <label><input type="radio" name="q17_contrats_art28" value="oui" required> Oui</label>
+            <label><input type="radio" name="q17_contrats_art28" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Si des prestataires n'ont PAS de contrat RGPD, lesquels ? <span class="question-id">Q18</span></label>
+          <textarea name="q18_prestataires_sans_contrat" placeholder="Précisez lesquels..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous vérifié où sont hébergées les données de votre plateforme emailing/CRM ? (France / UE / USA / autre pays) <span class="question-id">Q19</span></label>
+          <p class="question-note">Outils US (Mailchimp, Hubspot...) = transfert hors UE à encadrer</p>
+          <input type="text" name="q19_hebergement" required placeholder="France / UE / USA / autre">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Utilisez-vous Facebook/Meta Ads, Google Ads ou LinkedIn pour des publicités ciblées ou la collecte de leads ? <span class="question-id">Q20</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q20_ads_reseaux" value="oui" required> Oui</label>
+            <label><input type="radio" name="q20_ads_reseaux" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 5 : Cookies & Site web -->
+      <section class="section" id="cookies">
+        <h2 class="section-title">Cookies & Site web</h2>
+
+        <div class="question">
+          <label class="question-label required">Le site web utilise-t-il des cookies ou traceurs ? (Google Analytics, Facebook Pixel, LinkedIn Insight, outils de mesure d'audience...) <span class="question-id">Q21</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q21_cookies" value="oui" required> Oui</label>
+            <label><input type="radio" name="q21_cookies" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Une bannière de consentement aux cookies est-elle affichée à l'arrivée sur le site ? <span class="question-id">Q22</span></label>
+          <p class="question-note">Si non → non-conformité critique immédiate</p>
+          <div class="radio-group">
+            <label><input type="radio" name="q22_banniere_cookies" value="oui" required> Oui</label>
+            <label><input type="radio" name="q22_banniere_cookies" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">L'utilisateur peut-il REFUSER les cookies aussi facilement qu'il peut les accepter ? (bouton 'Refuser' visible dès la bannière) <span class="question-id">Q23</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q23_refus_cookies" value="oui" required> Oui</label>
+            <label><input type="radio" name="q23_refus_cookies" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le site utilise-t-il des cookies publicitaires ou de réseaux sociaux nécessitant un consentement préalable ? (Facebook Pixel, LinkedIn Insight...) <span class="question-id">Q24</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q24_cookies_pub" value="oui" required> Oui</label>
+            <label><input type="radio" name="q24_cookies_pub" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le site est-il accessible en HTTPS ? (présence du cadenas dans la barre d'adresse) <span class="question-id">Q25</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q25_https" value="oui" required> Oui</label>
+            <label><input type="radio" name="q25_https" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le site dispose-t-il d'une page 'Politique de confidentialité' accessible depuis le pied de page ? <span class="question-id">Q26</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q26_politique_confidentialite" value="oui" required> Oui</label>
+            <label><input type="radio" name="q26_politique_confidentialite" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les formulaires du site (contact, don, newsletter) comportent-ils des mentions RGPD (finalité, base légale, droits, contact DPO) ? <span class="question-id">Q27</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q27_mentions_formulaires" value="oui" required> Oui</label>
+            <label><input type="radio" name="q27_mentions_formulaires" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 6 : Droits des donateurs -->
+      <section class="section" id="droits">
+        <h2 class="section-title">Droits des donateurs & Désinscription</h2>
+
+        <div class="question">
+          <label class="question-label required">Les emails de prospection comportent-ils un lien de désinscription fonctionnel et visible ? <span class="question-id">Q28</span></label>
+          <p class="question-note">Envoyez un exemple d'email de prospection pour vérification</p>
+          <div class="radio-group">
+            <label><input type="radio" name="q28_lien_desinscription" value="oui" required> Oui</label>
+            <label><input type="radio" name="q28_lien_desinscription" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Quel est le délai réel de traitement des demandes de désinscription ? <span class="question-id">Q29</span></label>
+          <p class="question-note">Délai légal maximum : 1 mois (Art. 12 RGPD)</p>
+          <div class="radio-group">
+            <label><input type="radio" name="q29_delai_desinscription" value="immediat" required> Immédiat</label>
+            <label><input type="radio" name="q29_delai_desinscription" value="24h"> Sous 24h</label>
+            <label><input type="radio" name="q29_delai_desinscription" value="1semaine"> Sous 1 semaine</label>
+            <label><input type="radio" name="q29_delai_desinscription" value="variable"> Variable</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous reçu des demandes d'exercice de droits (accès, rectification, suppression) de donateurs au cours des 12 derniers mois ? <span class="question-id">Q30</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q30_demandes_droits" value="oui" required> Oui</label>
+            <label><input type="radio" name="q30_demandes_droits" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Existe-t-il une procédure écrite pour traiter ces demandes ? Si oui, qui en est responsable ? <span class="question-id">Q31</span></label>
+          <p class="question-note">Absence de procédure = non-conformité majeure en cas de contrôle</p>
+          <div class="radio-group">
+            <label><input type="radio" name="q31_procedure_droits" value="oui" required> Oui</label>
+            <label><input type="radio" name="q31_procedure_droits" value="non"> Non</label>
+          </div>
+          <input type="text" name="q31_responsable" placeholder="Si oui, précisez qui est responsable..." style="margin-top: 10px;">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Un donateur peut-il facilement accéder à ses données et à l'historique de ses dons sur demande ? <span class="question-id">Q32</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q32_acces_historique" value="oui" required> Oui</label>
+            <label><input type="radio" name="q32_acces_historique" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 7 : Photos & Témoignages -->
+      <section class="section" id="photos">
+        <h2 class="section-title">Photos, Vidéos & Témoignages</h2>
+
+        <div class="question">
+          <label class="question-label required">Utilisez-vous des photos ou vidéos d'usagers dans votre communication ? (site, réseaux sociaux, plaquettes, rapports d'activité) <span class="question-id">Q33</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q33_photos_usagers" value="oui" required> Oui</label>
+            <label><input type="radio" name="q33_photos_usagers" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les consentements pour photos/vidéos sont-ils recueillis par écrit auprès des usagers et/ou de leurs familles (mineurs ou personnes sous tutelle) ? <span class="question-id">Q34</span></label>
+          <p class="question-note">Un consentement oral ne suffit pas — joindre un modèle de formulaire si disponible</p>
+          <div class="radio-group">
+            <label><input type="radio" name="q34_consentement_photos" value="oui" required> Oui</label>
+            <label><input type="radio" name="q34_consentement_photos" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Certains usagers photographiés sont-ils des personnes vulnérables (handicap, maladie, mineurs) ? Une procédure de consentement renforcé existe-t-elle ? <span class="question-id">Q35</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q35_consentement_renforce" value="oui" required> Oui</label>
+            <label><input type="radio" name="q35_consentement_renforce" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les formulaires de consentement précisent-ils les supports de diffusion et la durée d'utilisation prévue ? <span class="question-id">Q36</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q36_precision_consentement" value="oui" required> Oui</label>
+            <label><input type="radio" name="q36_precision_consentement" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous des photos d'usagers utilisées depuis plus de 5 ans, toujours en ligne, sans renouvellement du consentement ? <span class="question-id">Q37</span></label>
+          <p class="question-note">Si oui → action corrective prioritaire</p>
+          <div class="radio-group">
+            <label><input type="radio" name="q37_photos_anciennes" value="oui" required> Oui</label>
+            <label><input type="radio" name="q37_photos_anciennes" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Utilisez-vous des témoignages écrits ou vidéos d'usagers ou de familles ? Un consentement écrit a-t-il été recueilli pour chacun ? <span class="question-id">Q38</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q38_temoignages" value="oui" required> Oui</label>
+            <label><input type="radio" name="q38_temoignages" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les personnes peuvent-elles facilement retirer leur consentement et demander le retrait de leurs photos/témoignages ? <span class="question-id">Q39</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q39_retrait_consentement" value="oui" required> Oui</label>
+            <label><input type="radio" name="q39_retrait_consentement" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 8 : Violations -->
+      <section class="section" id="violations">
+        <h2 class="section-title">Violations de données & Incidents</h2>
+
+        <div class="question">
+          <label class="question-label required">Des violations ou incidents liés aux données communication ont-ils eu lieu au cours des 24 derniers mois ? (email au mauvais destinataire, fichier partagé par erreur, intrusion, perte de données...) <span class="question-id">Q40</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q40_incidents" value="oui" required> Oui</label>
+            <label><input type="radio" name="q40_incidents" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Si OUI : quel(s) type(s) d'incident(s) ? <span class="question-id">Q41</span></label>
+          <textarea name="q41_types_incidents" placeholder="Brève description des incidents..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Ces incidents ont-ils été notifiés en interne au DPO ou au siège dans les 72 heures suivant leur découverte ? <span class="question-id">Q42</span></label>
+          <p class="question-note">La notification CNIL (72h) est distincte de la notification interne — nous aborderons ce point ensemble</p>
+          <div class="radio-group">
+            <label><input type="radio" name="q42_notification_interne" value="oui" required> Oui</label>
+            <label><input type="radio" name="q42_notification_interne" value="non"> Non</label>
+            <label><input type="radio" name="q42_notification_interne" value="na"> N/A (pas d'incident)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Existe-t-il une procédure écrite en cas d'envoi erroné d'emails ou de newsletter (ex : destinataires en CC au lieu de BCC) ? <span class="question-id">Q43</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q43_procedure_email_erreur" value="oui" required> Oui</label>
+            <label><input type="radio" name="q43_procedure_email_erreur" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 9 : Questions ouvertes -->
+      <section class="section" id="ouverts">
+        <h2 class="section-title">Questions ouvertes</h2>
+
+        <div class="question">
+          <label class="question-label">Quelles sont selon vous les principales difficultés rencontrées pour assurer la conformité RGPD dans vos activités de communication ? <span class="question-id">Q44</span></label>
+          <textarea name="q44_difficultes_rgpd" placeholder="Décrivez vos principales difficultés..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Y a-t-il des points spécifiques à votre organisation que ce questionnaire n'a pas abordés et qui vous semblent importants ? <span class="question-id">Q45</span></label>
+          <textarea name="q45_points_specifiques" placeholder="Points non abordés..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Y a-t-il des pratiques dont vous n'êtes pas sûr(e) de la conformité et sur lesquelles vous souhaitez un avis ? <span class="question-id">Q46</span></label>
+          <textarea name="q46_pratiques_douteuses" placeholder="Pratiques sur lesquelles vous souhaitez un avis..."></textarea>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="btn-submit">Envoyer le questionnaire</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQBhjBdwuEBtj5Ef63L_5ej3eyXB15DLmpnDBxqM5u0EdVRgoLK6NR1Hkn682obuvN7Q/exec';
+const FORM_TYPE = 'Donateurs_RGPD';
+
+// Navigation sticky
+const navBlocks = document.querySelectorAll('.nav-block');
+const sections = document.querySelectorAll('.section');
+function updateActiveNav() {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - 100) current = section.getAttribute('id');
+  });
+  navBlocks.forEach(block => {
+    block.classList.remove('active');
+    if (block.getAttribute('href') === '#' + current) block.classList.add('active');
+  });
+}
+if (navBlocks.length > 0) {
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
+}
+
+// Collecte des réponses (format array v2.0)
+function collectResponses() {
+  const responses = [];
+  const seen = new Set();
+  document.querySelectorAll('.question:not(.hidden)').forEach(qEl => {
+    const labelEl = qEl.querySelector('.q-label, .question-label');
+    if (!labelEl) return;
+    const question = labelEl.innerText.replace(/^\*\s*/, '').replace(/\s+/g, ' ').trim();
+    const inputs = qEl.querySelectorAll('input, textarea, select');
+    if (inputs.length === 0) return;
+    const firstInput = inputs[0];
+    const fieldId = firstInput.name || firstInput.id || '';
+    if (seen.has(fieldId)) return;
+    seen.add(fieldId);
+    let answer = '';
+    const type = firstInput.type;
+    if (type === 'radio') {
+      const checked = qEl.querySelector('input[type="radio"]:checked');
+      answer = checked ? checked.value : '';
+    } else if (type === 'checkbox') {
+      const checkeds = qEl.querySelectorAll('input[type="checkbox"]:checked');
+      answer = Array.from(checkeds).map(c => c.value).join(' | ');
+    } else {
+      answer = firstInput.value.trim();
+    }
+    responses.push({ id: fieldId, question, answer });
+  });
+  const nomEtabEl = document.getElementById('nom_etablissement');
+  if (nomEtabEl) {
+    responses.push({ id: 'nom_etablissement', question: 'Nom de l\'établissement', answer: nomEtabEl.value || '' });
+  }
+  return responses;
+}
+
+// Soumission
+document.getElementById('formulaire').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!this.checkValidity()) return;
+  const btn = document.getElementById('btn-submit');
+  const message = document.getElementById('message');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+  const payload = { type: FORM_TYPE, responses: collectResponses() };
+  try {
+    const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const result = await res.json();
+    if (result.status === 'success') {
+      message.className = 'message success show';
+      message.textContent = 'Questionnaire envoyé avec succès ! Merci pour votre participation.';
+      this.reset();
+      const dateField = document.querySelector('[name*="date"]');
+      if (dateField && dateField.type === 'date') dateField.valueAsDate = new Date();
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (err) {
+    message.className = 'message error show';
+    message.textContent = 'Erreur lors de l\'envoi : ' + err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Envoyer le questionnaire';
+  }
+});
+
+// Date par défaut
+const dateField = document.querySelector('[name*="date"]');
+if (dateField && dateField.type === 'date') dateField.valueAsDate = new Date();
+</script>
+</body>
+</html>

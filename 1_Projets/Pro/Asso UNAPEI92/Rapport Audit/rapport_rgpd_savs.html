@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit RGPD — SAVS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F3EE;--card:#FFFFFF;--line:#E6E2D8;--ink:#23272E;--ink-soft:#6B7280;
+    --red:#B0463B;--red-bg:#F7E4E1;--orange:#BD8A35;--orange-bg:#F6ECD9;--green:#4F7A68;--green-bg:#E6EEE9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.55;}
+  .wrap{max-width:920px;margin:0 auto;padding:40px 24px 80px;}
+  .page-header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+  .page-header h1{font-size:24px;font-weight:700;margin:0;}
+  .page-header .count{font-size:14px;color:var(--ink-soft);}
+  .page-note{font-size:13px;color:var(--ink-soft);margin:0 0 28px;}
+  .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px;}
+  .kpi-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;}
+  .kpi-card .kpi-label{font-size:13.5px;color:var(--ink-soft);margin-bottom:8px;}
+  .kpi-card .kpi-value{font-size:32px;font-weight:700;}
+  .section-title{font-size:14px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:14px;}
+  .section-sub{font-size:13.5px;color:var(--ink-soft);margin:-8px 0 14px;}
+  .risk-list{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 22px;margin-bottom:36px;}
+  .risk-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);}
+  .risk-row:last-child{border-bottom:none;}
+  .risk-rank{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:var(--red-bg);color:var(--red);}
+  .risk-row:nth-child(4) .risk-rank,.risk-row:nth-child(5) .risk-rank{background:var(--orange-bg);color:var(--orange);}
+  .risk-text{font-size:14.5px;font-weight:500;}
+  .risk-text .estab-tag{display:inline-block;margin-left:8px;font-size:12px;font-weight:600;color:var(--ink-soft);}
+  .estab-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:40px;}
+  .estab-card{display:block;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--red);border-radius:10px;padding:18px 20px;text-decoration:none;color:var(--ink);transition:box-shadow .15s,transform .15s;}
+  .estab-card.modere{border-left-color:var(--orange);}
+  .estab-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.06);transform:translateY(-1px);}
+  .estab-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:6px;}
+  .estab-card-top h3{font-size:17px;font-weight:600;margin:0;}
+  .estab-card .meta{font-size:13.5px;color:var(--ink-soft);margin-bottom:12px;}
+  .badge{display:inline-flex;align-items:center;font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:6px;white-space:nowrap;}
+  .badge-red{background:var(--red-bg);color:var(--red);}
+  .badge-orange{background:var(--orange-bg);color:var(--orange);}
+  .estab-icons{display:flex;gap:10px;color:var(--ink-soft);}
+  .estab-icons svg{width:18px;height:18px;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--ink-soft);text-decoration:none;margin-bottom:18px;}
+  .back-link:hover{color:var(--ink);}
+  .back-link svg{width:16px;height:16px;}
+  .detail-header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:6px;}
+  .detail-header h2{font-size:22px;font-weight:700;margin:0;}
+  .detail-header .score{font-size:15px;font-weight:700;}
+  .detail-header .score.red{color:var(--red);}
+  .detail-header .score.orange{color:var(--orange);}
+  .detail-sites{font-size:13px;color:var(--ink-soft);margin-bottom:24px;}
+  .detail-section{margin-bottom:64px;}
+  .detail-section:last-child{margin-bottom:0;}
+  .block{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 24px;margin-bottom:16px;}
+  .block-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .block-head svg{width:20px;height:20px;flex-shrink:0;}
+  .block-head h3{font-size:15.5px;font-weight:700;margin:0;}
+  .block.risques svg{color:var(--red);}
+  .block.principes svg{color:var(--ink-soft);}
+  .block.urgent svg,.block.urgent .block-head h3{color:var(--red);}
+  .block.planifier svg,.block.planifier .block-head h3{color:var(--orange);}
+  .block.recommande svg,.block.recommande .block-head h3{color:var(--green);}
+  .block ul{margin:0;padding-left:20px;font-size:14.5px;}
+  .block ul li{margin-bottom:9px;}
+  .block ul li:last-child{margin-bottom:0;}
+  ul.action-list{padding-left:0;margin:0;}
+  .action-item{padding:9px 0;border-bottom:1px solid var(--line);font-size:14.5px;list-style:none;}
+  .action-item:last-child{border-bottom:none;}
+  .highlight-box{background:var(--orange-bg);border:1px solid var(--orange);border-radius:10px;padding:16px 20px;margin-bottom:28px;font-size:14px;color:var(--ink);}
+  .highlight-box strong{color:var(--orange);}
+  footer{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:40px;}
+  @media(max-width:640px){.kpi-grid{grid-template-columns:1fr;}.estab-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap" id="top">
+
+  <!-- VUE GLOBALE -->
+  <div class="page-header">
+    <h1>Audit RGPD — vue globale</h1>
+    <div class="count">2 SAVS · 2 réponses</div>
+  </div>
+  <p class="page-note">Les deux SAVS sont pilotés par la même chef de service (Corinne Cappelli). Leurs réponses reflètent une situation similaire : aucun référent RGPD, aucune formation, des échanges non sécurisés. Le SAVS Sceaux présente cependant davantage de lacunes organisationnelles que celui de Nanterre.</p>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Score moyen de conformité</div>
+      <div class="kpi-value">40 / 100</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Risques majeurs détectés</div>
+      <div class="kpi-value">8</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Actions correctives proposées</div>
+      <div class="kpi-value">22</div>
+    </div>
+  </div>
+
+  <div class="section-title">Risques majeurs identifiés</div>
+  <div class="section-sub">Classés par ordre de criticité en cas de contrôle de la CNIL</div>
+
+  <div class="risk-list">
+    <div class="risk-row">
+      <div class="risk-rank">1</div>
+      <div class="risk-text">Aucun référent RGPD désigné, ni de lien établi avec le DPO <span class="estab-tag">— SAVS Nanterre, SAVS Sceaux</span></div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">2</div>
+      <div class="risk-text">Aucune formation RGPD organisée, ni pour les éducateurs ni pour la chef de service <span class="estab-tag">— SAVS Nanterre, SAVS Sceaux</span></div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">3</div>
+      <div class="risk-text">Connexions internet des ordinateurs portables non sécurisées lors des interventions à domicile <span class="estab-tag">— SAVS Nanterre</span></div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">4</div>
+      <div class="risk-text">Données sensibles échangées par téléphone et email classique sans canal sécurisé <span class="estab-tag">— SAVS Sceaux</span></div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-rank">5</div>
+      <div class="risk-text">Contrats RGPD (article 28) avec les prestataires non vérifiés ni connus dans les deux structures <span class="estab-tag">— SAVS Nanterre, SAVS Sceaux</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Établissements — cliquer pour ouvrir le détail</div>
+
+  <div class="estab-grid">
+
+    <a class="estab-card modere" href="#detail-nanterre">
+      <div class="estab-card-top">
+        <h3>SAVS Nanterre</h3>
+        <span class="badge badge-orange">Risque modéré</span>
+      </div>
+      <div class="meta">SAVS · 49 personnes accompagnées · 2 salariés</div>
+      <div class="estab-icons" title="Points de vigilance : référent RGPD, formation, connexions mobiles, prestataires">
+        <!-- user-x -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h2.5"/><line x1="17" y1="8" x2="22" y2="13"/><line x1="22" y1="8" x2="17" y2="13"/></svg>
+        <!-- wifi-off -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.56 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+        <!-- file-x -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="9.5" y1="12.5" x2="14.5" y2="17.5"/><line x1="14.5" y1="12.5" x2="9.5" y2="17.5"/></svg>
+      </div>
+    </a>
+
+    <a class="estab-card" href="#detail-sceaux">
+      <div class="estab-card-top">
+        <h3>SAVS Sceaux</h3>
+        <span class="badge badge-red">Risque élevé</span>
+      </div>
+      <div class="meta">SAVS · 50 personnes accompagnées · 6 salariés</div>
+      <div class="estab-icons" title="Points de vigilance : référent RGPD, formation, échanges non sécurisés, données fréquemment exposées, prestataires">
+        <!-- user-x -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h2.5"/><line x1="17" y1="8" x2="22" y2="13"/><line x1="22" y1="8" x2="17" y2="13"/></svg>
+        <!-- mail -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <!-- eye -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <!-- file-x -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="9.5" y1="12.5" x2="14.5" y2="17.5"/><line x1="14.5" y1="12.5" x2="9.5" y2="17.5"/></svg>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ===== DÉTAIL SAVS NANTERRE ===== -->
+  <div class="detail-section">
+    <a class="back-link" href="#top" id="detail-nanterre">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour à la vue d'ensemble
+    </a>
+    <div class="detail-header">
+      <h2>SAVS Nanterre</h2>
+      <div class="score orange">Score : 45/100</div>
+    </div>
+    <div class="detail-sites">SAVS · 49 personnes accompagnées · 2 salariés · Répondant : Corinne CAPPELLI (Chef de service)</div>
+
+    <div class="highlight-box">
+      <strong>Contexte spécifique :</strong> Avec seulement 2 salariés pour 49 personnes accompagnées, la charge de travail est très dense. Le chef de service et l'éducateur interviennent directement au domicile des personnes, avec des outils mobiles (ordinateurs, téléphones) qui véhiculent des données sensibles hors des locaux.
+    </div>
+
+    <div class="block risques">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3>1. Analyse des risques</h3>
+      </div>
+      <ul>
+        <li>Personne n'est officiellement responsable du RGPD, et ni la chef de service ni les éducateurs n'ont reçu de formation.</li>
+        <li>Les ordinateurs portables utilisés lors des visites à domicile se connectent sans VPN — les données des personnes accompagnées circulent donc sur des réseaux non sécurisés, comme parler à voix haute dans un espace public.</li>
+        <li>On ne sait pas si les prestataires qui accèdent aux données ont signé les engagements requis.</li>
+        <li>Des échanges téléphoniques contenant des données sensibles ont lieu fréquemment — sans pouvoir garantir la confidentialité de l'environnement.</li>
+        <li>Aucune procédure formelle n'est connue en cas d'incident ou de violation de données.</li>
+      </ul>
+    </div>
+
+    <div class="block principes">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+        <h3>2. Principes RGPD concernés</h3>
+      </div>
+      <ul>
+        <li><strong>Un responsable identifié</strong> pour piloter le RGPD, même dans une petite équipe.</li>
+        <li><strong>Des connexions sécurisées à domicile</strong> : un VPN permet de chiffrer les données même sur un réseau Wi-Fi inconnu.</li>
+        <li><strong>La discrétion dans les échanges téléphoniques</strong> : éviter de citer des informations sensibles dans des espaces non maîtrisés.</li>
+        <li><strong>Des engagements écrits avec les prestataires</strong> qui touchent aux données des personnes accompagnées.</li>
+        <li><strong>Une procédure connue en cas d'incident</strong> pour agir vite et bien.</li>
+      </ul>
+    </div>
+
+    <div class="block urgent">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h3>Urgent</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Désigner un référent RGPD local et organiser le lien avec le DPO.</li>
+        <li class="action-item">Activer le VPN sur les ordinateurs portables utilisés lors des visites à domicile pour sécuriser les connexions.</li>
+        <li class="action-item">Former la chef de service et l'éducateur au RGPD, avec un focus sur les risques liés aux interventions à domicile.</li>
+      </ul>
+    </div>
+
+    <div class="block planifier">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <h3>À planifier</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Vérifier et faire signer les contrats RGPD (article 28) avec le prestataire du logiciel métier.</li>
+        <li class="action-item">Sensibiliser l'équipe à la confidentialité lors des échanges téléphoniques sensibles.</li>
+        <li class="action-item">Formaliser la procédure de signalement d'une violation de données (qui prévenir, dans quel délai).</li>
+        <li class="action-item">S'assurer que les plannings de visites partagés entre éducateurs ne contiennent que les informations strictement nécessaires.</li>
+      </ul>
+    </div>
+
+    <div class="block recommande">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h3>Recommandé</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Confirmer avec le DPO la durée de conservation des dossiers (actuellement 5 ans).</li>
+        <li class="action-item">Clarifier les règles d'accès au dossier pour les tuteurs (ce qu'ils peuvent demander, ce qui relève du secret professionnel).</li>
+        <li class="action-item">Vérifier que les échanges avec les tuteurs et curateurs se font via un canal sécurisé.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== DÉTAIL SAVS SCEAUX ===== -->
+  <div class="detail-section">
+    <a class="back-link" href="#top" id="detail-sceaux">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour à la vue d'ensemble
+    </a>
+    <div class="detail-header">
+      <h2>SAVS Sceaux</h2>
+      <div class="score red">Score : 35/100</div>
+    </div>
+    <div class="detail-sites">SAVS · 50 personnes accompagnées · 6 salariés · Répondant : Corinne CAPPELLI (Chef de service) — <strong>Même chef de service que le SAVS Nanterre, situation plus préoccupante ici.</strong></div>
+
+    <div class="highlight-box">
+      <strong>Point d'attention :</strong> La chef de service l'exprime clairement : <em>« Tout = formation +++ »</em>. C'est le principal levier identifié pour ce SAVS. Les éducateurs accèdent aux dossiers depuis les domiciles des personnes sans connexion sécurisée, et les échanges sensibles passent par téléphone ou email classique de manière fréquente.
+    </div>
+
+    <div class="block risques">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3>1. Analyse des risques</h3>
+      </div>
+      <ul>
+        <li>Personne n'est officiellement responsable du RGPD, et ni la direction ni les éducateurs n'ont été formés.</li>
+        <li>Des informations sur les personnes accompagnées sont fréquemment visibles ou accessibles en dehors des locaux, sans cadre de protection.</li>
+        <li>Les éducateurs accèdent aux dossiers depuis les domiciles des personnes accompagnées, sans connexion sécurisée — comme ouvrir un dossier confidentiel dans un café.</li>
+        <li>Les échanges sensibles se font par téléphone ou email classique, de manière fréquente, sans canal sécurisé.</li>
+        <li>Un incident de données a eu lieu, mais on ne sait pas s'il a été signalé dans les 72 heures requises.</li>
+        <li>On ne sait pas si les prestataires ont signé les engagements de confidentialité requis.</li>
+        <li>Les cahiers de liaison ou transmissions contiennent parfois des données sensibles (budget, santé, situations personnelles).</li>
+      </ul>
+    </div>
+
+    <div class="block principes">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+        <h3>2. Principes RGPD concernés</h3>
+      </div>
+      <ul>
+        <li><strong>Un responsable formé et identifié</strong> : sans formation, pas de vigilance possible.</li>
+        <li><strong>Des connexions sécurisées</strong> : les accès aux dossiers depuis l'extérieur doivent toujours passer par un canal chiffré (VPN).</li>
+        <li><strong>Des échanges protégés</strong> : email classique et appels non sécurisés ne suffisent pas pour des données sensibles.</li>
+        <li><strong>Une procédure de signalement connue</strong> : l'incident survenu aurait dû être remonté sous 72h.</li>
+        <li><strong>Des cahiers de transmission limités</strong> au strict nécessaire, sans données excessives sur les situations personnelles.</li>
+        <li><strong>Des engagements écrits avec les prestataires</strong>.</li>
+      </ul>
+    </div>
+
+    <div class="block urgent">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h3>Urgent</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Désigner un référent RGPD local et organiser le lien avec le DPO.</li>
+        <li class="action-item">Organiser en priorité une formation RGPD pour toute l'équipe — c'est le besoin le plus critique exprimé.</li>
+        <li class="action-item">Sécuriser les connexions des éducateurs lors des accès aux dossiers depuis les domiciles (VPN obligatoire).</li>
+        <li class="action-item">Vérifier si l'incident survenu a bien été signalé au DPO, et formaliser la procédure pour les prochains.</li>
+      </ul>
+    </div>
+
+    <div class="block planifier">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <h3>À planifier</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Remplacer les échanges par email classique et téléphone par des canaux sécurisés pour les informations sensibles.</li>
+        <li class="action-item">Limiter le contenu des cahiers de liaison aux informations strictement nécessaires à l'accompagnement.</li>
+        <li class="action-item">Vérifier et faire signer les contrats RGPD avec les prestataires.</li>
+        <li class="action-item">Mettre en place un protocole clair pour les plannings partagés entre éducateurs (adresses et informations personnelles à protéger).</li>
+        <li class="action-item">Confirmer avec le DPO la durée de conservation des dossiers (actuellement 5 ans).</li>
+      </ul>
+    </div>
+
+    <div class="block recommande">
+      <div class="block-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h3>Recommandé</h3>
+      </div>
+      <ul class="action-list">
+        <li class="action-item">Clarifier les règles d'accès au dossier pour les tuteurs et les membres de la famille.</li>
+        <li class="action-item">Revoir les échanges avec les tuteurs et curateurs pour s'assurer qu'ils passent par un canal sécurisé (actuellement décrit comme « non sécurisé » pour certains).</li>
+        <li class="action-item">S'assurer que le logiciel métier (AIRMES) est utilisé de façon sécurisée et que la maîtrise de l'outil est acquise par toute l'équipe.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    Rapport 7/8 — SAVS · Synthèse établie à partir des réponses au questionnaire d'auto-évaluation RGPD (12/05/2026 et 26/05/2026).
+  </footer>
+
+</div>
+</body>
+</html>

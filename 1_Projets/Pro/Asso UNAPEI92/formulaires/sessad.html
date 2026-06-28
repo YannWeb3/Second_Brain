@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNAPEI92 — SESSAD (Questionnaire RGPD)</title>
+  <style>
+    :root {
+      --primary: #0055A4;
+      --primary-dark: #003d7a;
+      --secondary: #E60028;
+      --bg: #f5f7fa;
+      --card: #fff;
+      --text: #333;
+      --text-light: #666;
+      --border: #e0e0e0;
+      --success: #28a745;
+      --error: #dc3545;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+    header p { opacity: 0.9; font-size: 0.95rem; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    .nav-blocks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 25px;
+      padding: 15px;
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+    }
+
+    .nav-block {
+      padding: 8px 16px;
+      background: var(--bg);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .nav-block:hover, .nav-block.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .section {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      scroll-margin-top: 80px;
+    }
+
+    .section-title {
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .question {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .question:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .question-label {
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: block;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .question-id {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: normal;
+      margin-left: 5px;
+    }
+
+    .required::after {
+      content: ' *';
+      color: var(--secondary);
+    }
+
+    input, select, textarea {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .radio-group, .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .radio-group label, .checkbox-group label {
+      font-weight: normal;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .radio-group label:hover, .checkbox-group label:hover {
+      background: var(--bg);
+    }
+
+    input[type="radio"], input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      padding: 14px 40px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .message {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .message.show { display: block; }
+
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid var(--primary);
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.4rem; }
+      .nav-blocks { justify-content: center; }
+      .nav-block { font-size: 0.8rem; padding: 6px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="back-link">← Retour à l'accueil</a>
+
+    <header>
+      <h1>Questionnaire RGPD — SESSAD</h1>
+      <p>Service d'Éducation Spéciale et de Soins à Domicile — Protection des données des enfants/jeunes</p>
+    </header>
+
+    <nav class="nav-blocks">
+      <a href="#identification" class="nav-block">Identification</a>
+      <a href="#gouvernance" class="nav-block">Gouvernance</a>
+      <a href="#registre" class="nav-block">Registre & PIA</a>
+      <a href="#securite" class="nav-block">Sécurité terrain</a>
+      <a href="#donnees-sante" class="nav-block">Données santé</a>
+      <a href="#droits" class="nav-block">Droits usagers</a>
+      <a href="#sous-traitants" class="nav-block">Sous-traitants</a>
+      <a href="#incidents" class="nav-block">Incidents</a>
+      <a href="#specifiques" class="nav-block">Spécificités SESSAD</a>
+      <a href="#synthese" class="nav-block">Synthèse</a>
+    </nav>
+
+    <div class="info-box">
+      <strong>Instructions :</strong> Ce questionnaire porte sur la conformité RGPD de votre SESSAD. Répondez en fonction de votre situation actuelle. Les champs marqués d'une étoile (*) sont obligatoires.
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <form id="formulaire">
+      <!-- Bloc 0 : Identification -->
+      <section class="section" id="identification">
+        <h2 class="section-title">Identification</h2>
+
+        <div class="question">
+          <label class="question-label required">Nom de l'établissement SESSAD <span class="question-id">Q0.1</span></label>
+           <input type="text" name="q0_1_nom_etablissement" required>
+           <input type="hidden" id="nom_etablissement" name="nom_etablissement">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Personne répondant au questionnaire (Nom Prénom) <span class="question-id">Q0.2</span></label>
+          <input type="text" name="q0_2_nom_prenom_repondant" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Fonction du répondant <span class="question-id">Q0.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q0_3_fonction" value="directeur" required> Directeur/trice établissement</label>
+            <label><input type="radio" name="q0_3_fonction" value="chef_service"> Chef de service éducatif</label>
+            <label><input type="radio" name="q0_3_fonction" value="educateur"> Éducateur/trice spécialisé(e)</label>
+            <label><input type="radio" name="q0_3_fonction" value="resp_admin"> Responsable administratif</label>
+            <label><input type="radio" name="q0_3_fonction" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Date de remplissage <span class="question-id">Q0.4</span></label>
+          <input type="date" name="q0_4_date_remplissage" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nombre d'enfants/jeunes accompagnés par le SESSAD <span class="question-id">Q0.5</span></label>
+          <input type="number" name="q0_5_nb_enfants" min="0" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nombre de professionnels dans l'établissement <span class="question-id">Q0.6</span></label>
+          <input type="number" name="q0_6_nb_professionnels" min="0" required>
+        </div>
+      </section>
+
+      <!-- Bloc 1 : Gouvernance locale -->
+      <section class="section" id="gouvernance">
+        <h2 class="section-title">Gouvernance locale RGPD</h2>
+
+        <div class="question">
+          <label class="question-label required">Un référent RGPD est-il identifié dans votre établissement SESSAD ? <span class="question-id">Q1.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_1_1_referent_rgpd" value="identifie_connu" required> Oui identifié et connu des équipes</label>
+            <label><input type="radio" name="q1_1_1_referent_rgpd" value="identifie_informel"> Oui identifié mais informel</label>
+            <label><input type="radio" name="q1_1_1_referent_rgpd" value="non_identifie"> Non personne n'est identifiée</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Nom et fonction du référent RGPD local <span class="question-id">Q1.1.2</span></label>
+          <input type="text" name="q1_1_2_nom_fonction_referent">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le référent RGPD local sait-il contacter le DPO externe ? <span class="question-id">Q1.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_2_1_contact_dpo" value="connu_contacte" required> Oui coordonnées connues et DPO déjà contacté</label>
+            <label><input type="radio" name="q1_2_1_contact_dpo" value="connu_jamais"> Oui coordonnées connues mais jamais contacté</label>
+            <label><input type="radio" name="q1_2_1_contact_dpo" value="non_connu"> Non ne connaît pas le DPO</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les équipes du SESSAD ont-elles reçu une sensibilisation ou formation RGPD ? <span class="question-id">Q1.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="recente" required> Oui formation/sensibilisation récente (&lt;2 ans)</label>
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="ancienne"> Oui ancienne (&gt;2 ans)</label>
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="rapide"> Sensibilisation rapide uniquement</label>
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="jamais"> Non jamais</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">L'établissement connaît-il les procédures RGPD du siège (gestion demandes incidents) ? <span class="question-id">Q1.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_4_1_procedures_siege" value="connues_appliquees" required> Oui procédures connues et appliquées</label>
+            <label><input type="radio" name="q1_4_1_procedures_siege" value="connues_non_appliquees"> Oui connues mais non appliquées</label>
+            <label><input type="radio" name="q1_4_1_procedures_siege" value="existent_non_connues"> Procédures existent mais non connues</label>
+            <label><input type="radio" name="q1_4_1_procedures_siege" value="pas_de_procedures"> Pas de procédures siège</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">L'établissement remonte-t-il les incidents/questions RGPD au siège ? <span class="question-id">Q1.5.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_5_1_remontees" value="systematiques" required> Oui remontées systématiques</label>
+            <label><input type="radio" name="q1_5_1_remontees" value="occasionnelles"> Remontées occasionnelles</label>
+            <label><input type="radio" name="q1_5_1_remontees" value="jamais"> Non jamais de remontée</label>
+            <label><input type="radio" name="q1_5_1_remontees" value="na"> N/A (jamais d'incident)</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 2 : Registre & PIA -->
+      <section class="section" id="registre">
+        <h2 class="section-title">Registre des traitements, Bases légales & PIA</h2>
+
+        <div class="question">
+          <label class="question-label required">Connaissez-vous les traitements de données recensés pour votre SESSAD dans le registre ? <span class="question-id">Q2.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_1_1_registre" value="connu" required> Oui je connais les traitements SESSAD du registre</label>
+            <label><input type="radio" name="q2_1_1_registre" value="vaguement"> Vaguement</label>
+            <label><input type="radio" name="q2_1_1_registre" value="non_connu"> Non je ne connais pas le registre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Utilisez-vous des fichiers ou outils locaux non fournis par le siège ? <span class="question-id">Q2.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_2_1_outils_locaux" value="oui" required> Oui fichiers/outils locaux (Excel, planning, tableaux)</label>
+            <label><input type="radio" name="q2_2_1_outils_locaux" value="non"> Non uniquement outils siège</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Si OUI précisez quels fichiers/outils locaux vous utilisez <span class="question-id">Q2.2.2</span></label>
+          <textarea name="q2_2_2_precisions_outils"></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Sur quelle base légale repose le traitement des dossiers des enfants de votre SESSAD ? <span class="question-id">Q2B.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2b_1_base_legale" value="interet_public" required> Mission d'intérêt public / autorité publique (Art. 6.1.e)</label>
+            <label><input type="radio" name="q2b_1_base_legale" value="consentement"> Consentement parents/représentants légaux (Art. 6.1.a)</label>
+            <label><input type="radio" name="q2b_1_base_legale" value="obligation_legale"> Obligation légale CASF (Art. 6.1.c)</label>
+            <label><input type="radio" name="q2b_1_base_legale" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous identifié des traitements à risque élevé dans votre SESSAD nécessitant une PIA ? <span class="question-id">Q2T.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2t_1_pia" value="realisees" required> Oui PIA réalisées</label>
+            <label><input type="radio" name="q2t_1_pia" value="identifiees_non_realisees"> Oui traitements identifiés mais PIA non réalisées</label>
+            <label><input type="radio" name="q2t_1_pia" value="aucun"> Non aucun traitement à risque identifié</label>
+            <label><input type="radio" name="q2t_1_pia" value="inconnu"> Inconnu (ne sait pas ce qu'est une PIA)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Parmi ces traitements lesquels sont présents dans votre SESSAD ? <span class="question-id">Q2T.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q2t_2_traitements" value="geolocalisation"> Géolocalisation véhicules professionnels</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="planning_adresses"> Planning interventions avec adresses enfants + écoles partagé équipe</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="donnees_sante"> Données de santé (si soins paramédicaux)</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="aucun"> Aucun de ces traitements</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3 : Sécurité terrain -->
+      <section class="section" id="securite">
+        <h2 class="section-title">Sécurité terrain</h2>
+
+        <div class="question">
+          <label class="question-label required">Où sont stockés les dossiers des enfants papier ? <span class="question-id">Q3.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="armoire_fermee_bureau_securise" required> Armoires fermées à clé dans bureau dédié sécurisé</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="armoire_fermee_bureau_partage"> Armoires fermées à clé dans bureau partagé</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="armoire_non_fermee"> Armoires non fermées à clé</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="classeurs_bureaux"> Classeurs dans bureaux éducateurs</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Combien de personnes ont les clés des armoires dossiers enfants ? <span class="question-id">Q3.1.2</span></label>
+          <input type="number" name="q3_1_2_nb_cles" min="0" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les dossiers papier sont-ils détruits de manière sécurisée en fin de conservation ? <span class="question-id">Q3.1.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_1_3_destruction" value="dechiqueteuse" required> Oui déchiqueteuse sur site</label>
+            <label><input type="radio" name="q3_1_3_destruction" value="prestataire"> Oui prestataire spécialisé avec certificat</label>
+            <label><input type="radio" name="q3_1_3_destruction" value="poubelle"> Poubelle classique</label>
+            <label><input type="radio" name="q3_1_3_destruction" value="jamais"> Jamais détruits (conservation indéfinie)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les éducateurs SESSAD utilisent-ils des ordinateurs portables ou tablettes pour les interventions ? <span class="question-id">Q3.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_1_materiel_nomade" value="chiffre" required> Oui avec chiffrement obligatoire et sécurisation renforcée</label>
+            <label><input type="radio" name="q3_2_1_materiel_nomade" value="non_securise"> Oui sans sécurisation particulière</label>
+            <label><input type="radio" name="q3_2_1_materiel_nomade" value="non"> Non pas de matériel nomade</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Quel logiciel métier utilisez-vous pour la gestion de l'accompagnement ? <span class="question-id">Q3.2.2</span></label>
+          <input type="text" name="q3_2_2_logiciel_metier">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les ordinateurs portables/tablettes se verrouillent-ils automatiquement après inactivité ? <span class="question-id">Q3.2.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_3_verrouillage" value="moins_5min" required> Oui verrouillage auto &lt;5 minutes</label>
+            <label><input type="radio" name="q3_2_3_verrouillage" value="plus_10min"> Oui mais &gt;10 minutes</label>
+            <label><input type="radio" name="q3_2_3_verrouillage" value="manuel"> Verrouillage manuel uniquement</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les connexions internet des ordinateurs portables (4G/5G, WiFi écoles/domiciles) sont-elles sécurisées ? <span class="question-id">Q3.2.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_4_connexion" value="vpn" required> Oui VPN obligatoire pour toutes connexions distantes</label>
+            <label><input type="radio" name="q3_2_4_connexion" value="direct"> Connexions directes WiFi écoles/4G sans VPN</label>
+            <label><input type="radio" name="q3_2_4_connexion" value="pas_connexion"> Pas de connexion internet nomade</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Que se passe-t-il en cas de perte ou vol d'un ordinateur portable/tablette ? <span class="question-id">Q3.2.5</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_5_procedure_perte" value="claire" required> Procédure claire (blocage à distance + notification DPO &lt;72h)</label>
+            <label><input type="radio" name="q3_2_5_procedure_perte" value="partielle"> Procédure partielle</label>
+            <label><input type="radio" name="q3_2_5_procedure_perte" value="aucune"> Pas de procédure</label>
+            <label><input type="radio" name="q3_2_5_procedure_perte" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Comment transmettez-vous des informations sur les enfants à l'extérieur (écoles, familles) ? <span class="question-id">Q3.3.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q3_3_1_transmission" value="email_classique"> Email classique non sécurisé</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="email_crypte"> Email crypté/sécurisé</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="plateforme"> Plateforme sécurisée</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="courrier"> Courrier postal</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="main_propre"> Remise main propre</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="cahier"> Cahier liaison papier</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">À qui transmettez-vous régulièrement des données sur les enfants ? <span class="question-id">Q3.3.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="ecoles"> Écoles / enseignants (ULIS, classe ordinaire)</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="education_nationale"> Éducation Nationale (enseignants référents)</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="familles"> Familles/représentants légaux</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="mdph"> MDPH</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="services_sociaux"> Services sociaux</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="medicaux"> Médecins/paramédicaux</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des documents avec données enfants sont-ils parfois visibles lors des interventions (écoles, domiciles) ? <span class="question-id">Q3.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_4_1_visibilite" value="jamais" required> Non jamais documents visibles hors bureau</label>
+            <label><input type="radio" name="q3_4_1_visibilite" value="parfois"> Parfois (documents transport voiture)</label>
+            <label><input type="radio" name="q3_4_1_visibilite" value="frequemment"> Oui fréquemment</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les échanges téléphoniques professionnels contiennent-ils parfois des données sensibles enfants ? <span class="question-id">Q3.5.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_5_1_telephone" value="frequemment" required> Oui fréquemment (coordination écoles, familles)</label>
+            <label><input type="radio" name="q3_5_1_telephone" value="parfois"> Parfois</label>
+            <label><input type="radio" name="q3_5_1_telephone" value="rarement"> Rarement, échanges uniquement organisationnels</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3bis : Données santé -->
+      <section class="section" id="donnees-sante">
+        <h2 class="section-title">Données de santé</h2>
+
+        <div class="question">
+          <label class="question-label required">Le SESSAD effectue-t-il des soins paramédicaux (orthophonie, psychomotricité, kinésithérapie) ? <span class="question-id">Q3B.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3b_1_soins_paramedicaux" value="nombreux" required> Oui nombreux soins paramédicaux (données santé)</label>
+            <label><input type="radio" name="q3b_1_soins_paramedicaux" value="quelques"> Oui quelques soins</label>
+            <label><input type="radio" name="q3b_1_soins_paramedicaux" value="non"> Non aucun soin (accompagnement éducatif uniquement)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si soins paramédicaux, les données de santé sont-elles cloisonnées du reste des données ? <span class="question-id">Q3B.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3b_2_cloisonnement" value="dossier_separe" required> Oui dossiers soins séparés accès paramédicaux uniquement</label>
+            <label><input type="radio" name="q3b_2_cloisonnement" value="partiellement"> Partiellement (droits différenciés)</label>
+            <label><input type="radio" name="q3b_2_cloisonnement" value="non_cloisonne"> Non dossier unique tout accessible</label>
+            <label><input type="radio" name="q3b_2_cloisonnement" value="na"> N/A (pas de soins)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Sur quelle exception Art. 9.2 vous appuyez-vous pour traiter les données de santé (si soins) ? <span class="question-id">Q3B.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3b_3_exception_art9" value="soins_preventive" required> Médecine préventive et soins (Art. 9.2.h)</label>
+            <label><input type="radio" name="q3b_3_exception_art9" value="consentement"> Consentement explicite parents (Art. 9.2.a)</label>
+            <label><input type="radio" name="q3b_3_exception_art9" value="inconnu"> Inconnu</label>
+            <label><input type="radio" name="q3b_3_exception_art9" value="na"> N/A (pas de soins)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les paramédicaux (orthophonistes, psychomotriciens) sont-ils soumis au secret professionnel ? <span class="question-id">Q3B.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3b_4_secret_professionnel" value="oui" required> Oui secret professionnel réglementé</label>
+            <label><input type="radio" name="q3b_4_secret_professionnel" value="partiellement"> Partiellement</label>
+            <label><input type="radio" name="q3b_4_secret_professionnel" value="na"> N/A (pas de paramédicaux)</label>
+            <label><input type="radio" name="q3b_4_secret_professionnel" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 4 : Droits usagers -->
+      <section class="section" id="droits">
+        <h2 class="section-title">Droits des usagers</h2>
+
+        <div class="question">
+          <label class="question-label required">Les familles reçoivent-elles une information RGPD claire à l'admission ? <span class="question-id">Q4.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_1_1_info_rgpd" value="document_dedie" required> Oui document dédié notice RGPD adapté (FALC si besoin)</label>
+            <label><input type="radio" name="q4_1_1_info_rgpd" value="document_standard"> Oui document standard</label>
+            <label><input type="radio" name="q4_1_1_info_rgpd" value="orale"> Information orale uniquement</label>
+            <label><input type="radio" name="q4_1_1_info_rgpd" value="non"> Non pas d'information</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous déjà reçu des demandes de familles pour consulter le dossier de leur enfant ? <span class="question-id">Q4.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_2_1_demandes_acces" value="oui" required> Oui (nombre sur 12 derniers mois)</label>
+            <label><input type="radio" name="q4_2_1_demandes_acces" value="non"> Non jamais</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si OUI, quel délai pour répondre aux demandes d'accès au dossier ? <span class="question-id">Q4.2.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_2_2_delai_acces" value="moins_1mois" required> Moins de 1 mois systématiquement</label>
+            <label><input type="radio" name="q4_2_2_delai_acces" value="1_2mois"> Entre 1 et 2 mois</label>
+            <label><input type="radio" name="q4_2_2_delai_acces" value="plus_2mois"> Plus de 2 mois</label>
+            <label><input type="radio" name="q4_2_2_delai_acces" value="na"> N/A (pas de demande)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Savez-vous comment traiter une demande d'exercice de droits des familles ? <span class="question-id">Q4.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_3_1_procedure_droits" value="procedure_claire" required> Oui procédure claire connue</label>
+            <label><input type="radio" name="q4_3_1_procedure_droits" value="vaguement"> Vaguement, je contacterais le siège</label>
+            <label><input type="radio" name="q4_3_1_procedure_droits" value="non"> Non je ne sais pas</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">En cas de parents séparés, comment gérez-vous les demandes d'accès au dossier de l'enfant ? <span class="question-id">Q4.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_4_1_parents_separes" value="procedure_claire" required> Procédure claire (vérification autorité parentale, jugement)</label>
+            <label><input type="radio" name="q4_4_1_parents_separes" value="cas_par_cas"> Au cas par cas</label>
+            <label><input type="radio" name="q4_4_1_parents_separes" value="pas_procedure"> Pas de procédure spécifique</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 5 : Sous-traitants locaux -->
+      <section class="section" id="sous-traitants">
+        <h2 class="section-title">Sous-traitants locaux</h2>
+
+        <div class="question">
+          <label class="question-label">Quels sous-traitants locaux utilisez-vous ayant accès aux données des enfants ? <span class="question-id">Q5.1.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="logiciel_metier"> Logiciel métier (Imago, Concerto...)</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="transporteurs"> Transporteurs (si transports adaptés)</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="intervenants_externes"> Intervenants externes (orthophonistes, psychomotriciens libéraux)</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="autre"> Autre</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="aucun"> Aucun</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Ces sous-traitants locaux ont-ils signé une clause de confidentialité ou contrat RGPD ? <span class="question-id">Q5.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_2_1_clauses" value="tous" required> Oui tous ont clauses</label>
+            <label><input type="radio" name="q5_2_1_clauses" value="certains"> Certains seulement</label>
+            <label><input type="radio" name="q5_2_1_clauses" value="non"> Non aucun</label>
+            <label><input type="radio" name="q5_2_1_clauses" value="inconnu"> Inconnu (géré par siège)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le logiciel métier a-t-il un contrat avec clauses RGPD (Art. 28) ? <span class="question-id">Q5.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_3_1_contrat_art28" value="oui" required> Oui contrat Art. 28 signé</label>
+            <label><input type="radio" name="q5_3_1_contrat_art28" value="non"> Non pas de contrat</label>
+            <label><input type="radio" name="q5_3_1_contrat_art28" value="inconnu"> Inconnu (géré par siège)</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 6 : Incidents locaux -->
+      <section class="section" id="incidents">
+        <h2 class="section-title">Incidents locaux</h2>
+
+        <div class="question">
+          <label class="question-label required">Des incidents de données ont-ils eu lieu dans votre SESSAD sur les 24 derniers mois ? <span class="question-id">Q6.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_1_1_incidents" value="oui" required> Oui</label>
+            <label><input type="radio" name="q6_1_1_incidents" value="non"> Non</label>
+            <label><input type="radio" name="q6_1_1_incidents" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Si OUI, type(s) d'incident(s) <span class="question-id">Q6.1.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="perte_vol_materiel"> Perte/vol ordinateur portable ou tablette</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="perte_documents"> Perte documents papier (cahiers, observations)</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="email_erreur"> Email avec données enfants à mauvaise école</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="divulgation"> Divulgation accidentelle données enfant</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="autre"> Autre</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="na"> N/A</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous immédiatement informé le siège/DPO (dans les 72h) ? <span class="question-id">Q6.1.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_1_3_info_siege" value="oui_72h" required> Oui tous incidents remontés &lt;72h</label>
+            <label><input type="radio" name="q6_1_3_info_siege" value="certains"> Certains seulement</label>
+            <label><input type="radio" name="q6_1_3_info_siege" value="non"> Non jamais informé</label>
+            <label><input type="radio" name="q6_1_3_info_siege" value="na"> N/A (pas d'incident)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Savez-vous reconnaître une violation de données concernant les enfants ? <span class="question-id">Q6.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_2_1_reconnaitre_violation" value="oui" required> Oui formé à reconnaître violations</label>
+            <label><input type="radio" name="q6_2_1_reconnaitre_violation" value="incertain"> Incertain</label>
+            <label><input type="radio" name="q6_2_1_reconnaitre_violation" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 7 : Spécificités SESSAD -->
+      <section class="section" id="specifiques">
+        <h2 class="section-title">Spécificités SESSAD</h2>
+
+        <div class="question">
+          <label class="question-label required">Les interventions se font-elles principalement dans les écoles et/ou au domicile des enfants ? <span class="question-id">Q7D.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7d_1_lieu_interventions" value="ecoles_domiciles" required> Oui principalement écoles + domiciles (multi-sites)</label>
+            <label><input type="radio" name="q7d_1_lieu_interventions" value="mixte"> Mixte (multi-sites + locaux SESSAD)</label>
+            <label><input type="radio" name="q7d_1_lieu_interventions" value="locaux_sessad"> Principalement dans locaux SESSAD</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Quelles données transmettez-vous aux écoles pour les enfants accompagnés par le SESSAD ? <span class="question-id">Q7D.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q7d_2_transmission_ecoles" value="aucune"> Aucune donnée (parents transmettent si souhaité)</label>
+            <label><input type="checkbox" name="q7d_2_transmission_ecoles" value="notification"> Notification accompagnement SESSAD uniquement (sans diagnostic)</label>
+            <label><input type="checkbox" name="q7d_2_transmission_ecoles" value="besoins_pedagogiques"> Besoins pédagogiques et aménagements scolaires (sans diagnostic médical)</label>
+            <label><input type="checkbox" name="q7d_2_transmission_ecoles" value="diagnostics"> Diagnostics médicaux/handicap détaillés</label>
+            <label><input type="checkbox" name="q7d_2_transmission_ecoles" value="bilans"> Bilans complets enfant</label>
+            <label><input type="checkbox" name="q7d_2_transmission_ecoles" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les transmissions aux écoles sont-elles sécurisées ? <span class="question-id">Q7D.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7d_3_securite_transmission" value="canal_securise" required> Oui canal sécurisé (plateforme, email crypté, courrier)</label>
+            <label><input type="radio" name="q7d_3_securite_transmission" value="email_securise"> Email sécurisé</label>
+            <label><input type="radio" name="q7d_3_securite_transmission" value="email_classique"> Email classique</label>
+            <label><input type="radio" name="q7d_3_securite_transmission" value="parents"> Remise main propre parents</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des plannings d'interventions avec adresses domiciles/écoles des enfants sont-ils partagés entre professionnels ? <span class="question-id">Q7D.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7d_4_planning_partage" value="serveur_securise" required> Oui planning partagé sécurisé (serveur accès restreints)</label>
+            <label><input type="radio" name="q7d_4_planning_partage" value="excel_papier"> Oui planning Excel/papier partagé non sécurisé</label>
+            <label><input type="radio" name="q7d_4_planning_partage" value="affiche"> Oui planning affiché</label>
+            <label><input type="radio" name="q7d_4_planning_partage" value="individuel"> Non chacun a son planning uniquement</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les professionnels accèdent-ils aux dossiers depuis les écoles ou domiciles (connexions distantes) ? <span class="question-id">Q7D.5</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7d_5_acces_distant" value="vpn" required> Oui avec VPN sécurisé obligatoire</label>
+            <label><input type="radio" name="q7d_5_acces_distant" value="direct"> Oui connexions directes non sécurisées</label>
+            <label><input type="radio" name="q7d_5_acces_distant" value="non"> Non aucun accès distant</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les ordinateurs portables sont-ils utilisés lors des interventions dans des lieux publics (cafés, transports) ? <span class="question-id">Q7D.6</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7d_6_lieux_publics" value="jamais" required> Non jamais utilisés lieux publics</label>
+            <label><input type="radio" name="q7d_6_lieux_publics" value="parfois_precautions"> Parfois mais avec précautions (filtres confidentialité)</label>
+            <label><input type="radio" name="q7d_6_lieux_publics" value="frequemment"> Oui fréquemment sans précautions</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des cahiers de liaison ou observations sont-ils utilisés pour la communication avec les familles ? <span class="question-id">Q7D.7</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7d_7_cahiers_liaison" value="securises" required> Oui cahiers sécurisés (enveloppes fermées)</label>
+            <label><input type="radio" name="q7d_7_cahiers_liaison" value="ouverts"> Oui cahiers ouverts (lisibles)</label>
+            <label><input type="radio" name="q7d_7_cahiers_liaison" value="digital"> Non communication digitale uniquement</label>
+            <label><input type="radio" name="q7d_7_cahiers_liaison" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les véhicules de service SESSAD sont-ils équipés de géolocalisation ? <span class="question-id">Q7D.8</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7d_8_geolocalisation" value="avec_info" required> Oui avec information professionnels</label>
+            <label><input type="radio" name="q7d_8_geolocalisation" value="sans_info"> Oui sans information</label>
+            <label><input type="radio" name="q7d_8_geolocalisation" value="non"> Non pas de géolocalisation</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">En cas de parents séparés, recueillez-vous l'accord des DEUX parents pour l'accompagnement SESSAD ? <span class="question-id">Q7D.9</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7d_9_accord_parents" value="deux_parents" required> Oui systématiquement accord écrit des 2 parents</label>
+            <label><input type="radio" name="q7d_9_accord_parents" value="un_parent"> Accord 1 parent suffit</label>
+            <label><input type="radio" name="q7d_9_accord_parents" value="pas_verification"> Pas de vérification systématique</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des photos/vidéos d'enfants lors d'interventions sont-elles réalisées (observations professionnelles) ? <span class="question-id">Q7D.10</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7d_10_photos" value="consentement_ecrit" required> Oui avec consentement écrit parents ET accord enfant si âge</label>
+            <label><input type="radio" name="q7d_10_photos" value="consentement_oral"> Oui consentement oral</label>
+            <label><input type="radio" name="q7d_10_photos" value="sans_consentement"> Oui sans consentement (à visée éducative)</label>
+            <label><input type="radio" name="q7d_10_photos" value="non"> Non jamais</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Quelle durée de conservation appliquez-vous aux dossiers après fin d'accompagnement ? <span class="question-id">Q7D.11</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7d_11_conservation" value="majorite_20ans" required> Jusqu'à majorité + 20 ans (38 ans si début accompagnement enfant 18 ans)</label>
+            <label><input type="radio" name="q7d_11_conservation" value="5_ans"> 5 ans après fin accompagnement</label>
+            <label><input type="radio" name="q7d_11_conservation" value="autre"> Autre durée</label>
+            <label><input type="radio" name="q7d_11_conservation" value="indefinie"> Conservation indéfinie</label>
+            <label><input type="radio" name="q7d_11_conservation" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les échanges avec l'Éducation Nationale (enseignants référents) sont-ils sécurisés ? <span class="question-id">Q7D.12</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7d_12_securite_en" value="canal_securise" required> Oui canal sécurisé systématique</label>
+            <label><input type="radio" name="q7d_12_securite_en" value="email_crypte"> Email sécurisé</label>
+            <label><input type="radio" name="q7d_12_securite_en" value="email_classique"> Email classique</label>
+            <label><input type="radio" name="q7d_12_securite_en" value="physique"> Téléphone/rencontres physiques uniquement</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc Synthèse -->
+      <section class="section" id="synthese">
+        <h2 class="section-title">Synthèse et commentaires</h2>
+
+        <div class="question">
+          <label class="question-label">Principales difficultés SESSAD pour conformité RGPD et sécurité mobilité <span class="question-id">Q_SYNTH.1</span></label>
+          <textarea name="qsynth_1_difficultes" placeholder="Décrivez les principales difficultés rencontrées..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Commentaires libres ou points SESSAD non abordés <span class="question-id">Q_SYNTH.2</span></label>
+          <textarea name="qsynth_2_commentaires" placeholder="Toute information complémentaire..."></textarea>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="btn-submit">Envoyer le questionnaire</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQBhjBdwuEBtj5Ef63L_5ej3eyXB15DLmpnDBxqM5u0EdVRgoLK6NR1Hkn682obuvN7Q/exec';
+const FORM_TYPE = 'SESSAD_RGPD';
+
+// Navigation sticky
+const navBlocks = document.querySelectorAll('.nav-block');
+const sections = document.querySelectorAll('.section');
+function updateActiveNav() {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - 100) current = section.getAttribute('id');
+  });
+  navBlocks.forEach(block => {
+    block.classList.remove('active');
+    if (block.getAttribute('href') === '#' + current) block.classList.add('active');
+  });
+}
+if (navBlocks.length > 0) {
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
+}
+
+// Collecte des réponses (format array v2.0)
+function collectResponses() {
+  const responses = [];
+  const seen = new Set();
+  document.querySelectorAll('.question:not(.hidden)').forEach(qEl => {
+    const labelEl = qEl.querySelector('.q-label, .question-label');
+    if (!labelEl) return;
+    const question = labelEl.innerText.replace(/^\*\s*/, '').replace(/\s+/g, ' ').trim();
+    const inputs = qEl.querySelectorAll('input, textarea, select');
+    if (inputs.length === 0) return;
+    const firstInput = inputs[0];
+    const fieldId = firstInput.name || firstInput.id || '';
+    if (seen.has(fieldId)) return;
+    seen.add(fieldId);
+    let answer = '';
+    const type = firstInput.type;
+    if (type === 'radio') {
+      const checked = qEl.querySelector('input[type="radio"]:checked');
+      answer = checked ? checked.value : '';
+    } else if (type === 'checkbox') {
+      const checkeds = qEl.querySelectorAll('input[type="checkbox"]:checked');
+      answer = Array.from(checkeds).map(c => c.value).join(' | ');
+    } else {
+      answer = firstInput.value.trim();
+    }
+    responses.push({ id: fieldId, question, answer });
+  });
+  const nomEtabEl = document.getElementById('nom_etablissement');
+  if (nomEtabEl) {
+    responses.push({ id: 'nom_etablissement', question: 'Nom de l\'établissement', answer: nomEtabEl.value || '' });
+  }
+  return responses;
+}
+
+// Soumission
+document.getElementById('formulaire').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!this.checkValidity()) return;
+  const btn = document.getElementById('btn-submit');
+  const message = document.getElementById('message');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+  const payload = { type: FORM_TYPE, responses: collectResponses() };
+  try {
+    const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const result = await res.json();
+    if (result.status === 'success') {
+      message.className = 'message success show';
+      message.textContent = 'Questionnaire envoyé avec succès ! Merci pour votre participation.';
+      this.reset();
+      const dateField = document.querySelector('[name*="date"]');
+      if (dateField && dateField.type === 'date') dateField.valueAsDate = new Date();
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (err) {
+    message.className = 'message error show';
+    message.textContent = 'Erreur lors de l\'envoi : ' + err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Envoyer le questionnaire';
+  }
+});
+
+// Date par défaut
+const dateField = document.querySelector('[name*="date"]');
+if (dateField && dateField.type === 'date') dateField.valueAsDate = new Date();
+</script>
+</body>
+</html>

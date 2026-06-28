@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNAPEI92 — RH/Paie (Questionnaire RGPD)</title>
+  <style>
+    :root {
+      --primary: #0055A4;
+      --primary-dark: #003d7a;
+      --secondary: #E60028;
+      --bg: #f5f7fa;
+      --card: #fff;
+      --text: #333;
+      --text-light: #666;
+      --border: #e0e0e0;
+      --success: #28a745;
+      --error: #dc3545;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+    header p { opacity: 0.9; font-size: 0.95rem; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    .nav-blocks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 25px;
+      padding: 15px;
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+    }
+
+    .nav-block {
+      padding: 8px 16px;
+      background: var(--bg);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .nav-block:hover, .nav-block.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .section {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      scroll-margin-top: 80px;
+    }
+
+    .section-title {
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .question {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .question:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .question-label {
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: block;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .question-id {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: normal;
+      margin-left: 5px;
+    }
+
+    .required::after {
+      content: ' *';
+      color: var(--secondary);
+    }
+
+    input, select, textarea {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .radio-group, .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .radio-group label, .checkbox-group label {
+      font-weight: normal;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .radio-group label:hover, .checkbox-group label:hover {
+      background: var(--bg);
+    }
+
+    input[type="radio"], input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      padding: 14px 40px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .message {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .message.show { display: block; }
+
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid var(--primary);
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.4rem; }
+      .nav-blocks { justify-content: center; }
+      .nav-block { font-size: 0.8rem; padding: 6px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="back-link">← Retour à l'accueil</a>
+
+    <header>
+      <h1>Questionnaire RGPD — RH/Paie</h1>
+      <p>Gouvernance, registre, sécurité, droits des salariés et conformité RGPD</p>
+    </header>
+
+    <nav class="nav-blocks">
+      <a href="#identification" class="nav-block">Identification</a>
+      <a href="#gouvernance" class="nav-block">Gouvernance RH</a>
+      <a href="#registre" class="nav-block">Registre RH</a>
+      <a href="#securite" class="nav-block">Sécurité données RH</a>
+      <a href="#conservation" class="nav-block">Durées conservation</a>
+      <a href="#droits" class="nav-block">Droits des salariés</a>
+      <a href="#sous-traitants" class="nav-block">Sous-traitants RH</a>
+      <a href="#incidents" class="nav-block">Incidents RH</a>
+      <a href="#recrutement" class="nav-block">Recrutement</a>
+      <a href="#sensibles" class="nav-block">Données sensibles</a>
+      <a href="#surveillance" class="nav-block">Surveillance salariés</a>
+      <a href="#synthese" class="nav-block">Synthèse</a>
+    </nav>
+
+    <div class="info-box">
+      <strong>Instructions :</strong> Ce questionnaire porte sur la conformité RGPD des activités RH/Paie. Répondez en fonction de votre situation actuelle. Les champs marqués d'une étoile (*) sont obligatoires.
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <form id="formulaire">
+      <!-- Bloc 0 : Identification -->
+      <section class="section" id="identification">
+        <h2 class="section-title">Identification</h2>
+
+        <div class="question">
+          <label class="question-label required">Nom de l'association <span class="question-id">Q0.1</span></label>
+          <input type="text" name="q0_1_nom_association" required>
+          <input type="hidden" id="nom_etablissement" name="nom_etablissement">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Personne répondant au questionnaire (Nom Prénom) <span class="question-id">Q0.2</span></label>
+          <input type="text" name="q0_2_repondant" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Fonction du répondant <span class="question-id">Q0.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q0_3_fonction" value="Responsable RH" required> Responsable RH</label>
+            <label><input type="radio" name="q0_3_fonction" value="Gestionnaire paie"> Gestionnaire paie</label>
+            <label><input type="radio" name="q0_3_fonction" value="DRH"> DRH</label>
+            <label><input type="radio" name="q0_3_fonction" value="Autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Date de remplissage <span class="question-id">Q0.4</span></label>
+          <input type="date" name="q0_4_date_remplissage" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nombre approximatif de salariés dans l'association <span class="question-id">Q0.5</span></label>
+          <input type="number" name="q0_5_nb_salaries" min="0" required>
+        </div>
+      </section>
+
+      <!-- Bloc 1 : Gouvernance RH -->
+      <section class="section" id="gouvernance">
+        <h2 class="section-title">Gouvernance RH</h2>
+
+        <div class="question">
+          <label class="question-label required">Un référent RGPD est-il identifié pour le service RH/Paie ? <span class="question-id">Q1.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_1_1_referent_rgpd" value="Oui identifié et formé" required> Oui identifié et formé</label>
+            <label><input type="radio" name="q1_1_1_referent_rgpd" value="Oui identifié mais non formé"> Oui identifié mais non formé</label>
+            <label><input type="radio" name="q1_1_1_referent_rgpd" value="Non personne n'est identifiée"> Non personne n'est identifiée</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Nom et fonction du référent RGPD RH <span class="question-id">Q1.1.2</span></label>
+          <input type="text" name="q1_1_2_nom_referent">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le service RH connaît-il le DPO externe et sait comment le contacter ? <span class="question-id">Q1.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_2_1_dpo_contact" value="Oui coordonnées connues et utilisées" required> Oui coordonnées connues et utilisées</label>
+            <label><input type="radio" name="q1_2_1_dpo_contact" value="Oui mais jamais contacté"> Oui mais jamais contacté</label>
+            <label><input type="radio" name="q1_2_1_dpo_contact" value="Non ne connaît pas le DPO"> Non ne connaît pas le DPO</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le service RH a-t-il reçu une formation RGPD ? <span class="question-id">Q1.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="Oui formation complète récente (<2 ans)" required> Oui formation complète récente (&lt;2 ans)</label>
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="Oui formation ancienne (>2 ans)"> Oui formation ancienne (&gt;2 ans)</label>
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="Sensibilisation rapide uniquement"> Sensibilisation rapide uniquement</label>
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="Non jamais"> Non jamais</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 2 : Registre RH -->
+      <section class="section" id="registre">
+        <h2 class="section-title">Registre RH</h2>
+
+        <div class="question">
+          <label class="question-label required">Les traitements RH/Paie sont-ils recensés dans le registre des traitements ? <span class="question-id">Q2.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_1_1_registre_traitements" value="Oui tous recensés" required> Oui tous recensés</label>
+            <label><input type="radio" name="q2_1_1_registre_traitements" value="Partiellement recensés"> Partiellement recensés</label>
+            <label><input type="radio" name="q2_1_1_registre_traitements" value="Non pas recensés"> Non pas recensés</label>
+            <label><input type="radio" name="q2_1_1_registre_traitements" value="Inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Combien de traitements RH/Paie sont recensés dans le registre ? <span class="question-id">Q2.1.2</span></label>
+          <input type="number" name="q2_1_2_nb_traitements" min="0" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Sur quelle(s) base(s) légale(s) reposent les traitements RH/Paie ? <span class="question-id">Q2.2.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q2_2_1_bases_legales" value="Obligation légale (Code du travail URSSAF Retraite) - Art. 6.1.c"> Obligation légale (Code du travail URSSAF Retraite) - Art. 6.1.c</label>
+            <label><input type="checkbox" name="q2_2_1_bases_legales" value="Exécution du contrat de travail - Art. 6.1.b"> Exécution du contrat de travail - Art. 6.1.b</label>
+            <label><input type="checkbox" name="q2_2_1_bases_legales" value="Consentement salarié (avantages sociaux facultatifs) - Art. 6.1.a"> Consentement salarié (avantages sociaux facultatifs) - Art. 6.1.a</label>
+            <label><input type="checkbox" name="q2_2_1_bases_legales" value="Intérêt légitime (gestion RH interne) - Art. 6.1.f"> Intérêt légitime (gestion RH interne) - Art. 6.1.f</label>
+            <label><input type="checkbox" name="q2_2_1_bases_legales" value="Inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les finalités des traitements RH sont-elles clairement définies dans le registre ? <span class="question-id">Q2.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_3_1_finalites" value="Oui finalités précises et distinctes" required> Oui finalités précises et distinctes</label>
+            <label><input type="radio" name="q2_3_1_finalites" value="Finalités génériques ('gestion du personnel')"> Finalités génériques ('gestion du personnel')</label>
+            <label><input type="radio" name="q2_3_1_finalites" value="Non pas de finalités définies"> Non pas de finalités définies</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les données de santé des salariés (médecine du travail) sont-elles identifiées comme sensibles dans le registre ? <span class="question-id">Q2.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_4_1_donnees_sante" value="Oui clairement identifiées Art. 9" required> Oui clairement identifiées Art. 9</label>
+            <label><input type="radio" name="q2_4_1_donnees_sante" value="Identifiées mais sans mention Art. 9"> Identifiées mais sans mention Art. 9</label>
+            <label><input type="radio" name="q2_4_1_donnees_sante" value="Non traitées comme données normales"> Non traitées comme données normales</label>
+            <label><input type="radio" name="q2_4_1_donnees_sante" value="N/A (pas de données santé)"> N/A (pas de données santé)</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3 : Sécurité données RH -->
+      <section class="section" id="securite">
+        <h2 class="section-title">Sécurité des données RH</h2>
+
+        <div class="question">
+          <label class="question-label required">Où sont stockés les dossiers du personnel papier ? <span class="question-id">Q3.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="Armoires fermées à clé dans bureau dédié sécurisé" required> Armoires fermées à clé dans bureau dédié sécurisé</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="Armoires fermées dans bureau partagé"> Armoires fermées dans bureau partagé</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="Armoires non fermées à clé"> Armoires non fermées à clé</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="Classeurs bureaux individuels"> Classeurs bureaux individuels</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="Archives externalisées sécurisées"> Archives externalisées sécurisées</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Combien de personnes ont accès physique aux dossiers du personnel complets ? <span class="question-id">Q3.1.2</span></label>
+          <input type="number" name="q3_1_2_nb_acces_physique" min="0" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les dossiers du personnel sont-ils détruits selon une procédure sécurisée ? <span class="question-id">Q3.1.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_1_3_procedure_destruction" value="Oui déchiqueteuse sur site" required> Oui déchiqueteuse sur site</label>
+            <label><input type="radio" name="q3_1_3_procedure_destruction" value="Oui prestataire spécialisé avec certificat destruction"> Oui prestataire spécialisé avec certificat destruction</label>
+            <label><input type="radio" name="q3_1_3_procedure_destruction" value="Poubelle classique"> Poubelle classique</label>
+            <label><input type="radio" name="q3_1_3_procedure_destruction" value="Jamais détruits (conservation indéfinie)"> Jamais détruits (conservation indéfinie)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Où sont stockés les dossiers du personnel informatiques ? <span class="question-id">Q3.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_1_stockage_info" value="Serveur centralisé sécurisé (accès contrôlés)" required> Serveur centralisé sécurisé (accès contrôlés)</label>
+            <label><input type="radio" name="q3_2_1_stockage_info" value="Ordinateurs locaux RH"> Ordinateurs locaux RH</label>
+            <label><input type="radio" name="q3_2_1_stockage_info" value="Disques durs externes / clés USB"> Disques durs externes / clés USB</label>
+            <label><input type="radio" name="q3_2_1_stockage_info" value="Cloud non sécurisé (Dropbox Google Drive perso)"> Cloud non sécurisé (Dropbox Google Drive perso)</label>
+            <label><input type="radio" name="q3_2_1_stockage_info" value="Logiciel SIRH dédié"> Logiciel SIRH dédié</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Quel(s) logiciel(s) RH/Paie utilisez-vous ? <span class="question-id">Q3.2.2</span></label>
+          <input type="text" name="q3_2_2_logiciels" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Qui a accès aux dossiers RH informatiques complets ? <span class="question-id">Q3.2.3</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q3_2_3_acces_info" value="Responsable RH"> Responsable RH</label>
+            <label><input type="checkbox" name="q3_2_3_acces_info" value="DRH"> DRH</label>
+            <label><input type="checkbox" name="q3_2_3_acces_info" value="Direction générale"> Direction générale</label>
+            <label><input type="checkbox" name="q3_2_3_acces_info" value="Gestionnaires paie"> Gestionnaires paie</label>
+            <label><input type="checkbox" name="q3_2_3_acces_info" value="Managers établissements"> Managers établissements</label>
+            <label><input type="checkbox" name="q3_2_3_acces_info" value="Assistants administratifs"> Assistants administratifs</label>
+            <label><input type="checkbox" name="q3_2_3_acces_info" value="Autres"> Autres</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les mots de passe des logiciels RH/Paie sont-ils personnels et sécurisés ? <span class="question-id">Q3.2.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_4_mdp_securise" value="Oui personnels et complexes (12+ caractères changés régulièrement)" required> Oui personnels et complexes (12+ caractères changés régulièrement)</label>
+            <label><input type="radio" name="q3_2_4_mdp_securise" value="Oui personnels mais faibles (<8 caractères)"> Oui personnels mais faibles (&lt;8 caractères)</label>
+            <label><input type="radio" name="q3_2_4_mdp_securise" value="Mots de passe partagés entre collègues RH"> Mots de passe partagés entre collègues RH</label>
+            <label><input type="radio" name="q3_2_4_mdp_securise" value="Session ouverte en permanence sans mot de passe"> Session ouverte en permanence sans mot de passe</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les ordinateurs RH ont-ils un verrouillage automatique après inactivité ? <span class="question-id">Q3.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_3_1_verrouillage" value="Oui <5 minutes" required> Oui &lt;5 minutes</label>
+            <label><input type="radio" name="q3_3_1_verrouillage" value="Oui mais >10 minutes"> Oui mais &gt;10 minutes</label>
+            <label><input type="radio" name="q3_3_1_verrouillage" value="Non verrouillage manuel uniquement"> Non verrouillage manuel uniquement</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Comment transmettez-vous des informations RH à l'extérieur ? <span class="question-id">Q3.4.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q3_4_1_transmission" value="Email classique non sécurisé"> Email classique non sécurisé</label>
+            <label><input type="checkbox" name="q3_4_1_transmission" value="Email crypté / sécurisé"> Email crypté / sécurisé</label>
+            <label><input type="checkbox" name="q3_4_1_transmission" value="Plateforme sécurisée (Zeendoc Docapost...)"> Plateforme sécurisée (Zeendoc Docapost...)</label>
+            <label><input type="checkbox" name="q3_4_1_transmission" value="Courrier postal recommandé"> Courrier postal recommandé</label>
+            <label><input type="checkbox" name="q3_4_1_transmission" value="Remise main propre"> Remise main propre</label>
+            <label><input type="checkbox" name="q3_4_1_transmission" value="Fax"> Fax</label>
+            <label><input type="checkbox" name="q3_4_1_transmission" value="Autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Transmettez-vous des données de santé des salariés (inaptitudes médecine travail) par email classique ? <span class="question-id">Q3.4.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_4_2_email_sante" value="Oui régulièrement" required> Oui régulièrement</label>
+            <label><input type="radio" name="q3_4_2_email_sante" value="Parfois"> Parfois</label>
+            <label><input type="radio" name="q3_4_2_email_sante" value="Non jamais (canal sécurisé ou courrier uniquement)"> Non jamais (canal sécurisé ou courrier uniquement)</label>
+            <label><input type="radio" name="q3_4_2_email_sante" value="N/A (pas de transmission données santé)"> N/A (pas de transmission données santé)</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 4 : Durées conservation RH -->
+      <section class="section" id="conservation">
+        <h2 class="section-title">Durées de conservation RH</h2>
+
+        <div class="question">
+          <label class="question-label required">Combien de temps conservez-vous les dossiers du personnel après départ d'un salarié ? <span class="question-id">Q4.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_1_1_duree_conservation" value="Règle claire définie (5 ans après départ)" required> Règle claire définie (5 ans après départ)</label>
+            <label><input type="radio" name="q4_1_1_duree_conservation" value="'Quelques années' sans règle précise"> 'Quelques années' sans règle précise</label>
+            <label><input type="radio" name="q4_1_1_duree_conservation" value="Conservation indéfinie (on garde tout)"> Conservation indéfinie (on garde tout)</label>
+            <label><input type="radio" name="q4_1_1_duree_conservation" value="Inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous des dossiers de salariés partis depuis plus de 10 ans ? <span class="question-id">Q4.1.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_1_2_dossiers_anciens" value="Oui nombreux (>50)" required> Oui nombreux (&gt;50)</label>
+            <label><input type="radio" name="q4_1_2_dossiers_anciens" value="Oui quelques-uns (<50)"> Oui quelques-uns (&lt;50)</label>
+            <label><input type="radio" name="q4_1_2_dossiers_anciens" value="Non tous supprimés après délais légaux"> Non tous supprimés après délais légaux</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Quelle est la durée de conservation des bulletins de paie ? <span class="question-id">Q4.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_2_1_duree_bulletins" value="50 ans (durée légale)" required> 50 ans (durée légale)</label>
+            <label><input type="radio" name="q4_2_1_duree_bulletins" value="5 ans"> 5 ans</label>
+            <label><input type="radio" name="q4_2_1_duree_bulletins" value="Indéfinie"> Indéfinie</label>
+            <label><input type="radio" name="q4_2_1_duree_bulletins" value="Inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les durées de conservation RH sont-elles documentées et accessibles ? <span class="question-id">Q4.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_3_1_documentation" value="Oui tableau durées diffusé équipe RH" required> Oui tableau durées diffusé équipe RH</label>
+            <label><input type="radio" name="q4_3_1_documentation" value="Oui mais non formalisé"> Oui mais non formalisé</label>
+            <label><input type="radio" name="q4_3_1_documentation" value="Non aucune documentation"> Non aucune documentation</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Effectuez-vous des purges régulières des dossiers RH obsolètes ? <span class="question-id">Q4.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_4_1_purges" value="Oui purges annuelles systématiques" required> Oui purges annuelles systématiques</label>
+            <label><input type="radio" name="q4_4_1_purges" value="Oui purges irrégulières (tous les 3-5 ans)"> Oui purges irrégulières (tous les 3-5 ans)</label>
+            <label><input type="radio" name="q4_4_1_purges" value="Non jamais de purge"> Non jamais de purge</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 5 : Droits des salariés -->
+      <section class="section" id="droits">
+        <h2 class="section-title">Droits des salariés</h2>
+
+        <div class="question">
+          <label class="question-label required">Les salariés sont-ils informés de l'utilisation de leurs données à l'embauche ? <span class="question-id">Q5.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_1_1_info_embauche" value="Oui document dédié notice RGPD remise" required> Oui document dédié notice RGPD remise</label>
+            <label><input type="radio" name="q5_1_1_info_embauche" value="Oui mention dans contrat travail"> Oui mention dans contrat travail</label>
+            <label><input type="radio" name="q5_1_1_info_embauche" value="Information orale uniquement"> Information orale uniquement</label>
+            <label><input type="radio" name="q5_1_1_info_embauche" value="Non pas d'information"> Non pas d'information</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">L'information RGPD comporte-t-elle tous les éléments obligatoires ? <span class="question-id">Q5.1.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_1_2_info_complete" value="Oui complète (finalités durées droits coordonnées DPO base légale)" required> Oui complète (finalités durées droits coordonnées DPO base légale)</label>
+            <label><input type="radio" name="q5_1_2_info_complete" value="Partielle (éléments manquants)"> Partielle (éléments manquants)</label>
+            <label><input type="radio" name="q5_1_2_info_complete" value="Non vérifiée"> Non vérifiée</label>
+            <label><input type="radio" name="q5_1_2_info_complete" value="Pas d'information"> Pas d'information</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nombre de demandes d'exercice de droits reçues de salariés sur 12 derniers mois <span class="question-id">Q5.2.1</span></label>
+          <input type="number" name="q5_2_1_nb_demandes_droits" min="0" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Délai moyen de réponse aux demandes d'accès/rectification salariés <span class="question-id">Q5.2.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_2_2_delai_reponse" value="Moins de 1 mois systématiquement" required> Moins de 1 mois systématiquement</label>
+            <label><input type="radio" name="q5_2_2_delai_reponse" value="1 mois en général"> 1 mois en général</label>
+            <label><input type="radio" name="q5_2_2_delai_reponse" value="Plus de 1 mois fréquemment"> Plus de 1 mois fréquemment</label>
+            <label><input type="radio" name="q5_2_2_delai_reponse" value="Pas de demande reçue"> Pas de demande reçue</label>
+            <label><input type="radio" name="q5_2_2_delai_reponse" value="Inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Existe-t-il une procédure écrite pour traiter les demandes d'exercice de droits salariés ? <span class="question-id">Q5.2.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_2_3_procedure_droits" value="Oui procédure détaillée et connue" required> Oui procédure détaillée et connue</label>
+            <label><input type="radio" name="q5_2_3_procedure_droits" value="Oui mais non formalisée"> Oui mais non formalisée</label>
+            <label><input type="radio" name="q5_2_3_procedure_droits" value="Non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les salariés peuvent-ils consulter leur dossier du personnel facilement ? <span class="question-id">Q5.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_3_1_consultation_dossier" value="Oui procédure simple et rapide" required> Oui procédure simple et rapide</label>
+            <label><input type="radio" name="q5_3_1_consultation_dossier" value="Oui mais procédure complexe"> Oui mais procédure complexe</label>
+            <label><input type="radio" name="q5_3_1_consultation_dossier" value="Non pas de possibilité formalisée"> Non pas de possibilité formalisée</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 6 : Sous-traitants RH -->
+      <section class="section" id="sous-traitants">
+        <h2 class="section-title">Sous-traitants RH</h2>
+
+        <div class="question">
+          <label class="question-label required">Quels sous-traitants RH/Paie avez-vous ? <span class="question-id">Q6.1.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q6_1_1_sous_traitants" value="Logiciel paie (Sage Cegid Silae...)"> Logiciel paie (Sage Cegid Silae...)</label>
+            <label><input type="checkbox" name="q6_1_1_sous_traitants" value="Logiciel RH/GTA (Kelio Octime...)"> Logiciel RH/GTA (Kelio Octime...)</label>
+            <label><input type="checkbox" name="q6_1_1_sous_traitants" value="Expert-comptable externe"> Expert-comptable externe</label>
+            <label><input type="checkbox" name="q6_1_1_sous_traitants" value="Médecine du travail (service autonome externe)"> Médecine du travail (service autonome externe)</label>
+            <label><input type="checkbox" name="q6_1_1_sous_traitants" value="Prestataire formation"> Prestataire formation</label>
+            <label><input type="checkbox" name="q6_1_1_sous_traitants" value="Cabinet recrutement"> Cabinet recrutement</label>
+            <label><input type="checkbox" name="q6_1_1_sous_traitants" value="Archivage externe dossiers RH"> Archivage externe dossiers RH</label>
+            <label><input type="checkbox" name="q6_1_1_sous_traitants" value="Autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Ces sous-traitants RH ont-ils TOUS signé un contrat avec clauses RGPD (Art. 28) ? <span class="question-id">Q6.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_2_1_contrats_art28" value="Oui tous" required> Oui tous</label>
+            <label><input type="radio" name="q6_2_1_contrats_art28" value="Certains seulement (préciser lesquels manquent)"> Certains seulement (préciser lesquels manquent)</label>
+            <label><input type="radio" name="q6_2_1_contrats_art28" value="Non aucun"> Non aucun</label>
+            <label><input type="radio" name="q6_2_1_contrats_art28" value="Inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Précisez lesquels n'ont PAS de contrat RGPD <span class="question-id">Q6.2.2</span></label>
+          <input type="text" name="q6_2_2_pas_contrat">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le service de médecine du travail a-t-il signé un contrat RGPD ? <span class="question-id">Q6.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_3_1_contrat_medecine" value="Oui contrat avec clauses Art. 28" required> Oui contrat avec clauses Art. 28</label>
+            <label><input type="radio" name="q6_3_1_contrat_medecine" value="Non pas de contrat RGPD"> Non pas de contrat RGPD</label>
+            <label><input type="radio" name="q6_3_1_contrat_medecine" value="N/A (médecine travail interne)"> N/A (médecine travail interne)</label>
+            <label><input type="radio" name="q6_3_1_contrat_medecine" value="Inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous vérifié où sont hébergées les données de votre logiciel de paie ? <span class="question-id">Q6.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_4_1_verif_hebergement" value="Oui confirmation hébergement UE/France" required> Oui confirmation hébergement UE/France</label>
+            <label><input type="radio" name="q6_4_1_verif_hebergement" value="Non jamais vérifié"> Non jamais vérifié</label>
+            <label><input type="radio" name="q6_4_1_verif_hebergement" value="Inconnu"> Inconnu</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 7 : Incidents RH -->
+      <section class="section" id="incidents">
+        <h2 class="section-title">Incidents RH</h2>
+
+        <div class="question">
+          <label class="question-label required">Des violations de données RH ont-elles eu lieu sur 24 derniers mois ? <span class="question-id">Q7.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7_1_1_violations" value="Oui" required> Oui</label>
+            <label><input type="radio" name="q7_1_1_violations" value="Non"> Non</label>
+            <label><input type="radio" name="q7_1_1_violations" value="Inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Si OUI type(s) d'incident(s) RH <span class="question-id">Q7.1.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q7_1_2_types_incidents" value="Email bulletins paie à mauvais destinataire"> Email bulletins paie à mauvais destinataire</label>
+            <label><input type="checkbox" name="q7_1_2_types_incidents" value="Perte/vol dossiers RH papier"> Perte/vol dossiers RH papier</label>
+            <label><input type="checkbox" name="q7_1_2_types_incidents" value="Perte/vol clé USB avec données paie"> Perte/vol clé USB avec données paie</label>
+            <label><input type="checkbox" name="q7_1_2_types_incidents" value="Accès non autorisé dossiers RH"> Accès non autorisé dossiers RH</label>
+            <label><input type="checkbox" name="q7_1_2_types_incidents" value="Divulgation données RH (salaires sanctions...)"> Divulgation données RH (salaires sanctions...)</label>
+            <label><input type="checkbox" name="q7_1_2_types_incidents" value="Piratage logiciel paie"> Piratage logiciel paie</label>
+            <label><input type="checkbox" name="q7_1_2_types_incidents" value="Autre"> Autre</label>
+            <label><input type="checkbox" name="q7_1_2_types_incidents" value="N/A"> N/A</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Ces incidents RH ont-ils été notifiés au DPO/siège dans les 72h ? <span class="question-id">Q7.1.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7_1_3_notification_dpo" value="Oui tous notifiés <72h" required> Oui tous notifiés &lt;72h</label>
+            <label><input type="radio" name="q7_1_3_notification_dpo" value="Certains seulement"> Certains seulement</label>
+            <label><input type="radio" name="q7_1_3_notification_dpo" value="Non aucun notifié"> Non aucun notifié</label>
+            <label><input type="radio" name="q7_1_3_notification_dpo" value="N/A (pas d'incident)"> N/A (pas d'incident)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le service RH sait-il identifier une violation de données RH ? <span class="question-id">Q7.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7_2_1_identification_violation" value="Oui formé à reconnaître violations" required> Oui formé à reconnaître violations</label>
+            <label><input type="radio" name="q7_2_1_identification_violation" value="Incertain"> Incertain</label>
+            <label><input type="radio" name="q7_2_1_identification_violation" value="Non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Une procédure existe-t-elle en cas d'envoi erroné d'emails RH ? <span class="question-id">Q7.2.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7_2_2_procedure_email" value="Oui procédure (rappel message contact destinataire erreur notification DPO)" required> Oui procédure (rappel message contact destinataire erreur notification DPO)</label>
+            <label><input type="radio" name="q7_2_2_procedure_email" value="Non pas de procédure"> Non pas de procédure</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 8 : Recrutement -->
+      <section class="section" id="recrutement">
+        <h2 class="section-title">Recrutement</h2>
+
+        <div class="question">
+          <label class="question-label required">Informez-vous les candidats de l'utilisation de leurs données (RGPD) dès candidature ? <span class="question-id">Q8.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q8_1_1_info_candidats" value="Oui mention systématique sur offres + formulaires" required> Oui mention systématique sur offres + formulaires</label>
+            <label><input type="radio" name="q8_1_1_info_candidats" value="Partiellement (certains supports)"> Partiellement (certains supports)</label>
+            <label><input type="radio" name="q8_1_1_info_candidats" value="Non pas d'information candidats"> Non pas d'information candidats</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Combien de temps conservez-vous les CV et candidatures non retenues ? <span class="question-id">Q8.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q8_2_1_conservation_cv" value="2 ans maximum (recommandation CNIL)" required> 2 ans maximum (recommandation CNIL)</label>
+            <label><input type="radio" name="q8_2_1_conservation_cv" value="Plus de 2 ans"> Plus de 2 ans</label>
+            <label><input type="radio" name="q8_2_1_conservation_cv" value="Indéfiniment"> Indéfiniment</label>
+            <label><input type="radio" name="q8_2_1_conservation_cv" value="Inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les candidats sont-ils informés qu'ils peuvent s'opposer à la conservation de leurs données (vivier) ? <span class="question-id">Q8.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q8_3_1_info_vivier" value="Oui information et possibilité refus" required> Oui information et possibilité refus</label>
+            <label><input type="radio" name="q8_3_1_info_vivier" value="Non conservation automatique sans information"> Non conservation automatique sans information</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 9 : Données sensibles RH -->
+      <section class="section" id="sensibles">
+        <h2 class="section-title">Données sensibles RH</h2>
+
+        <div class="question">
+          <label class="question-label required">Collectez-vous des données sensibles sur les salariés ? <span class="question-id">Q9.1.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q9_1_1_donnees_sensibles" value="Données santé (médecine travail inaptitudes AT/MP)"> Données santé (médecine travail inaptitudes AT/MP)</label>
+            <label><input type="checkbox" name="q9_1_1_donnees_sensibles" value="Appartenance syndicale (pour retenue cotisations)"> Appartenance syndicale (pour retenue cotisations)</label>
+            <label><input type="checkbox" name="q9_1_1_donnees_sensibles" value="Données biométriques (badgeuse empreinte)"> Données biométriques (badgeuse empreinte)</label>
+            <label><input type="checkbox" name="q9_1_1_donnees_sensibles" value="Données judiciaires (extrait casier pour certains postes)"> Données judiciaires (extrait casier pour certains postes)</label>
+            <label><input type="checkbox" name="q9_1_1_donnees_sensibles" value="Religion (pour jours fériés spécifiques)"> Religion (pour jours fériés spécifiques)</label>
+            <label><input type="checkbox" name="q9_1_1_donnees_sensibles" value="Autre"> Autre</label>
+            <label><input type="checkbox" name="q9_1_1_donnees_sensibles" value="Aucune donnée sensible"> Aucune donnée sensible</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les données de santé (médecine du travail) sont-elles cloisonnées du reste des données RH ? <span class="question-id">Q9.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q9_2_1_cloisonnement_sante" value="Oui accès strictement limité (médecin travail + RRH uniquement)" required> Oui accès strictement limité (médecin travail + RRH uniquement)</label>
+            <label><input type="radio" name="q9_2_1_cloisonnement_sante" value="Partiellement (RH ont accès partiel)"> Partiellement (RH ont accès partiel)</label>
+            <label><input type="radio" name="q9_2_1_cloisonnement_sante" value="Non mélangées avec données RH classiques"> Non mélangées avec données RH classiques</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Utilisez-vous des badgeuses biométriques (empreinte digitale reconnaissance faciale) ? <span class="question-id">Q9.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q9_3_1_badgeuse_biometrique" value="Oui avec autorisation CNIL/PIA réalisée" required> Oui avec autorisation CNIL/PIA réalisée</label>
+            <label><input type="radio" name="q9_3_1_badgeuse_biometrique" value="Oui sans autorisation CNIL ni PIA"> Oui sans autorisation CNIL ni PIA</label>
+            <label><input type="radio" name="q9_3_1_badgeuse_biometrique" value="Non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Sur quelle exception Art. 9.2 vous appuyez-vous pour traiter les données de santé salariés ? <span class="question-id">Q9.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q9_4_1_exception_art9" value="Médecine du travail / santé au travail - Art. 9.2.h" required> Médecine du travail / santé au travail - Art. 9.2.h</label>
+            <label><input type="radio" name="q9_4_1_exception_art9" value="Obligation légale - Art. 9.2.b"> Obligation légale - Art. 9.2.b</label>
+            <label><input type="radio" name="q9_4_1_exception_art9" value="Consentement explicite salarié - Art. 9.2.a"> Consentement explicite salarié - Art. 9.2.a</label>
+            <label><input type="radio" name="q9_4_1_exception_art9" value="Inconnu"> Inconnu</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 10 : Surveillance salariés -->
+      <section class="section" id="surveillance">
+        <h2 class="section-title">Surveillance des salariés</h2>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous mis en place des dispositifs de surveillance des salariés ? <span class="question-id">Q10.1.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q10_1_1_dispositifs" value="Vidéosurveillance"> Vidéosurveillance</label>
+            <label><input type="checkbox" name="q10_1_1_dispositifs" value="Géolocalisation véhicules/salariés"> Géolocalisation véhicules/salariés</label>
+            <label><input type="checkbox" name="q10_1_1_dispositifs" value="Surveillance informatique (emails navigation)"> Surveillance informatique (emails navigation)</label>
+            <label><input type="checkbox" name="q10_1_1_dispositifs" value="Badgeuse / pointeuse"> Badgeuse / pointeuse</label>
+            <label><input type="checkbox" name="q10_1_1_dispositifs" value="Enregistrement communications (téléphone email)"> Enregistrement communications (téléphone email)</label>
+            <label><input type="checkbox" name="q10_1_1_dispositifs" value="Aucun dispositif surveillance"> Aucun dispositif surveillance</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si dispositifs de surveillance les salariés ont-ils été informés et le CSE consulté ? <span class="question-id">Q10.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q10_2_1_info_cse" value="Oui information salariés + consultation CSE" required> Oui information salariés + consultation CSE</label>
+            <label><input type="radio" name="q10_2_1_info_cse" value="Information salariés uniquement (pas CSE)"> Information salariés uniquement (pas CSE)</label>
+            <label><input type="radio" name="q10_2_1_info_cse" value="Consultation CSE uniquement (pas salariés)"> Consultation CSE uniquement (pas salariés)</label>
+            <label><input type="radio" name="q10_2_1_info_cse" value="Non ni information ni consultation"> Non ni information ni consultation</label>
+            <label><input type="radio" name="q10_2_1_info_cse" value="N/A (pas de surveillance)"> N/A (pas de surveillance)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Une PIA a-t-elle été réalisée pour les dispositifs de surveillance ? <span class="question-id">Q10.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q10_3_1_pia" value="Oui PIA réalisée et validée DPO" required> Oui PIA réalisée et validée DPO</label>
+            <label><input type="radio" name="q10_3_1_pia" value="Non pas de PIA"> Non pas de PIA</label>
+            <label><input type="radio" name="q10_3_1_pia" value="N/A (pas de surveillance)"> N/A (pas de surveillance)</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc Synthèse -->
+      <section class="section" id="synthese">
+        <h2 class="section-title">Synthèse</h2>
+
+        <div class="question">
+          <label class="question-label required">Principales difficultés RH pour conformité RGPD <span class="question-id">Q_SYNTH.1</span></label>
+          <textarea name="q_synth_1_difficultes" rows="4" required></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Commentaires libres ou points RH non abordés <span class="question-id">Q_SYNTH.2</span></label>
+          <textarea name="q_synth_2_commentaires" rows="4" required></textarea>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="btn-submit">Envoyer le questionnaire</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQBhjBdwuEBtj5Ef63L_5ej3eyXB15DLmpnDBxqM5u0EdVRgoLK6NR1Hkn682obuvN7Q/exec';
+const FORM_TYPE = 'RH_RGPD';
+
+// Navigation sticky
+const navBlocks = document.querySelectorAll('.nav-block');
+const sections = document.querySelectorAll('.section');
+function updateActiveNav() {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - 100) current = section.getAttribute('id');
+  });
+  navBlocks.forEach(block => {
+    block.classList.remove('active');
+    if (block.getAttribute('href') === '#' + current) block.classList.add('active');
+  });
+}
+if (navBlocks.length > 0) {
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
+}
+
+// Collecte des réponses (format array v2.0)
+function collectResponses() {
+  const responses = [];
+  const seen = new Set();
+  document.querySelectorAll('.question:not(.hidden)').forEach(qEl => {
+    const labelEl = qEl.querySelector('.question-label');
+    if (!labelEl) return;
+    const questionText = labelEl.innerText.replace(/\s*\*\s*/, '').replace(/\s*Q[\d._SYNTH]+\s*$/, '').trim();
+    const questionIdMatch = labelEl.innerHTML.match(/(Q[\d._SYNTH]+)/);
+    const questionId = questionIdMatch ? questionIdMatch[1] : '';
+
+    // Find inputs in this question
+    const inputs = qEl.querySelectorAll('input:not([type="hidden"]), textarea, select');
+    if (inputs.length === 0) return;
+
+    const firstInput = inputs[0];
+    const fieldId = firstInput.name || firstInput.id || '';
+    if (seen.has(fieldId)) return;
+    seen.add(fieldId);
+
+    let answer = '';
+    const type = firstInput.type;
+
+    if (type === 'radio') {
+      const checked = qEl.querySelector('input[type="radio"]:checked');
+      answer = checked ? checked.value : '';
+    } else if (type === 'checkbox') {
+      const checkeds = qEl.querySelectorAll('input[type="checkbox"]:checked');
+      answer = Array.from(checkeds).map(c => c.value).join(' | ');
+    } else {
+      answer = firstInput.value.trim();
+    }
+
+    responses.push({ id: questionId, question: questionText, answer });
+  });
+
+  // Add nom_etablissement from hidden field
+  const nomEtabEl = document.getElementById('nom_etablissement');
+  if (nomEtabEl) {
+    const nomAssoc = document.querySelector('[name="q0_1_nom_association"]');
+    if (nomAssoc) {
+      nomEtabEl.value = nomAssoc.value;
+    }
+    responses.push({ id: 'nom_etablissement', question: 'Nom de l\'établissement', answer: nomEtabEl.value || '' });
+  }
+
+  return responses;
+}
+
+// Soumission
+document.getElementById('formulaire').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!this.checkValidity()) {
+    this.reportValidity();
+    return;
+  }
+  const btn = document.getElementById('btn-submit');
+  const message = document.getElementById('message');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+
+  const payload = { type: FORM_TYPE, responses: collectResponses() };
+
+  try {
+    const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'text/plain' } });
+    const result = await res.json();
+    if (result.status === 'success') {
+      message.className = 'message success show';
+      message.textContent = 'Questionnaire envoyé avec succès ! Merci pour votre participation.';
+      this.reset();
+      const dateField = document.querySelector('[name="q0_4_date_remplissage"]');
+      if (dateField && dateField.type === 'date') dateField.valueAsDate = new Date();
+    } else {
+      throw new Error(result.message || 'Erreur inconnue');
+    }
+  } catch (err) {
+    message.className = 'message error show';
+    message.textContent = 'Erreur lors de l\'envoi : ' + err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Envoyer le questionnaire';
+  }
+});
+
+// Date par défaut
+const dateField = document.querySelector('[name="q0_4_date_remplissage"]');
+if (dateField && dateField.type === 'date') dateField.valueAsDate = new Date();
+</script>
+</body>
+</html>

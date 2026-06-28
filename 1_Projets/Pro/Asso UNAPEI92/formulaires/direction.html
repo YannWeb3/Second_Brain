@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNAPEI92 — Direction (Questionnaire RGPD)</title>
+  <style>
+    :root {
+      --primary: #0055A4;
+      --primary-dark: #003d7a;
+      --secondary: #E60028;
+      --bg: #f5f7fa;
+      --card: #fff;
+      --text: #333;
+      --text-light: #666;
+      --border: #e0e0e0;
+      --success: #28a745;
+      --error: #dc3545;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+    header p { opacity: 0.9; font-size: 0.95rem; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    .nav-blocks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 25px;
+      padding: 15px;
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+    }
+
+    .nav-block {
+      padding: 8px 16px;
+      background: var(--bg);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .nav-block:hover, .nav-block.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .section {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      scroll-margin-top: 80px;
+    }
+
+    .section-title {
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .question {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .question:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .question-label {
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: block;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .question-id {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: normal;
+      margin-left: 5px;
+    }
+
+    .required::after {
+      content: ' *';
+      color: var(--secondary);
+    }
+
+    input, select, textarea {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .radio-group, .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .radio-group label, .checkbox-group label {
+      font-weight: normal;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .radio-group label:hover, .checkbox-group label:hover {
+      background: var(--bg);
+    }
+
+    input[type="radio"], input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      padding: 14px 40px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .message {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .message.show { display: block; }
+
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid var(--primary);
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.4rem; }
+      .nav-blocks { justify-content: center; }
+      .nav-block { font-size: 0.8rem; padding: 6px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="back-link">← Retour à l'accueil</a>
+
+    <header>
+      <h1>Questionnaire RGPD — Direction</h1>
+      <p>Siège Direction — Gouvernance et conformité RGPD</p>
+    </header>
+
+    <nav class="nav-blocks">
+      <a href="#identification" class="nav-block">Identification</a>
+      <a href="#gouvernance" class="nav-block">Gouvernance</a>
+      <a href="#registre" class="nav-block">Registre</a>
+      <a href="#bases-legales" class="nav-block">Bases légales</a>
+      <a href="#pia" class="nav-block">PIA</a>
+      <a href="#securite" class="nav-block">Sécurité SI</a>
+      <a href="#sous-traitance" class="nav-block">Sous-traitance</a>
+      <a href="#incidents" class="nav-block">Incidents</a>
+      <a href="#synthese" class="nav-block">Synthèse</a>
+    </nav>
+
+    <div class="info-box">
+      <strong>Instructions :</strong> Ce questionnaire porte sur la conformité RGPD au niveau de la direction. Répondez en fonction de votre situation actuelle. Les champs marqués d'une étoile (*) sont obligatoires.
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <form id="formulaire">
+      <!-- Bloc 0 : Identification -->
+      <section class="section" id="identification">
+        <h2 class="section-title">Identification</h2>
+
+        <div class="question">
+          <label class="question-label required">UNAPEI92 <span class="question-id">Q0.1</span></label>
+           <input type="text" name="q0_1_unapei92" required>
+           <input type="hidden" id="nom_etablissement" name="nom_etablissement">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Personne répondant au questionnaire <span class="question-id">Q0.2</span></label>
+          <input type="text" name="q0_2_personne_repondant" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Fonction du répondant <span class="question-id">Q0.3</span></label>
+          <input type="text" name="q0_3_fonction_repondant" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Date de remplissage <span class="question-id">Q0.4</span></label>
+          <input type="date" name="q0_4_date_remplissage" required>
+        </div>
+      </section>
+
+      <!-- Bloc 1 : Gouvernance -->
+      <section class="section" id="gouvernance">
+        <h2 class="section-title">Gouvernance</h2>
+
+        <div class="question">
+          <label class="question-label required">Le DPO externe est-il clairement identifié par la direction ? <span class="question-id">Q1.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_1_1_dpo_identifie" value="oui" required> Oui</label>
+            <label><input type="radio" name="q1_1_1_dpo_identifie" value="non"> Non</label>
+            <label><input type="radio" name="q1_1_1_dpo_identifie" value="partiellement"> Partiellement</label>
+            <label><input type="radio" name="q1_1_1_dpo_identifie" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Nom et coordonnées du DPO externe <span class="question-id">Q1.1.2</span></label>
+          <input type="text" name="q1_1_2_nom_dpo">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Fréquence des échanges entre la direction et le DPO <span class="question-id">Q1.1.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_1_3_frequence_dpo" value="hebdomadaire" required> Hebdomadaire</label>
+            <label><input type="radio" name="q1_1_3_frequence_dpo" value="mensuel"> Mensuel</label>
+            <label><input type="radio" name="q1_1_3_frequence_dpo" value="trimestriel"> Trimestriel</label>
+            <label><input type="radio" name="q1_1_3_frequence_dpo" value="annuel"> Annuel ou moins</label>
+            <label><input type="radio" name="q1_1_3_frequence_dpo" value="aucun_plus_1an"> Aucun contact depuis &gt;1 an</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le DPO a-t-il accès à tous les documents et informations nécessaires ? <span class="question-id">Q1.1.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_1_4_acces_dpo" value="oui_complet" required> Oui complet</label>
+            <label><input type="radio" name="q1_1_4_acces_dpo" value="acces_partiel"> Accès partiel</label>
+            <label><input type="radio" name="q1_1_4_acces_dpo" value="non"> Non</label>
+            <label><input type="radio" name="q1_1_4_acces_dpo" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des traces écrites des consultations du DPO existent-elles ? <span class="question-id">Q1.1.5</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_1_5_traces_dpo" value="systematiques" required> Oui systématiques (emails CR avis)</label>
+            <label><input type="radio" name="q1_1_5_traces_dpo" value="parfois"> Parfois</label>
+            <label><input type="radio" name="q1_1_5_traces_dpo" value="rarement"> Rarement</label>
+            <label><input type="radio" name="q1_1_5_traces_dpo" value="jamais"> Jamais</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des référents RGPD sont-ils identifiés dans chaque établissement ? <span class="question-id">Q1.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_2_1_referents_etablissements" value="tous" required> Oui tous les établissements</label>
+            <label><input type="radio" name="q1_2_1_referents_etablissements" value="certains"> Certains seulement</label>
+            <label><input type="radio" name="q1_2_1_referents_etablissements" value="aucun"> Non aucun</label>
+            <label><input type="radio" name="q1_2_1_referents_etablissements" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les référents RGPD locaux reçoivent-ils une formation ? <span class="question-id">Q1.2.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_2_2_formation_referents" value="initiale_continue" required> Oui formation initiale + continue</label>
+            <label><input type="radio" name="q1_2_2_formation_referents" value="initiale_uniquement"> Formation initiale uniquement</label>
+            <label><input type="radio" name="q1_2_2_formation_referents" value="jamais_formes"> Non jamais formés</label>
+            <label><input type="radio" name="q1_2_2_formation_referents" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Un canal de remontée RGPD vers le siège existe-t-il ? <span class="question-id">Q1.2.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_2_3_canal_remontee" value="formalise_connu" required> Oui formalisé et connu</label>
+            <label><input type="radio" name="q1_2_3_canal_remontee" value="informel"> Oui mais informel</label>
+            <label><input type="radio" name="q1_2_3_canal_remontee" value="non"> Non</label>
+            <label><input type="radio" name="q1_2_3_canal_remontee" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Un budget est-il alloué à la mise en conformité RGPD ? <span class="question-id">Q1.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_3_1_budget" value="dedie_annuel" required> Oui budget dédié annuel</label>
+            <label><input type="radio" name="q1_3_1_budget" value="ponctuel"> Budget ponctuel (projet)</label>
+            <label><input type="radio" name="q1_3_1_budget" value="aucun"> Non aucun budget</label>
+            <label><input type="radio" name="q1_3_1_budget" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des formations RGPD ont-elles été dispensées aux équipes du siège ? <span class="question-id">Q1.3.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_3_2_formation_siege" value="tous" required> Oui à tous</label>
+            <label><input type="radio" name="q1_3_2_formation_siege" value="cadres_direction"> Oui cadres/direction uniquement</label>
+            <label><input type="radio" name="q1_3_2_formation_siege" value="quelques"> Oui quelques personnes</label>
+            <label><input type="radio" name="q1_3_2_formation_siege" value="jamais"> Non jamais</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">La direction a-t-elle validé une politique de protection des données ? <span class="question-id">Q1.3.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_3_3_politique" value="ecrite_diffusee" required> Oui politique écrite et diffusée</label>
+            <label><input type="radio" name="q1_3_3_politique" value="ecrite_non_diffusee"> Oui mais non diffusée</label>
+            <label><input type="radio" name="q1_3_3_politique" value="en_projet"> En projet</label>
+            <label><input type="radio" name="q1_3_3_politique" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 2 : Registre -->
+      <section class="section" id="registre">
+        <h2 class="section-title">Registre des traitements</h2>
+
+        <div class="question">
+          <label class="question-label required">Un registre des traitements existe-t-il ? <span class="question-id">Q2.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_1_1_registre_existe" value="complet_a_jour" required> Oui complet et à jour (&lt;6 mois)</label>
+            <label><input type="radio" name="q2_1_1_registre_existe" value="incomplet_ancien"> Oui mais incomplet ou ancien (&gt;6 mois)</label>
+            <label><input type="radio" name="q2_1_1_registre_existe" value="en_cours"> En cours de création</label>
+            <label><input type="radio" name="q2_1_1_registre_existe" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le registre couvre-t-il le siège ET tous les établissements ? <span class="question-id">Q2.1.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_1_2_couverture_registre" value="siege_tous_etab" required> Oui siège + tous établissements</label>
+            <label><input type="radio" name="q2_1_2_couverture_registre" value="siege_uniquement"> Siège uniquement</label>
+            <label><input type="radio" name="q2_1_2_couverture_registre" value="certains_manquants"> Certains établissements manquants</label>
+            <label><input type="radio" name="q2_1_2_couverture_registre" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nombre approximatif de traitements recensés dans le registre <span class="question-id">Q2.1.3</span></label>
+          <input type="number" name="q2_1_3_nb_traitements" min="0" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les fichiers Excel / outils locaux des établissements sont-ils recensés ? <span class="question-id">Q2.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_2_1_fichiers_locaux_recenses" value="tous" required> Oui tous recensés</label>
+            <label><input type="radio" name="q2_2_1_fichiers_locaux_recenses" value="partiellement"> Partiellement recensés</label>
+            <label><input type="radio" name="q2_2_1_fichiers_locaux_recenses" value="non"> Non recensés</label>
+            <label><input type="radio" name="q2_2_1_fichiers_locaux_recenses" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le registre est-il aligné avec les pratiques réelles des établissements ? <span class="question-id">Q2.2.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_2_2_alignement_registre" value="verifie_regulierement" required> Oui vérifié régulièrement</label>
+            <label><input type="radio" name="q2_2_2_alignement_registre" value="partiellement"> Partiellement aligné</label>
+            <label><input type="radio" name="q2_2_2_alignement_registre" value="decalage"> Non décalage important</label>
+            <label><input type="radio" name="q2_2_2_alignement_registre" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Chaque traitement a-t-il une finalité précise et compréhensible ? <span class="question-id">Q2.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_3_1_finalite" value="toutes_claires" required> Oui toutes finalités claires</label>
+            <label><input type="radio" name="q2_3_1_finalite" value="certaines_vagues"> Certaines finalités vagues</label>
+            <label><input type="radio" name="q2_3_1_finalite" value="generiques"> Finalités génériques ('gestion usagers')</label>
+            <label><input type="radio" name="q2_3_1_finalite" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Le registre comporte-t-il TOUS les champs obligatoires Art. 30 ? <span class="question-id">Q2.4.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q2_4_1_champs_art30" value="finalites"> Finalités du traitement</label>
+            <label><input type="checkbox" name="q2_4_1_champs_art30" value="categories_donnees"> Catégories de données traitées</label>
+            <label><input type="checkbox" name="q2_4_1_champs_art30" value="destinataires"> Catégories de destinataires</label>
+            <label><input type="checkbox" name="q2_4_1_champs_art30" value="conservation"> Durées de conservation</label>
+            <label><input type="checkbox" name="q2_4_1_champs_art30" value="securite"> Mesures de sécurité</label>
+            <label><input type="checkbox" name="q2_4_1_champs_art30" value="transferts"> Transferts hors UE (si applicable)</label>
+            <label><input type="checkbox" name="q2_4_1_champs_art30" value="base_legale"> Base légale du traitement</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le registre est-il régulièrement mis à jour ? <span class="question-id">Q2.5.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_5_1_maj_registre" value="systematique" required> Oui MAJ systématique à chaque évolution</label>
+            <label><input type="radio" name="q2_5_1_maj_registre" value="irregulier"> Oui mais irrégulier (&gt;6 mois)</label>
+            <label><input type="radio" name="q2_5_1_maj_registre" value="jamais"> Non jamais MAJ depuis création</label>
+            <label><input type="radio" name="q2_5_1_maj_registre" value="pas_registre"> Pas de registre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Date de la dernière mise à jour du registre <span class="question-id">Q2.5.2</span></label>
+          <input type="date" name="q2_5_2_date_maj">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Qui est responsable de la mise à jour du registre ? <span class="question-id">Q2.6.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_6_1_responsable_maj" value="dpo_externe" required> DPO externe</label>
+            <label><input type="radio" name="q2_6_1_responsable_maj" value="referent_interne"> Référent RGPD interne identifié</label>
+            <label><input type="radio" name="q2_6_1_responsable_maj" value="direction"> Direction</label>
+            <label><input type="radio" name="q2_6_1_responsable_maj" value="non_identifie"> Personne non clairement identifiée</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 2bis : Bases légales -->
+      <section class="section" id="bases-legales">
+        <h2 class="section-title">Bases légales</h2>
+
+        <div class="question">
+          <label class="question-label">Sur quelle(s) base(s) légale(s) reposent les traitements des dossiers usagers ? <span class="question-id">Q2B.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q2b_1_bases_usagers" value="interet_public"> Mission d'intérêt public / autorité publique (Art. 6.1.e)</label>
+            <label><input type="checkbox" name="q2b_1_bases_usagers" value="consentement"> Consentement usager/représentant légal (Art. 6.1.a)</label>
+            <label><input type="checkbox" name="q2b_1_bases_usagers" value="obligation_legale"> Obligation légale CASF (Art. 6.1.c)</label>
+            <label><input type="checkbox" name="q2b_1_bases_usagers" value="contrat"> Contrat (Art. 6.1.b)</label>
+            <label><input type="checkbox" name="q2b_1_bases_usagers" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Sur quelle base légale reposent les traitements RH/Paie ? <span class="question-id">Q2B.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q2b_2_bases_rh" value="obligation_legale"> Obligation légale (Code du travail URSSAF) - Art. 6.1.c</label>
+            <label><input type="checkbox" name="q2b_2_bases_rh" value="execution_contrat"> Exécution du contrat de travail - Art. 6.1.b</label>
+            <label><input type="checkbox" name="q2b_2_bases_rh" value="consentement"> Consentement salarié (avantages sociaux) - Art. 6.1.a</label>
+            <label><input type="checkbox" name="q2b_2_bases_rh" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Sur quelle base légale repose la prospection des donateurs ? <span class="question-id">Q2B.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2b_3_base_donateurs" value="interet_legitime" required> Intérêt légitime de l'association - Art. 6.1.f</label>
+            <label><input type="radio" name="q2b_3_base_donateurs" value="consentement"> Consentement explicite - Art. 6.1.a</label>
+            <label><input type="radio" name="q2b_3_base_donateurs" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 2ter : PIA -->
+      <section class="section" id="pia">
+        <h2 class="section-title">PIA (Privacy Impact Assessment)</h2>
+
+        <div class="question">
+          <label class="question-label required">Des traitements à risque élevé ont-ils été identifiés dans l'organisation ? <span class="question-id">Q2T.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2t_1_traitements_risque" value="pia_realisees" required> Oui PIA réalisées pour tous</label>
+            <label><input type="radio" name="q2t_1_traitements_risque" value="pia_non_realisees"> Oui mais PIA non réalisées</label>
+            <label><input type="radio" name="q2t_1_traitements_risque" value="aucun"> Non aucun traitement à risque identifié</label>
+            <label><input type="radio" name="q2t_1_traitements_risque" value="inconnu"> Inconnu (ne sait pas ce qu'est une PIA)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Parmi ces traitements lesquels sont présents dans votre structure ? <span class="question-id">Q2T.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q2t_2_traitements" value="videosurveillance"> Vidéosurveillance usagers/salariés</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="geolocalisation"> Géolocalisation (véhicules personnes objets connectés)</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="biometrie"> Données biométriques (empreintes reconnaissance faciale)</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="genetiques"> Données génétiques</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="profilage"> Profilage automatisé / scoring</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="sensibles_grande_echelle"> Traitement à grande échelle données sensibles (&gt;1000 personnes)</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="croisement"> Croisement massif de données (data lake entrepôt)</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="surveillance_iot"> Surveillance systématique (IoT capteurs)</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="aucun"> Aucun de ces traitements</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si PIA réalisées ont-elles été validées par le DPO ? <span class="question-id">Q2T.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2t_3_validation_dpo" value="avis_documente" required> Oui avis DPO documenté</label>
+            <label><input type="radio" name="q2t_3_validation_dpo" value="sans_avis"> Non PIA sans avis DPO</label>
+            <label><input type="radio" name="q2t_3_validation_dpo" value="pas_pia"> Pas de PIA réalisée</label>
+            <label><input type="radio" name="q2t_3_validation_dpo" value="na"> N/A</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les PIA sont-elles réévaluées en cas d'évolution du traitement ? <span class="question-id">Q2T.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2t_4_reevaluation" value="procedure" required> Oui procédure de réévaluation</label>
+            <label><input type="radio" name="q2t_4_reevaluation" value="figees"> Non PIA figées</label>
+            <label><input type="radio" name="q2t_4_reevaluation" value="na"> N/A</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3 : Sécurité SI -->
+      <section class="section" id="securite">
+        <h2 class="section-title">Sécurité des Systèmes d'Information</h2>
+
+        <div class="question">
+          <label class="question-label required">Une politique de sécurité des systèmes d'information existe-t-elle ? <span class="question-id">Q3.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_1_1_politique_si" value="ecrite_appliquee" required> Oui politique écrite et appliquée</label>
+            <label><input type="radio" name="q3_1_1_politique_si" value="ecrite_non_appliquee"> Oui mais non appliquée</label>
+            <label><input type="radio" name="q3_1_1_politique_si" value="pas_politique"> Non pas de politique</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des sauvegardes centralisées des données sont-elles effectuées ? <span class="question-id">Q3.1.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_1_2_sauvegardes" value="auto_testees" required> Oui automatiques et testées régulièrement</label>
+            <label><input type="radio" name="q3_1_2_sauvegardes" value="auto_non_testees"> Oui automatiques mais jamais testées</label>
+            <label><input type="radio" name="q3_1_2_sauvegardes" value="manuelles_irregulieres"> Sauvegardes manuelles irrégulières</label>
+            <label><input type="radio" name="q3_1_2_sauvegardes" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Où sont stockées les sauvegardes ? <span class="question-id">Q3.1.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_1_3_stockage_sauvegardes" value="site_distant" required> Site distant sécurisé (cloud/datacenter externe)</label>
+            <label><input type="radio" name="q3_1_3_stockage_sauvegardes" value="sur_site_separe"> Sur site mais support séparé (disque externe)</label>
+            <label><input type="radio" name="q3_1_3_stockage_sauvegardes" value="meme_serveur"> Même serveur que données principales</label>
+            <label><input type="radio" name="q3_1_3_stockage_sauvegardes" value="pas_sauvegarde"> Pas de sauvegarde</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Un antivirus/pare-feu est-il déployé sur tous les postes et serveurs ? <span class="question-id">Q3.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_1_antivirus" value="centralise" required> Oui géré centralement et à jour</label>
+            <label><input type="radio" name="q3_2_1_antivirus" value="local"> Oui géré localement</label>
+            <label><input type="radio" name="q3_2_1_antivirus" value="pas_a_jour"> Présent mais pas à jour</label>
+            <label><input type="radio" name="q3_2_1_antivirus" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Une politique de mots de passe est-elle appliquée ? <span class="question-id">Q3.2.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_2_mdp" value="stricte" required> Oui politique stricte (12+ caractères complexité changement régulier)</label>
+            <label><input type="radio" name="q3_2_2_mdp" value="faible"> Oui critères faibles (&lt;8 caractères)</label>
+            <label><input type="radio" name="q3_2_2_mdp" value="aucune"> Non aucune politique</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les postes de travail ont-ils un verrouillage automatique ? <span class="question-id">Q3.2.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_3_verrouillage" value="moins_5min" required> Oui tous postes &lt;5 min inactivité</label>
+            <label><input type="radio" name="q3_2_3_verrouillage" value="plus_10min"> Oui mais délai trop long (&gt;10 min)</label>
+            <label><input type="radio" name="q3_2_3_verrouillage" value="non"> Non pas de verrouillage auto</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les accès aux systèmes sont-ils différenciés par profils/fonctions ? <span class="question-id">Q3.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_3_1_acces" value="limites" required> Oui accès limités par fonction (principe moindre privilège)</label>
+            <label><input type="radio" name="q3_3_1_acces" value="partiellement"> Partiellement différenciés</label>
+            <label><input type="radio" name="q3_3_1_acces" value="memes_droits"> Non tout le monde a les mêmes droits</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les départs de salariés déclenchent-ils la désactivation immédiate des accès ? <span class="question-id">Q3.3.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_3_2_desactivation" value="jour_depart" required> Oui procédure systématique (jour du départ)</label>
+            <label><input type="radio" name="q3_3_2_desactivation" value="quelques_jours"> Oui mais délai de quelques jours</label>
+            <label><input type="radio" name="q3_3_2_desactivation" value="non"> Non pas de procédure</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Un plan de continuité d'activité (PCA) existe-t-il ? <span class="question-id">Q3.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_4_1_pca" value="teste" required> Oui PCA testé régulièrement</label>
+            <label><input type="radio" name="q3_4_1_pca" value="non_teste"> Oui PCA non testé</label>
+            <label><input type="radio" name="q3_4_1_pca" value="pas_pca"> Non pas de PCA</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les données de santé sont-elles cloisonnées des autres données ? <span class="question-id">Q3bis.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3bis_1_cloisonnement_sante" value="oui_dpi_separe" required> Oui, DPI médical séparé avec accès restreints rôles soignants</label>
+            <label><input type="radio" name="q3bis_1_cloisonnement_sante" value="partiellement"> Partiellement (même logiciel mais droits différenciés)</label>
+            <label><input type="radio" name="q3bis_1_cloisonnement_sante" value="non_tout_melange"> Non, tout mélangé (administratif + médical)</label>
+            <label><input type="radio" name="q3bis_1_cloisonnement_sante" value="na"> N/A (pas de données santé au siège)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les données de santé sont-elles hébergées chez un prestataire certifié HDS ? <span class="question-id">Q3bis.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3bis_2_hds" value="oui_certifie" required> Oui, hébergeur certifié HDS</label>
+            <label><input type="radio" name="q3bis_2_hds" value="non_non_certifie"> Non, hébergeur non HDS</label>
+            <label><input type="radio" name="q3bis_2_hds" value="hebergement_interne"> Hébergement interne (serveurs siège)</label>
+            <label><input type="radio" name="q3bis_2_hds" value="inconnu"> Inconnu</label>
+            <label><input type="radio" name="q3bis_2_hds" value="na"> N/A (pas de données santé)</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 5 : Sous-traitance -->
+      <section class="section" id="sous-traitance">
+        <h2 class="section-title">Sous-traitance</h2>
+
+        <div class="question">
+          <label class="question-label required">Tous les sous-traitants ayant accès aux données sont-ils identifiés et listés ? <span class="question-id">Q5.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_1_1_liste_sous_traitants" value="exhaustive" required> Oui liste exhaustive à jour</label>
+            <label><input type="radio" name="q5_1_1_liste_sous_traitants" value="partielle"> Liste partielle</label>
+            <label><input type="radio" name="q5_1_1_liste_sous_traitants" value="pas_liste"> Non pas de liste</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Ces sous-traitants sont-ils tous recensés dans le registre des traitements ? <span class="question-id">Q5.1.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_1_2_recenses" value="tous" required> Oui tous recensés</label>
+            <label><input type="radio" name="q5_1_2_recenses" value="partiellement"> Partiellement recensés</label>
+            <label><input type="radio" name="q5_1_2_recenses" value="non"> Non pas recensés</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des contrats/avenants RGPD existent-ils avec TOUS les sous-traitants ? <span class="question-id">Q5.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_2_1_contrats" value="tous" required> Oui tous ont clauses Art. 28</label>
+            <label><input type="radio" name="q5_2_1_contrats" value="certains"> Certains seulement</label>
+            <label><input type="radio" name="q5_2_1_contrats" value="aucun"> Non aucun contrat RGPD</label>
+            <label><input type="radio" name="q5_2_1_contrats" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les contrats comportent-ils les clauses obligatoires Art. 28.3 ? <span class="question-id">Q5.2.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_2_2_clauses_art28" value="conformes" required> Oui clauses conformes (instructions confidentialité assistance sort données)</label>
+            <label><input type="radio" name="q5_2_2_clauses_art28" value="partiellement"> Partiellement</label>
+            <label><input type="radio" name="q5_2_2_clauses_art28" value="non_verifie"> Non vérifié</label>
+            <label><input type="radio" name="q5_2_2_clauses_art28" value="pas_contrat"> Pas de contrat</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous vérifié les garanties de sécurité des sous-traitants ? <span class="question-id">Q5.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_3_1_garanties" value="tous_critiques" required> Oui pour tous sous-traitants critiques (certifications ISO27001 HDS)</label>
+            <label><input type="radio" name="q5_3_1_garanties" value="partiellement"> Partiellement</label>
+            <label><input type="radio" name="q5_3_1_garanties" value="jamais"> Non jamais vérifié</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les sous-traitants stockent-ils des données hors UE ? <span class="question-id">Q5.3.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_3_2_hors_ue" value="tout_en_ue" required> Non tout en UE/EEE</label>
+            <label><input type="radio" name="q5_3_2_hors_ue" value="oui_garanties"> Oui avec garanties appropriées (CCT BCR DPF)</label>
+            <label><input type="radio" name="q5_3_2_hors_ue" value="oui_sans_garanties"> Oui sans garanties</label>
+            <label><input type="radio" name="q5_3_2_hors_ue" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Si transferts hors UE quels mécanismes de protection sont utilisés ? <span class="question-id">Q5.3.2bis</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q5_3_2bis_mecanismes" value="cct"> Clauses Contractuelles Types (CCT) Commission UE</label>
+            <label><input type="checkbox" name="q5_3_2bis_mecanismes" value="bcr"> Binding Corporate Rules (BCR)</label>
+            <label><input type="checkbox" name="q5_3_2bis_mecanismes" value="adequation"> Décision d'adéquation (UK Suisse Japon...)</label>
+            <label><input type="checkbox" name="q5_3_2bis_mecanismes" value="dpf"> Certification EU-US Data Privacy Framework (pour USA)</label>
+            <label><input type="checkbox" name="q5_3_2bis_mecanismes" value="aucun"> Aucun mécanisme</label>
+            <label><input type="checkbox" name="q5_3_2bis_mecanismes" value="inconnu"> Inconnu</label>
+            <label><input type="checkbox" name="q5_3_2bis_mecanismes" value="na"> N/A (pas de transfert hors UE)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Listez vos principaux outils SaaS/Cloud avec pays d'hébergement connu <span class="question-id">Q5.3.2ter</span></label>
+          <textarea name="q5_3_2ter_outils_cloud" placeholder="Ex: Microsoft 365 (Irlande), Google Workspace (UE), etc."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous vérifié la localisation effective des données chez vos sous-traitants cloud ? <span class="question-id">Q5.3.2quater</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_3_2quater_localisation" value="confirmation_ecrite" required> Oui confirmation écrite sous-traitant (data residency EU)</label>
+            <label><input type="radio" name="q5_3_2quater_localisation" value="suppose_ue"> Non on suppose que c'est en UE</label>
+            <label><input type="radio" name="q5_3_2quater_localisation" value="jamais_verifie"> Non jamais vérifié</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 6 : Incidents -->
+      <section class="section" id="incidents">
+        <h2 class="section-title">Incidents</h2>
+
+        <div class="question">
+          <label class="question-label required">Des violations de données ont-elles eu lieu sur les 24 derniers mois ? <span class="question-id">Q6.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_1_1_violations" value="oui" required> Oui</label>
+            <label><input type="radio" name="q6_1_1_violations" value="non"> Non</label>
+            <label><input type="radio" name="q6_1_1_violations" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Si OUI type(s) d'incident(s) <span class="question-id">Q6.1.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q6_1_2_types" value="perte_papier"> Perte/vol documents papier</label>
+            <label><input type="checkbox" name="q6_1_2_types" value="perte_materiel"> Perte/vol matériel informatique (PC clés USB)</label>
+            <label><input type="checkbox" name="q6_1_2_types" value="email_erreur"> Email erroné (mauvais destinataire)</label>
+            <label><input type="checkbox" name="q6_1_2_types" value="piratage"> Piratage/ransomware</label>
+            <label><input type="checkbox" name="q6_1_2_types" value="acces_non_autorise"> Accès non autorisé</label>
+            <label><input type="checkbox" name="q6_1_2_types" value="divulgation"> Divulgation accidentelle</label>
+            <label><input type="checkbox" name="q6_1_2_types" value="autre"> Autre</label>
+            <label><input type="checkbox" name="q6_1_2_types" value="na"> N/A</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nombre total d'incidents sur 24 derniers mois <span class="question-id">Q6.1.3</span></label>
+          <input type="number" name="q6_1_3_nb_incidents" min="0" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Ces incidents ont-ils été notifiés au DPO dans les 72h ? <span class="question-id">Q6.1.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_1_4_notif_dpo" value="tous_72h" required> Oui tous notifiés &lt;72h</label>
+            <label><input type="radio" name="q6_1_4_notif_dpo" value="certains"> Certains seulement</label>
+            <label><input type="radio" name="q6_1_4_notif_dpo" value="non"> Non aucun notifié</label>
+            <label><input type="radio" name="q6_1_4_notif_dpo" value="na"> N/A (pas d'incident)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le DPO a-t-il notifié la CNIL si nécessaire ? <span class="question-id">Q6.1.5</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_1_5_notif_cnil" value="effectuee" required> Oui notification CNIL effectuée</label>
+            <label><input type="radio" name="q6_1_5_notif_cnil" value="pas_necessaire"> Évaluation faite pas de notification nécessaire</label>
+            <label><input type="radio" name="q6_1_5_notif_cnil" value="non_notifie"> Non pas notifié alors que nécessaire</label>
+            <label><input type="radio" name="q6_1_5_notif_cnil" value="inconnu"> Inconnu</label>
+            <label><input type="radio" name="q6_1_5_notif_cnil" value="na"> N/A</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Quels critères sont utilisés pour évaluer la gravité d'une violation ? <span class="question-id">Q6.1.6</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q6_1_6_criteres" value="nature_donnees"> Nature des données (sensibles ou non)</label>
+            <label><input type="checkbox" name="q6_1_6_criteres" value="nb_personnes"> Nombre de personnes concernées</label>
+            <label><input type="checkbox" name="q6_1_6_criteres" value="consequences"> Conséquences potentielles (discrimination usurpation préjudice...)</label>
+            <label><input type="checkbox" name="q6_1_6_criteres" value="identification"> Facilité d'identification des personnes</label>
+            <label><input type="checkbox" name="q6_1_6_criteres" value="grille_cnil"> Grille CNIL officielle</label>
+            <label><input type="checkbox" name="q6_1_6_criteres" value="intuitive"> Évaluation intuitive au cas par cas</label>
+            <label><input type="checkbox" name="q6_1_6_criteres" value="aucun"> Aucun critère défini</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Savez-vous dans quels cas informer les personnes concernées (Art. 34) ? <span class="question-id">Q6.1.7</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_1_7_info_personnes" value="procedure_claire" required> Oui procédure claire (si risque élevé pour droits/libertés)</label>
+            <label><input type="radio" name="q6_1_7_info_personnes" value="vaguement"> Vaguement</label>
+            <label><input type="radio" name="q6_1_7_info_personnes" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Une procédure de gestion des violations de données existe-t-elle ? <span class="question-id">Q6.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_2_1_procedure" value="ecrite_connue" required> Oui procédure écrite et connue</label>
+            <label><input type="radio" name="q6_2_1_procedure" value="non_formalisee"> Oui mais non formalisée</label>
+            <label><input type="radio" name="q6_2_1_procedure" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les équipes savent-elles identifier une violation de données ? <span class="question-id">Q6.2.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_2_2_identification" value="sensibilisees" required> Oui sensibilisation effectuée</label>
+            <label><input type="radio" name="q6_2_2_identification" value="incertain"> Incertain</label>
+            <label><input type="radio" name="q6_2_2_identification" value="non"> Non</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Un registre des violations est-il tenu ? <span class="question-id">Q6.2.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_2_3_registre" value="a_jour" required> Oui registre à jour</label>
+            <label><input type="radio" name="q6_2_3_registre" value="partiellement"> Partiellement (incidents non tous tracés)</label>
+            <label><input type="radio" name="q6_2_3_registre" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc Synthèse -->
+      <section class="section" id="synthese">
+        <h2 class="section-title">Synthèse</h2>
+
+        <div class="question">
+          <label class="question-label required">Score auto-évalué de maturité RGPD de votre organisation <span class="question-id">Q_SYNTH.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="qsynth_1_maturite" value="elevee" required> Élevée (&gt;80% conforme)</label>
+            <label><input type="radio" name="qsynth_1_maturite" value="moyenne"> Moyenne (50-80%)</label>
+            <label><input type="radio" name="qsynth_1_maturite" value="faible"> Faible (&lt;50%)</label>
+            <label><input type="radio" name="qsynth_1_maturite" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Principales difficultés rencontrées pour la mise en conformité RGPD <span class="question-id">Q_SYNTH.2</span></label>
+          <textarea name="qsynth_2_difficultes" placeholder="Décrivez les principales difficultés..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Commentaires libres ou points non abordés dans le questionnaire <span class="question-id">Q_SYNTH.3</span></label>
+          <textarea name="qsynth_3_commentaires" placeholder="Toute information complémentaire..."></textarea>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="btn-submit">Envoyer le questionnaire</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQBhjBdwuEBtj5Ef63L_5ej3eyXB15DLmpnDBxqM5u0EdVRgoLK6NR1Hkn682obuvN7Q/exec';
+const FORM_TYPE = 'Direction_RGPD';
+
+// Navigation sticky
+const navBlocks = document.querySelectorAll('.nav-block');
+const sections = document.querySelectorAll('.section');
+function updateActiveNav() {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - 100) current = section.getAttribute('id');
+  });
+  navBlocks.forEach(block => {
+    block.classList.remove('active');
+    if (block.getAttribute('href') === '#' + current) block.classList.add('active');
+  });
+}
+if (navBlocks.length > 0) {
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
+}
+
+// Collecte des réponses (format array v2.0)
+function collectResponses() {
+  const responses = [];
+  const seen = new Set();
+  document.querySelectorAll('.question:not(.hidden)').forEach(qEl => {
+    const labelEl = qEl.querySelector('.q-label, .question-label');
+    if (!labelEl) return;
+    const question = labelEl.innerText.replace(/^\*\s*/, '').replace(/\s+/g, ' ').trim();
+    const inputs = qEl.querySelectorAll('input, textarea, select');
+    if (inputs.length === 0) return;
+    const firstInput = inputs[0];
+    const fieldId = firstInput.name || firstInput.id || '';
+    if (seen.has(fieldId)) return;
+    seen.add(fieldId);
+    let answer = '';
+    const type = firstInput.type;
+    if (type === 'radio') {
+      const checked = qEl.querySelector('input[type="radio"]:checked');
+      answer = checked ? checked.value : '';
+    } else if (type === 'checkbox') {
+      const checkeds = qEl.querySelectorAll('input[type="checkbox"]:checked');
+      answer = Array.from(checkeds).map(c => c.value).join(' | ');
+    } else {
+      answer = firstInput.value.trim();
+    }
+    responses.push({ id: fieldId, question, answer });
+  });
+  const nomEtabEl = document.getElementById('nom_etablissement');
+  if (nomEtabEl) {
+    responses.push({ id: 'nom_etablissement', question: 'Nom de l\'établissement', answer: nomEtabEl.value || '' });
+  }
+  return responses;
+}
+
+// Soumission
+document.getElementById('formulaire').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!this.checkValidity()) return;
+  const btn = document.getElementById('btn-submit');
+  const message = document.getElementById('message');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+  const payload = { type: FORM_TYPE, responses: collectResponses() };
+  try {
+    const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const result = await res.json();
+    if (result.status === 'success') {
+      message.className = 'message success show';
+      message.textContent = 'Questionnaire envoyé avec succès ! Merci pour votre participation.';
+      this.reset();
+      const dateField = document.querySelector('[name*="date"]');
+      if (dateField && dateField.type === 'date') dateField.valueAsDate = new Date();
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (err) {
+    message.className = 'message error show';
+    message.textContent = 'Erreur lors de l\'envoi : ' + err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Envoyer le questionnaire';
+  }
+});
+
+// Date par défaut
+const dateField = document.querySelector('[name*="date"]');
+if (dateField && dateField.type === 'date') dateField.valueAsDate = new Date();
+</script>
+</body>
+</html>

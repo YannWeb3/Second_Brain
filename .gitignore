@@ -1,0 +1,6 @@
+﻿
+# Ignorer le coffre-fort sécurisé
+_Secure/
+
+# Fichiers .env (clés API, secrets)
+*.env

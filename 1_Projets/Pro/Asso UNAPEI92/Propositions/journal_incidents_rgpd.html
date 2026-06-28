@@ -1,0 +1,350 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.form-wrap{padding:1.5rem 0}
+.banner{background:#1A4F8A;border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem}
+.banner-icon{background:rgba(255,255,255,0.15);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.banner-title{color:#fff;font-size:17px;font-weight:500;margin-bottom:2px}
+.banner-sub{color:#BDD7EE;font-size:13px}
+.alert-72{background:var(--color-background-danger);border:1px solid var(--color-border-danger);border-radius:var(--border-radius-md);padding:.85rem 1.1rem;margin-bottom:1.5rem;display:flex;gap:.75rem;align-items:flex-start}
+.alert-72 i{color:var(--color-text-danger);font-size:18px;margin-top:1px;flex-shrink:0}
+.alert-72 strong{color:var(--color-text-danger);font-size:13px}
+.alert-72 span{color:var(--color-text-danger);font-size:13px}
+.section-label{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;margin-top:1.25rem}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:.75rem}
+.field-row.full{grid-template-columns:1fr}
+.field-group{display:flex;flex-direction:column;gap:.35rem}
+label{font-size:13px;color:var(--color-text-secondary);display:flex;align-items:center;gap:.35rem}
+label .req{color:var(--color-text-danger);font-size:13px}
+input,select,textarea{width:100%;font-family:var(--font-sans);font-size:14px}
+textarea{resize:vertical;min-height:80px}
+.gravity-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:.75rem}
+.gravity-card{border:1.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:.85rem .9rem;cursor:pointer;transition:border-color .15s;position:relative}
+.gravity-card:hover{border-color:var(--color-border-secondary)}
+.gravity-card.selected-low{border-color:#1D9E75;background:var(--color-background-success)}
+.gravity-card.selected-med{border-color:#BA7517;background:var(--color-background-warning)}
+.gravity-card.selected-high{border-color:#A32D2D;background:var(--color-background-danger)}
+.gravity-card input[type=radio]{position:absolute;opacity:0;pointer-events:none}
+.gravity-label{font-size:13px;font-weight:500}
+.gravity-sub{font-size:11px;color:var(--color-text-secondary);margin-top:3px}
+.glow-low .gravity-label{color:var(--color-text-success)}
+.glow-med .gravity-label{color:var(--color-text-warning)}
+.glow-high .gravity-label{color:var(--color-text-danger)}
+.cnil-box{background:var(--color-background-danger);border:1px solid var(--color-border-danger);border-radius:var(--border-radius-md);padding:.9rem 1.1rem;margin:.75rem 0;display:none;align-items:flex-start;gap:.7rem}
+.cnil-box.visible{display:flex}
+.cnil-box i{color:var(--color-text-danger);font-size:20px;flex-shrink:0;margin-top:1px}
+.cnil-box p{font-size:13px;color:var(--color-text-danger);line-height:1.5}
+.cnil-box strong{font-weight:500}
+.checklist{display:flex;flex-direction:column;gap:.5rem;margin-bottom:.75rem}
+.check-item{display:flex;align-items:flex-start;gap:.7rem;padding:.7rem .85rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md);cursor:pointer;border:1.5px solid transparent;transition:border-color .15s}
+.check-item:hover{border-color:var(--color-border-secondary)}
+.check-item.checked{border-color:var(--color-border-success);background:var(--color-background-success)}
+.check-item input[type=checkbox]{width:16px;height:16px;flex-shrink:0;margin-top:1px;cursor:pointer;accent-color:#1D9E75}
+.check-item span{font-size:13px;color:var(--color-text-primary);line-height:1.5}
+.check-item.checked span{color:var(--color-text-success)}
+.divider{border:none;border-top:.5px solid var(--color-border-tertiary);margin:1.25rem 0}
+.btn-row{display:flex;gap:.75rem;align-items:center;margin-top:1.5rem;flex-wrap:wrap}
+.btn-submit{background:#1A4F8A;color:#fff;border:none;border-radius:var(--border-radius-md);padding:.7rem 1.5rem;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:.5rem;transition:opacity .15s}
+.btn-submit:hover{opacity:.88}
+.btn-reset{background:transparent;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:.7rem 1.1rem;font-size:13px;color:var(--color-text-secondary);cursor:pointer}
+.btn-reset:hover{background:var(--color-background-secondary)}
+.ref-note{font-size:12px;color:var(--color-text-tertiary);display:flex;align-items:center;gap:.35rem;margin-left:auto}
+.success-panel{display:none;text-align:center;padding:2rem 1rem}
+.success-panel.visible{display:block}
+.success-icon{width:56px;height:56px;border-radius:50%;background:var(--color-background-success);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+.success-icon i{color:var(--color-text-success);font-size:28px}
+.success-title{font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:.5rem}
+.success-sub{font-size:14px;color:var(--color-text-secondary);max-width:420px;margin:0 auto .75rem}
+.success-ref{font-size:13px;color:var(--color-text-tertiary);background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.5rem 1rem;display:inline-block;margin-bottom:1rem}
+.success-alert{background:var(--color-background-danger);border:1px solid var(--color-border-danger);border-radius:var(--border-radius-md);padding:.85rem 1.1rem;max-width:460px;margin:0 auto;display:flex;gap:.7rem;align-items:flex-start}
+.success-alert i{color:var(--color-text-danger);font-size:18px;flex-shrink:0;margin-top:1px}
+.success-alert p{font-size:13px;color:var(--color-text-danger);line-height:1.5;text-align:left}
+.tag{display:inline-flex;align-items:center;gap:.3rem;font-size:11px;padding:3px 8px;border-radius:var(--border-radius-md);font-weight:500}
+.tag-opt{background:var(--color-background-info);color:var(--color-text-info)}
+.field-hint{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+</style>
+
+<div class="form-wrap">
+  <h2 class="sr-only">Journal des incidents RGPD — UNAPEI92</h2>
+
+  <div id="form-view">
+    <div class="banner">
+      <div class="banner-icon"><i class="ti ti-file-alert" style="color:#fff;font-size:24px" aria-hidden="true"></i></div>
+      <div>
+        <div class="banner-title">Journal des incidents — Cahier de bord des tempêtes</div>
+        <div class="banner-sub">UNAPEI92 &nbsp;·&nbsp; Toute violation ou anomalie liée aux données personnelles</div>
+      </div>
+    </div>
+
+    <div class="alert-72">
+      <i class="ti ti-clock-exclamation" aria-hidden="true"></i>
+      <div>
+        <strong>Délai légal CNIL : 72 heures</strong><br>
+        <span>Tout incident grave doit être signalé à la CNIL sous 72h à compter de sa découverte. Remplissez ce formulaire immédiatement — votre vigie RGPD et le DPO sont notifiés en temps réel.</span>
+      </div>
+    </div>
+
+    <div class="section-label">1 — Qui signale ?</div>
+    <div class="field-row">
+      <div class="field-group">
+        <label for="nom">Nom &amp; prénom <span class="req">*</span></label>
+        <input type="text" id="nom" placeholder="Marie Dupont">
+      </div>
+      <div class="field-group">
+        <label for="service">Service / Établissement <span class="req">*</span></label>
+        <input type="text" id="service" placeholder="ESAT de Nanterre">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-group">
+        <label for="fonction">Fonction</label>
+        <input type="text" id="fonction" placeholder="Chef de service">
+      </div>
+      <div class="field-group">
+        <label for="contact">Contact direct (tél. ou email) <span class="req">*</span></label>
+        <input type="text" id="contact" placeholder="06 xx xx xx xx">
+      </div>
+    </div>
+
+    <hr class="divider">
+    <div class="section-label">2 — L'incident</div>
+
+    <div class="field-row">
+      <div class="field-group">
+        <label for="date-dec">Date de découverte <span class="req">*</span></label>
+        <input type="date" id="date-dec">
+      </div>
+      <div class="field-group">
+        <label for="heure-dec">Heure approximative</label>
+        <input type="time" id="heure-dec">
+      </div>
+    </div>
+
+    <div class="field-row full">
+      <div class="field-group">
+        <label for="type-incident">Type d'incident <span class="req">*</span></label>
+        <select id="type-incident">
+          <option value="">— Sélectionner —</option>
+          <option value="email">Email envoyé à la mauvaise personne</option>
+          <option value="dossier_perdu">Dossier perdu ou égaré</option>
+          <option value="acces_non_auto">Accès non autorisé à des données</option>
+          <option value="vol">Vol de matériel ou de documents</option>
+          <option value="cyberattaque">Cyberattaque / rançongiciel</option>
+          <option value="divulgation">Divulgation accidentelle de données</option>
+          <option value="destruction">Destruction ou altération de données</option>
+          <option value="autre">Autre — préciser ci-dessous</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-row full">
+      <div class="field-group">
+        <label for="desc">Description de l'incident <span class="req">*</span></label>
+        <textarea id="desc" placeholder="Décrivez les faits : quoi, quand, comment, qui était impliqué... Restez factuel(le), sans interprétation."></textarea>
+      </div>
+    </div>
+
+    <div class="field-row full">
+      <div class="field-group">
+        <label for="donnees">Quelles données sont concernées ? <span class="req">*</span></label>
+        <textarea id="donnees" placeholder="Ex : données de santé de 3 résidents, coordonnées de familles, dossier RH d'un salarié..." style="min-height:60px"></textarea>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field-group">
+        <label for="nb-personnes">Nombre de personnes concernées (estimation)</label>
+        <input type="number" id="nb-personnes" placeholder="Ex : 5" min="0">
+      </div>
+      <div class="field-group">
+        <label for="categories">Catégories de personnes</label>
+        <select id="categories">
+          <option value="">— Sélectionner —</option>
+          <option>Résidents</option>
+          <option>Familles / tuteurs</option>
+          <option>Salariés</option>
+          <option>Résidents + Salariés</option>
+          <option>Autre</option>
+        </select>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <div class="section-label">3 — Gravité de l'incident <span class="req">*</span></div>
+
+    <div class="gravity-row">
+      <div class="gravity-card" id="g-low" onclick="selectGravity('low')">
+        <input type="radio" name="gravity" value="low" id="r-low">
+        <div class="gravity-label glow-low"><i class="ti ti-circle" aria-hidden="true" style="font-size:13px;margin-right:4px"></i>Faible</div>
+        <div class="gravity-sub">Risque limité pour les personnes. Pas de diffusion externe.</div>
+      </div>
+      <div class="gravity-card" id="g-med" onclick="selectGravity('med')">
+        <input type="radio" name="gravity" value="med" id="r-med">
+        <div class="gravity-label glow-med"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:13px;margin-right:4px"></i>Modéré</div>
+        <div class="gravity-sub">Données sensibles ou un nombre significatif de personnes.</div>
+      </div>
+      <div class="gravity-card" id="g-high" onclick="selectGravity('high')">
+        <input type="radio" name="gravity" value="high" id="r-high">
+        <div class="gravity-label glow-high"><i class="ti ti-flame" aria-hidden="true" style="font-size:13px;margin-right:4px"></i>Élevé</div>
+        <div class="gravity-sub">Violation massive, données de santé, risque de préjudice réel.</div>
+      </div>
+    </div>
+
+    <div class="cnil-box" id="cnil-alert">
+      <i class="ti ti-clock-exclamation" aria-hidden="true"></i>
+      <p><strong>Signalement CNIL requis dans les 72h.</strong> Compte tenu de la gravité, le DPO sera notifié immédiatement. Ne prenez aucune mesure corrective sans le consulter. Conservez toutes les preuves (emails, logs, captures d'écran).</p>
+    </div>
+
+    <hr class="divider">
+    <div class="section-label">4 — Actions immédiates déjà prises</div>
+
+    <div class="checklist" id="action-list">
+      <label class="check-item" id="ci-1">
+        <input type="checkbox" onchange="toggleCheck('ci-1',this)">
+        <span>J'ai immédiatement arrêté l'action à l'origine de l'incident (ex : rappel d'un email)</span>
+      </label>
+      <label class="check-item" id="ci-2">
+        <input type="checkbox" onchange="toggleCheck('ci-2',this)">
+        <span>J'ai prévenu ma vigie RGPD ou mon responsable hiérarchique</span>
+      </label>
+      <label class="check-item" id="ci-3">
+        <input type="checkbox" onchange="toggleCheck('ci-3',this)">
+        <span>J'ai sécurisé ou isolé les données concernées (sans les modifier ni les supprimer)</span>
+      </label>
+      <label class="check-item" id="ci-4">
+        <input type="checkbox" onchange="toggleCheck('ci-4',this)">
+        <span>J'ai conservé les preuves (emails, captures, logs…) et ne les ai pas effacées</span>
+      </label>
+    </div>
+
+    <div class="field-row full" style="margin-top:.5rem">
+      <div class="field-group">
+        <label for="autres-actions">Autres actions déjà entreprises <span class="tag tag-opt" style="margin-left:.4rem">facultatif</span></label>
+        <textarea id="autres-actions" placeholder="Décrivez toute autre mesure prise..." style="min-height:60px"></textarea>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <div class="section-label">5 — Informations complémentaires <span class="tag tag-opt" style="margin-left:.4rem">facultatif</span></div>
+
+    <div class="field-row full">
+      <div class="field-group">
+        <label for="origine">Cause probable de l'incident</label>
+        <select id="origine">
+          <option value="">— Sélectionner —</option>
+          <option>Erreur humaine</option>
+          <option>Défaillance technique</option>
+          <option>Acte malveillant interne</option>
+          <option>Acte malveillant externe</option>
+          <option>Cause inconnue à ce stade</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label for="systeme">Logiciel / système impliqué</label>
+        <input type="text" id="systeme" placeholder="Ex : messagerie Outlook, logiciel de dossier résident...">
+      </div>
+    </div>
+
+    <div class="field-row full">
+      <div class="field-group">
+        <label for="commentaires">Observations libres</label>
+        <textarea id="commentaires" placeholder="Tout ce qui vous semble utile à mentionner..." style="min-height:60px"></textarea>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-submit" onclick="submitForm()">
+        <i class="ti ti-send" aria-hidden="true"></i>
+        Envoyer au DPO &amp; à ma vigie RGPD
+      </button>
+      <button class="btn-reset" onclick="resetForm()">
+        <i class="ti ti-refresh" aria-hidden="true" style="font-size:14px;margin-right:4px"></i>Réinitialiser
+      </button>
+      <span class="ref-note"><i class="ti ti-lock" aria-hidden="true" style="font-size:13px"></i>Données transmises au DPO uniquement</span>
+    </div>
+  </div>
+
+  <div class="success-panel" id="success-view">
+    <div class="success-icon"><i class="ti ti-check" aria-hidden="true"></i></div>
+    <div class="success-title">Incident enregistré</div>
+    <div class="success-sub">Votre signalement a bien été transmis. Votre vigie RGPD et le DPO ont reçu une notification immédiate.</div>
+    <div class="success-ref" id="success-ref">Référence : INC-2025-001</div>
+    <div class="success-alert" id="success-cnil" style="display:none">
+      <i class="ti ti-clock-exclamation" aria-hidden="true"></i>
+      <p><strong>Incident de gravité élevée.</strong> Le DPO a été alerté en priorité. Ne touchez à rien et restez disponible. Le délai de 72h pour la CNIL court à partir de la découverte de l'incident.</p>
+    </div>
+    <button class="btn-submit" style="margin:1.25rem auto 0;justify-content:center" onclick="resetAll()">
+      <i class="ti ti-plus" aria-hidden="true"></i>
+      Signaler un autre incident
+    </button>
+  </div>
+</div>
+
+<script>
+var currentGravity = null;
+var incCounter = Math.floor(Math.random()*89)+10;
+
+function selectGravity(g){
+  ['low','med','high'].forEach(function(v){
+    var card=document.getElementById('g-'+v);
+    card.className='gravity-card';
+  });
+  var card=document.getElementById('g-'+g);
+  card.className='gravity-card selected-'+g;
+  document.getElementById('r-'+g).checked=true;
+  currentGravity=g;
+  var box=document.getElementById('cnil-alert');
+  box.className=g==='high'?'cnil-box visible':'cnil-box';
+}
+
+function toggleCheck(id,cb){
+  var el=document.getElementById(id);
+  el.className=cb.checked?'check-item checked':'check-item';
+}
+
+function submitForm(){
+  var nom=document.getElementById('nom').value.trim();
+  var svc=document.getElementById('service').value.trim();
+  var contact=document.getElementById('contact').value.trim();
+  var dateDec=document.getElementById('date-dec').value;
+  var typeInc=document.getElementById('type-incident').value;
+  var desc=document.getElementById('desc').value.trim();
+  var donnees=document.getElementById('donnees').value.trim();
+  if(!nom||!svc||!contact||!dateDec||!typeInc||!desc||!donnees||!currentGravity){
+    alert('Veuillez remplir tous les champs obligatoires (marqués *).');
+    return;
+  }
+  var year=new Date().getFullYear();
+  var ref='INC-'+year+'-'+String(incCounter).padStart(3,'0');
+  document.getElementById('success-ref').textContent='Référence : '+ref;
+  if(currentGravity==='high'){
+    document.getElementById('success-cnil').style.display='flex';
+  } else {
+    document.getElementById('success-cnil').style.display='none';
+  }
+  document.getElementById('form-view').style.display='none';
+  document.getElementById('success-view').className='success-panel visible';
+  window.scrollTo(0,0);
+}
+
+function resetForm(){
+  if(!confirm('Réinitialiser le formulaire ? Les données saisies seront perdues.')) return;
+  resetAll();
+}
+
+function resetAll(){
+  document.querySelectorAll('input[type=text],input[type=number],input[type=time],input[type=date],textarea').forEach(function(el){el.value='';});
+  document.querySelectorAll('select').forEach(function(el){el.selectedIndex=0;});
+  document.querySelectorAll('input[type=checkbox]').forEach(function(el){el.checked=false;});
+  document.querySelectorAll('.check-item').forEach(function(el){el.className='check-item';});
+  ['low','med','high'].forEach(function(v){document.getElementById('g-'+v).className='gravity-card';});
+  document.getElementById('cnil-alert').className='cnil-box';
+  currentGravity=null;
+  incCounter++;
+  document.getElementById('success-view').className='success-panel';
+  document.getElementById('form-view').style.display='block';
+}
+
+document.getElementById('date-dec').valueAsDate=new Date();
+</script>

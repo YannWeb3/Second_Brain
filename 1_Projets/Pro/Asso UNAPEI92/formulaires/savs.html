@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNAPEI92 — SAVS (Questionnaire RGPD)</title>
+  <style>
+    :root {
+      --primary: #0055A4;
+      --primary-dark: #003d7a;
+      --secondary: #E60028;
+      --bg: #f5f7fa;
+      --card: #fff;
+      --text: #333;
+      --text-light: #666;
+      --border: #e0e0e0;
+      --success: #28a745;
+      --error: #dc3545;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+    header p { opacity: 0.9; font-size: 0.95rem; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    .nav-blocks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 25px;
+      padding: 15px;
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+    }
+
+    .nav-block {
+      padding: 8px 16px;
+      background: var(--bg);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .nav-block:hover, .nav-block.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .section {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      scroll-margin-top: 80px;
+    }
+
+    .section-title {
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .question {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .question:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .question-label {
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: block;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .question-id {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: normal;
+      margin-left: 5px;
+    }
+
+    .required::after {
+      content: ' *';
+      color: var(--secondary);
+    }
+
+    input, select, textarea {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .radio-group, .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .radio-group label, .checkbox-group label {
+      font-weight: normal;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .radio-group label:hover, .checkbox-group label:hover {
+      background: var(--bg);
+    }
+
+    input[type="radio"], input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      padding: 14px 40px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .message {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .message.show { display: block; }
+
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid var(--primary);
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.4rem; }
+      .nav-blocks { justify-content: center; }
+      .nav-block { font-size: 0.8rem; padding: 6px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="back-link">← Retour à l'accueil</a>
+
+    <header>
+      <h1>Questionnaire RGPD — SAVS</h1>
+      <p>Service d'Accompagnement à la Vie Sociale — Protection des données des personnes accompagnées</p>
+    </header>
+
+    <nav class="nav-blocks">
+      <a href="#identification" class="nav-block">Identification</a>
+      <a href="#gouvernance" class="nav-block">Gouvernance</a>
+      <a href="#registre" class="nav-block">Registre & PIA</a>
+      <a href="#securite" class="nav-block">Sécurité terrain</a>
+      <a href="#droits" class="nav-block">Droits usagers</a>
+      <a href="#sous-traitants" class="nav-block">Sous-traitants locaux</a>
+      <a href="#incidents" class="nav-block">Incidents locaux</a>
+      <a href="#specifiques" class="nav-block">Spécificités SAVS</a>
+      <a href="#synthese" class="nav-block">Synthèse</a>
+    </nav>
+
+    <div class="info-box">
+      <strong>Instructions :</strong> Ce questionnaire porte sur la conformité RGPD de votre SAVS. Répondez en fonction de votre situation actuelle. Les champs marqués d'une étoile (*) sont obligatoires.
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <form id="formulaire">
+      <!-- Bloc 0 : Identification -->
+      <section class="section" id="identification">
+        <h2 class="section-title">Identification</h2>
+
+        <div class="question">
+          <label class="question-label required">Nom de l'établissement SAVS <span class="question-id">Q0.1</span></label>
+          <input type="text" name="q0_1_nom_etablissement" required>
+          <input type="hidden" id="nom_etablissement" name="nom_etablissement">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Personne répondant au questionnaire (Nom Prénom) <span class="question-id">Q0.2</span></label>
+          <input type="text" name="q0_2_nom_prenom_repondant" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Fonction du répondant <span class="question-id">Q0.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q0_3_fonction" value="directeur" required> Directeur/trice établissement</label>
+            <label><input type="radio" name="q0_3_fonction" value="chef_service"> Chef de service</label>
+            <label><input type="radio" name="q0_3_fonction" value="educateur"> Éducateur/trice spécialisé(e)</label>
+            <label><input type="radio" name="q0_3_fonction" value="resp_admin"> Responsable administratif</label>
+            <label><input type="radio" name="q0_3_fonction" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Date de remplissage <span class="question-id">Q0.4</span></label>
+          <input type="date" name="q0_4_date_remplissage" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nombre de personnes accompagnées par le SAVS <span class="question-id">Q0.5</span></label>
+          <input type="number" name="q0_5_nb_personnes" min="0" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Nombre de salariés dans l'établissement <span class="question-id">Q0.6</span></label>
+          <input type="number" name="q0_6_nb_salaries" min="0" required>
+        </div>
+      </section>
+
+      <!-- Bloc 1 : Gouvernance locale -->
+      <section class="section" id="gouvernance">
+        <h2 class="section-title">Gouvernance locale</h2>
+
+        <div class="question">
+          <label class="question-label required">Un référent RGPD est-il identifié dans votre établissement SAVS ? <span class="question-id">Q1.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_1_1_referent_rgpd" value="identifie_connu" required> Oui identifié et connu des équipes</label>
+            <label><input type="radio" name="q1_1_1_referent_rgpd" value="identifie_informel"> Oui identifié mais informel</label>
+            <label><input type="radio" name="q1_1_1_referent_rgpd" value="non_identifie"> Non personne n'est identifiée</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Nom et fonction du référent RGPD local <span class="question-id">Q1.1.2</span></label>
+          <input type="text" name="q1_1_2_nom_fonction_referent">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le référent RGPD local sait-il contacter le DPO externe ? <span class="question-id">Q1.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_2_1_contact_dpo" value="connu_contacte" required> Oui coordonnées connues et DPO déjà contacté</label>
+            <label><input type="radio" name="q1_2_1_contact_dpo" value="connu_jamais"> Oui coordonnées connues mais jamais contacté</label>
+            <label><input type="radio" name="q1_2_1_contact_dpo" value="non_connu"> Non ne connaît pas le DPO</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les équipes du SAVS ont-elles reçu une sensibilisation ou formation RGPD ? <span class="question-id">Q1.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="recente" required> Oui formation/sensibilisation récente (&lt;2 ans)</label>
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="ancienne"> Oui ancienne (&gt;2 ans)</label>
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="rapide"> Sensibilisation rapide uniquement</label>
+            <label><input type="radio" name="q1_3_1_formation_rgpd" value="jamais"> Non jamais</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">L'établissement connaît-il les procédures RGPD du siège (gestion demandes incidents) ? <span class="question-id">Q1.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_4_1_procedures_siege" value="connues_appliquees" required> Oui procédures connues et appliquées</label>
+            <label><input type="radio" name="q1_4_1_procedures_siege" value="connues_non_appliquees"> Oui connues mais non appliquées</label>
+            <label><input type="radio" name="q1_4_1_procedures_siege" value="existent_non_connues"> Procédures existent mais non connues</label>
+            <label><input type="radio" name="q1_4_1_procedures_siege" value="pas_de_procedures"> Pas de procédures siège</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">L'établissement remonte-t-il les incidents/questions RGPD au siège ? <span class="question-id">Q1.5.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q1_5_1_remontees" value="systematiques" required> Oui remontées systématiques</label>
+            <label><input type="radio" name="q1_5_1_remontees" value="occasionnelles"> Remontées occasionnelles</label>
+            <label><input type="radio" name="q1_5_1_remontees" value="jamais"> Non jamais de remontée</label>
+            <label><input type="radio" name="q1_5_1_remontees" value="na"> N/A (jamais incident)</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 2 : Registre local -->
+      <section class="section" id="registre">
+        <h2 class="section-title">Registre & PIA</h2>
+
+        <div class="question">
+          <label class="question-label required">Connaissez-vous les traitements de données recensés pour votre SAVS dans le registre ? <span class="question-id">Q2.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_1_1_registre" value="connu" required> Oui je connais les traitements SAVS du registre</label>
+            <label><input type="radio" name="q2_1_1_registre" value="vaguement"> Vaguement</label>
+            <label><input type="radio" name="q2_1_1_registre" value="non_connu"> Non je ne connais pas le registre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Utilisez-vous des fichiers ou outils locaux non fournis par le siège ? <span class="question-id">Q2.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2_2_1_outils_locaux" value="oui" required> Oui fichiers/outils locaux (Excel, tableaux accompagnement)</label>
+            <label><input type="radio" name="q2_2_1_outils_locaux" value="non"> Non uniquement outils siège</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Si OUI précisez quels fichiers/outils locaux vous utilisez <span class="question-id">Q2.2.2</span></label>
+          <textarea name="q2_2_2_precisions_outils"></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Sur quelle base légale repose le traitement des dossiers des personnes accompagnées par votre SAVS ? <span class="question-id">Q2B.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2b_1_base_legale" value="interet_public" required> Mission d'intérêt public / autorité publique (Art. 6.1.e)</label>
+            <label><input type="radio" name="q2b_1_base_legale" value="consentement"> Consentement personnes accompagnées (Art. 6.1.a)</label>
+            <label><input type="radio" name="q2b_1_base_legale" value="obligation_legale"> Obligation légale CASF (Art. 6.1.c)</label>
+            <label><input type="radio" name="q2b_1_base_legale" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous identifié des traitements à risque élevé dans votre SAVS nécessitant une PIA ? <span class="question-id">Q2T.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q2t_1_pia" value="realisees" required> Oui PIA réalisées</label>
+            <label><input type="radio" name="q2t_1_pia" value="identifiees_non_realisees"> Oui traitements identifiés mais PIA non réalisées</label>
+            <label><input type="radio" name="q2t_1_pia" value="aucun"> Non aucun traitement à risque identifié</label>
+            <label><input type="radio" name="q2t_1_pia" value="inconnu"> Inconnu (ne sait pas ce qu'est une PIA)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Parmi ces traitements lesquels sont présents dans votre SAVS ? <span class="question-id">Q2T.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q2t_2_traitements" value="geolocalisation_vehicules"> Géolocalisation véhicules éducateurs</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="geolocalisation_personnes"> Géolocalisation personnes accompagnées (bracelets GPS)</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="gestion_budgetaire"> Gestion budgétaire avec accès comptes bancaires complets</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="biometrie"> Données biométriques</label>
+            <label><input type="checkbox" name="q2t_2_traitements" value="aucun"> Aucun de ces traitements</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 3 : Sécurité terrain -->
+      <section class="section" id="securite">
+        <h2 class="section-title">Sécurité terrain</h2>
+
+        <div class="question">
+          <label class="question-label required">Où sont stockés les dossiers des personnes accompagnées papier ? <span class="question-id">Q3.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="armoire_fermee_bureau_securise" required> Armoires fermées à clé dans bureau dédié sécurisé</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="armoire_fermee_bureau_partage"> Armoires fermées à clé dans bureau partagé</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="armoire_non_fermee"> Armoires non fermées à clé</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="classeurs_bureaux"> Classeurs dans bureaux éducateurs</label>
+            <label><input type="radio" name="q3_1_1_stockage_papier" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Combien de personnes ont les clés des armoires dossiers ? <span class="question-id">Q3.1.2</span></label>
+          <input type="number" name="q3_1_2_nb_cles" min="0" required>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les dossiers papier sont-ils détruits de manière sécurisée en fin de conservation ? <span class="question-id">Q3.1.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_1_3_destruction" value="dechiqueteuse" required> Oui déchiqueteuse sur site</label>
+            <label><input type="radio" name="q3_1_3_destruction" value="prestataire"> Oui prestataire spécialisé avec certificat</label>
+            <label><input type="radio" name="q3_1_3_destruction" value="poubelle"> Poubelle classique</label>
+            <label><input type="radio" name="q3_1_3_destruction" value="jamais"> Jamais détruits (conservation indéfinie)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Où sont stockés les dossiers des personnes accompagnées informatiques ? <span class="question-id">Q3.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_1_stockage_info" value="serveur_siege" required> Serveur centralisé siège (accès sécurisé)</label>
+            <label><input type="radio" name="q3_2_1_stockage_info" value="ordinateurs_portables"> Ordinateurs portables éducateurs</label>
+            <label><input type="radio" name="q3_2_1_stockage_info" value="logiciel_metier"> Logiciel métier dédié</label>
+            <label><input type="radio" name="q3_2_1_stockage_info" value="excel_locaux"> Fichiers Excel locaux</label>
+            <label><input type="radio" name="q3_2_1_stockage_info" value="cloud_non_securise"> Cloud non sécurisé</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Quel logiciel métier utilisez-vous pour la gestion de l'accompagnement ? <span class="question-id">Q3.2.2</span></label>
+          <input type="text" name="q3_2_2_logiciel_metier">
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les éducateurs utilisent-ils des ordinateurs portables ou tablettes pour les interventions à domicile ? <span class="question-id">Q3.2.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_3_materiel_nomade" value="chiffre" required> Oui avec chiffrement obligatoire et sécurisation renforcée</label>
+            <label><input type="radio" name="q3_2_3_materiel_nomade" value="non_securise"> Oui sans sécurisation particulière</label>
+            <label><input type="radio" name="q3_2_3_materiel_nomade" value="non"> Non pas de matériel nomade</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les ordinateurs portables se verrouillent-ils automatiquement après inactivité ? <span class="question-id">Q3.2.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_4_verrouillage" value="moins_5min" required> Oui verrouillage auto &lt;5 minutes</label>
+            <label><input type="radio" name="q3_2_4_verrouillage" value="plus_10min"> Oui mais &gt;10 minutes</label>
+            <label><input type="radio" name="q3_2_4_verrouillage" value="manuel"> Verrouillage manuel uniquement</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les connexions internet des ordinateurs portables (4G/5G WiFi public) sont-elles sécurisées ? <span class="question-id">Q3.2.5</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_2_5_connexion" value="vpn" required> Oui VPN obligatoire pour connexions distantes</label>
+            <label><input type="radio" name="q3_2_5_connexion" value="directe"> Connexions directes sans VPN</label>
+            <label><input type="radio" name="q3_2_5_connexion" value="pas_connexion"> Pas de connexion internet nomade</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Comment transmettez-vous des informations sur les personnes accompagnées à l'extérieur ? <span class="question-id">Q3.3.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q3_3_1_transmission" value="email_classique"> Email classique non sécurisé</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="email_securise"> Email crypté/sécurisé</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="plateforme"> Plateforme sécurisée</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="courrier"> Courrier postal</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="main_propre"> Remise main propre</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="telephone"> Téléphone</label>
+            <label><input type="checkbox" name="q3_3_1_transmission" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">À qui transmettez-vous régulièrement des données sur les personnes accompagnées ? <span class="question-id">Q3.3.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="mdph"> MDPH</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="tuteurs"> Tuteurs/curateurs (si protection juridique)</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="familles"> Familles</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="services_sociaux"> Services sociaux</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="medicaux"> Médecins/paramédicaux</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="autre"> Autre</label>
+            <label><input type="checkbox" name="q3_3_2_destinataires" value="aucune"> Aucune transmission externe</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des documents avec données personnes accompagnées sont-ils parfois visibles dans espaces communs SAVS ? <span class="question-id">Q3.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_4_1_visibilite" value="jamais" required> Non jamais documents visibles</label>
+            <label><input type="radio" name="q3_4_1_visibilite" value="parfois"> Parfois (documents sur bureaux)</label>
+            <label><input type="radio" name="q3_4_1_visibilite" value="frequemment"> Oui fréquemment</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les échanges téléphoniques avec les personnes accompagnées contiennent-ils parfois des données sensibles ? <span class="question-id">Q3.5.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q3_5_1_echanges_tel" value="frequemment" required> Oui fréquemment (situations personnelles, budget, santé)</label>
+            <label><input type="radio" name="q3_5_1_echanges_tel" value="parfois"> Parfois</label>
+            <label><input type="radio" name="q3_5_1_echanges_tel" value="rarement"> Rarement, échanges uniquement organisationnels</label>
+            <label><input type="radio" name="q3_5_1_echanges_tel" value="na"> N/A</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 4 : Droits usagers -->
+      <section class="section" id="droits">
+        <h2 class="section-title">Droits usagers</h2>
+
+        <div class="question">
+          <label class="question-label required">Les personnes accompagnées reçoivent-elles une information RGPD claire à l'admission ? <span class="question-id">Q4.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_1_1_info_rgpd" value="document_dedie" required> Oui document dédié notice RGPD adapté (FALC si besoin)</label>
+            <label><input type="radio" name="q4_1_1_info_rgpd" value="document_standard"> Oui document standard</label>
+            <label><input type="radio" name="q4_1_1_info_rgpd" value="orale"> Information orale uniquement</label>
+            <label><input type="radio" name="q4_1_1_info_rgpd" value="non"> Non pas d'information</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous déjà reçu des demandes de personnes accompagnées pour consulter leur dossier ? <span class="question-id">Q4.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_2_1_demandes_acces" value="oui" required> Oui (nombre sur 12 derniers mois)</label>
+            <label><input type="radio" name="q4_2_1_demandes_acces" value="non"> Non jamais</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si OUI quel délai pour répondre aux demandes d'accès au dossier ? <span class="question-id">Q4.2.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_2_2_delai_acces" value="moins_1mois" required> Moins de 1 mois systématiquement</label>
+            <label><input type="radio" name="q4_2_2_delai_acces" value="1_2mois"> Entre 1 et 2 mois</label>
+            <label><input type="radio" name="q4_2_2_delai_acces" value="plus_2mois"> Plus de 2 mois</label>
+            <label><input type="radio" name="q4_2_2_delai_acces" value="na"> N/A (pas de demande)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Savez-vous comment traiter une demande d'exercice de droits des personnes accompagnées ? <span class="question-id">Q4.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_3_1_procedure_droits" value="procedure_claire" required> Oui procédure claire connue</label>
+            <label><input type="radio" name="q4_3_1_procedure_droits" value="vaguement"> Vaguement, je contacterais le siège</label>
+            <label><input type="radio" name="q4_3_1_procedure_droits" value="non"> Non je ne sais pas</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les personnes sous protection juridique peuvent-elles exercer leurs droits RGPD ? <span class="question-id">Q4.4.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q4_4_1_droits_protection" value="selon_niveau" required> Oui selon niveau mesure (curatelle simple = oui avec assistance)</label>
+            <label><input type="radio" name="q4_4_1_droits_protection" value="tuteur_uniquement"> Toujours via tuteur/curateur uniquement</label>
+            <label><input type="radio" name="q4_4_1_droits_protection" value="non_prevu"> Non pas prévu</label>
+            <label><input type="radio" name="q4_4_1_droits_protection" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 5 : Sous-traitants locaux -->
+      <section class="section" id="sous-traitants">
+        <h2 class="section-title">Sous-traitants locaux</h2>
+
+        <div class="question">
+          <label class="question-label">Quels sous-traitants locaux utilisez-vous ayant accès aux données des personnes accompagnées ? <span class="question-id">Q5.1.1</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="logiciel_metier"> Logiciel métier (Imago, Concerto)</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="transporteurs"> Transporteurs (si transports)</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="repas"> Prestataires repas (si applicable)</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="nettoyage"> Entreprise nettoyage</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="intervenants_externes"> Intervenants externes (activités)</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="autre"> Autre</label>
+            <label><input type="checkbox" name="q5_1_1_sous_traitants" value="aucun"> Aucun</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Ces sous-traitants locaux ont-ils signé une clause de confidentialité ou contrat RGPD ? <span class="question-id">Q5.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_2_1_clauses" value="tous" required> Oui tous ont clauses</label>
+            <label><input type="radio" name="q5_2_1_clauses" value="certains"> Certains seulement</label>
+            <label><input type="radio" name="q5_2_1_clauses" value="non"> Non aucun</label>
+            <label><input type="radio" name="q5_2_1_clauses" value="inconnu"> Inconnu (géré par siège)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Le logiciel métier a-t-il un contrat avec clauses RGPD (Art. 28) ? <span class="question-id">Q5.3.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q5_3_1_contrat_art28" value="oui" required> Oui contrat Art. 28 signé</label>
+            <label><input type="radio" name="q5_3_1_contrat_art28" value="non"> Non pas de contrat</label>
+            <label><input type="radio" name="q5_3_1_contrat_art28" value="inconnu"> Inconnu (géré par siège)</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 6 : Incidents locaux -->
+      <section class="section" id="incidents">
+        <h2 class="section-title">Incidents locaux</h2>
+
+        <div class="question">
+          <label class="question-label required">Des incidents de données ont-ils eu lieu dans votre SAVS sur 24 derniers mois ? <span class="question-id">Q6.1.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_1_1_incidents" value="oui" required> Oui</label>
+            <label><input type="radio" name="q6_1_1_incidents" value="non"> Non</label>
+            <label><input type="radio" name="q6_1_1_incidents" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Si OUI type(s) d'incident(s) <span class="question-id">Q6.1.2</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="perte_vol_portable"> Perte/vol ordinateur portable ou tablette</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="perte_vol_papier"> Perte/vol documents papier</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="email_erreur"> Email avec données à mauvais destinataire (tuteur, famille)</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="divulgation_budget"> Divulgation accidentelle données budgétaires</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="autre"> Autre</label>
+            <label><input type="checkbox" name="q6_1_2_types_incidents" value="na"> N/A</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Avez-vous immédiatement informé le siège/DPO (dans les 72h) ? <span class="question-id">Q6.1.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_1_3_info_siege" value="oui_72h" required> Oui tous incidents remontés &lt;72h</label>
+            <label><input type="radio" name="q6_1_3_info_siege" value="certains"> Certains seulement</label>
+            <label><input type="radio" name="q6_1_3_info_siege" value="non"> Non jamais informé</label>
+            <label><input type="radio" name="q6_1_3_info_siege" value="na"> N/A (pas incident)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Savez-vous reconnaître une violation de données ? <span class="question-id">Q6.2.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q6_2_1_reconnaitre_violation" value="oui" required> Oui formé à reconnaître violations</label>
+            <label><input type="radio" name="q6_2_1_reconnaitre_violation" value="incertain"> Incertain</label>
+            <label><input type="radio" name="q6_2_1_reconnaitre_violation" value="non"> Non</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc 7 : Spécificités SAVS -->
+      <section class="section" id="specifiques">
+        <h2 class="section-title">Spécificités SAVS</h2>
+
+        <div class="question">
+          <label class="question-label required">L'accompagnement se fait-il principalement au domicile des personnes ? <span class="question-id">Q7S.1</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7s_1_accompagnement_domicile" value="principalement" required> Oui principalement à domicile</label>
+            <label><input type="radio" name="q7s_1_accompagnement_domicile" value="mixte"> Mixte (domicile + locaux SAVS)</label>
+            <label><input type="radio" name="q7s_1_accompagnement_domicile" value="locaux"> Principalement dans locaux SAVS</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les éducateurs accèdent-ils aux dossiers depuis les domiciles des personnes accompagnées ? <span class="question-id">Q7S.2</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7s_2_acces_domicile" value="securise" required> Oui avec connexion sécurisée (VPN, 4G)</label>
+            <label><input type="radio" name="q7s_2_acces_domicile" value="non_securise"> Oui sans sécurisation particulière</label>
+            <label><input type="radio" name="q7s_2_acces_domicile" value="non"> Non jamais d'accès à distance</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Gérez-vous l'aide à la gestion budgétaire pour certaines personnes accompagnées ? <span class="question-id">Q7S.3</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7s_3_gestion_budget" value="nombreuses" required> Oui pour nombreuses personnes (mesure accompagnement budgétaire)</label>
+            <label><input type="radio" name="q7s_3_gestion_budget" value="quelques"> Oui pour quelques personnes</label>
+            <label><input type="radio" name="q7s_3_gestion_budget" value="non"> Non jamais</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Si gestion budgétaire, où sont stockés les documents bancaires des personnes (RIB, relevés) ? <span class="question-id">Q7S.4</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7s_4_stockage_bancaires" value="coffre" required> Coffre-fort / armoire forte</label>
+            <label><input type="radio" name="q7s_4_stockage_bancaires" value="armoire_standard"> Armoire fermée à clé standard</label>
+            <label><input type="radio" name="q7s_4_stockage_bancaires" value="bureau"> Bureau éducateur</label>
+            <label><input type="radio" name="q7s_4_stockage_bancaires" value="portable"> Ordinateur portable éducateur</label>
+            <label><input type="radio" name="q7s_4_stockage_bancaires" value="na"> N/A (pas de gestion budgétaire)</label>
+            <label><input type="radio" name="q7s_4_stockage_bancaires" value="autre"> Autre</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les personnes accompagnées sont-elles majoritairement sous protection juridique (tutelle, curatelle) ? <span class="question-id">Q7S.5</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7s_5_protection_juridique" value="majorite" required> Oui majorité sous protection</label>
+            <label><input type="radio" name="q7s_5_protection_juridique" value="moitie"> Environ la moitié</label>
+            <label><input type="radio" name="q7s_5_protection_juridique" value="minorite"> Minorité sous protection</label>
+            <label><input type="radio" name="q7s_5_protection_juridique" value="aucune"> Non aucune</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les échanges avec les tuteurs/curateurs sont-ils sécurisés ? <span class="question-id">Q7S.6</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7s_6_securite_tuteurs" value="canal_securise" required> Oui canal sécurisé systématique (plateforme, email crypté, courrier)</label>
+            <label><input type="radio" name="q7s_6_securite_tuteurs" value="email_crypte"> Email sécurisé/crypté</label>
+            <label><input type="radio" name="q7s_6_securite_tuteurs" value="email_classique"> Email classique</label>
+            <label><input type="radio" name="q7s_6_securite_tuteurs" value="telephone"> Téléphone uniquement</label>
+            <label><input type="radio" name="q7s_6_securite_tuteurs" value="na"> N/A (pas de majeurs protégés)</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les tuteurs/curateurs ont-ils accès au dossier complet de la personne accompagnée ? <span class="question-id">Q7S.7</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7s_7_acces_tuteurs" value="adapte" required> Oui accès adapté selon mesure protection (tutelle = complet, curatelle = partiel)</label>
+            <label><input type="radio" name="q7s_7_acces_tuteurs" value="complet"> Oui accès complet systématique</label>
+            <label><input type="radio" name="q7s_7_acces_tuteurs" value="aucun"> Non aucun accès</label>
+            <label><input type="radio" name="q7s_7_acces_tuteurs" value="depend_situations"> Dépend des situations</label>
+            <label><input type="radio" name="q7s_7_acces_tuteurs" value="na"> N/A</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Des plannings de visites à domicile avec adresses des personnes accompagnées sont-ils partagés entre éducateurs ? <span class="question-id">Q7S.8</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7s_8_plannings_adresses" value="securise" required> Oui planning partagé sécurisé (serveur, accès restreints)</label>
+            <label><input type="radio" name="q7s_8_plannings_adresses" value="excel"> Oui planning Excel partagé non sécurisé</label>
+            <label><input type="radio" name="q7s_8_plannings_adresses" value="papier"> Oui planning papier affiché</label>
+            <label><input type="radio" name="q7s_8_plannings_adresses" value="individuel"> Non chacun a son planning uniquement</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Les cahiers de liaison ou transmissions contiennent-ils des données sensibles (budget, santé, situations personnelles) ? <span class="question-id">Q7S.9</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7s_9_cahiers_liaison" value="neutres" required> Non cahiers neutres (rendez-vous, activités uniquement)</label>
+            <label><input type="radio" name="q7s_9_cahiers_liaison" value="parfois"> Parfois données sensibles</label>
+            <label><input type="radio" name="q7s_9_cahiers_liaison" value="regulierement"> Oui régulièrement données sensibles</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <label class="question-label required">Quelle durée de conservation appliquez-vous aux dossiers après fin d'accompagnement ? <span class="question-id">Q7S.10</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="q7s_10_conservation" value="5ans" required> 5 ans après fin accompagnement</label>
+            <label><input type="radio" name="q7s_10_conservation" value="autre"> Autre durée (préciser)</label>
+            <label><input type="radio" name="q7s_10_conservation" value="indefinie"> Conservation indéfinie</label>
+            <label><input type="radio" name="q7s_10_conservation" value="inconnu"> Inconnu</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloc Synthèse -->
+      <section class="section" id="synthese">
+        <h2 class="section-title">Synthèse</h2>
+
+        <div class="question">
+          <label class="question-label">Principales difficultés SAVS pour conformité RGPD <span class="question-id">Q_SYNTH.1</span></label>
+          <textarea name="qsynth_1_difficultes" placeholder="Décrivez les principales difficultés rencontrées..."></textarea>
+        </div>
+
+        <div class="question">
+          <label class="question-label">Commentaires libres ou points SAVS non abordés <span class="question-id">Q_SYNTH.2</span></label>
+          <textarea name="qsynth_2_commentaires" placeholder="Toute information complémentaire..."></textarea>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="btn-submit">Envoyer le questionnaire</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQBhjBdwuEBtj5Ef63L_5ej3eyXB15DLmpnDBxqM5u0EdVRgoLK6NR1Hkn682obuvN7Q/exec';
+const FORM_TYPE = 'SAVS_RGPD';
+
+// Navigation sticky
+const navBlocks = document.querySelectorAll('.nav-block');
+const sections = document.querySelectorAll('.section');
+function updateActiveNav() {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - 100) current = section.getAttribute('id');
+  });
+  navBlocks.forEach(block => {
+    block.classList.remove('active');
+    if (block.getAttribute('href') === '#' + current) block.classList.add('active');
+  });
+}
+window.addEventListener('scroll', updateActiveNav);
+updateActiveNav();
+
+// Collecte des réponses (format array)
+function collectResponses() {
+  const responses = [];
+  const seen = new Set();
+  document.querySelectorAll('.question:not(.hidden)').forEach(qEl => {
+    const labelEl = qEl.querySelector('.q-label, .question-label');
+    if (!labelEl) return;
+    const question = labelEl.innerText.replace(/^\*\s*/, '').replace(/\s+/g, ' ').trim();
+    const inputs = qEl.querySelectorAll('input, textarea, select');
+    if (inputs.length === 0) return;
+    const firstInput = inputs[0];
+    const fieldId = firstInput.name || firstInput.id || '';
+    if (seen.has(fieldId)) return;
+    seen.add(fieldId);
+    let answer = '';
+    const type = firstInput.type;
+    if (type === 'radio') {
+      const checked = qEl.querySelector('input[type="radio"]:checked');
+      answer = checked ? checked.value : '';
+    } else if (type === 'checkbox') {
+      const checkeds = qEl.querySelectorAll('input[type="checkbox"]:checked');
+      answer = Array.from(checkeds).map(c => c.value).join(' | ');
+    } else {
+      answer = firstInput.value.trim();
+    }
+    responses.push({ id: fieldId, question, answer });
+  });
+  // Ajout champ établissement
+  const nomEtabEl = document.getElementById('nom_etablissement');
+  if (nomEtabEl) {
+    responses.push({ id: 'nom_etablissement', question: 'Nom de l\'établissement', answer: nomEtabEl.value || '' });
+  }
+  return responses;
+}
+
+// Soumission
+document.getElementById('formulaire').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!this.checkValidity()) return;
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+  const payload = { type: FORM_TYPE, responses: collectResponses() };
+  try {
+    const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const result = await res.json();
+    if (result.status === 'success') {
+      document.getElementById('message').className = 'message success show';
+      document.getElementById('message').textContent = 'Questionnaire envoyé avec succès ! Merci pour votre participation.';
+      this.reset();
+      document.querySelector('[name="q0_4_date_remplissage"]').valueAsDate = new Date();
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (err) {
+    document.getElementById('message').className = 'message error show';
+    document.getElementById('message').textContent = 'Erreur lors de l\'envoi : ' + err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Envoyer le questionnaire';
+  }
+});
+
+// Date par défaut
+document.querySelector('[name="q0_4_date_remplissage"]').valueAsDate = new Date();
+</script>
+</body>
+</html>
