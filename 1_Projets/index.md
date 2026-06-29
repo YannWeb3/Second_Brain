@@ -1,23 +1,29 @@
-# 📁 Index — Projets
-> Dernière mise à jour : 2026-04-18
+# Projets — Index
+> Dernière mise à jour : 2026-06-29
 
 ## Projets Pro
 
-| Dossier | Client | Statut | Focus actuel | Deadline |
-|---------|--------|--------|--------------|----------|
-| EWA/ | EWA | 🟢 Phase 1 terminée | Dashboard & documentation | — |
-| Asso UNAPEI92/ | UNAPEI92 | 🟡 Initialisation | À définir | — |
+| Dossier | Client | Statut | Focus actuel |
+|---------|--------|--------|--------------|
+| [EWA](Pro/EWA/index.md) | EWA | Phase 1 terminée | Dashboard & documentation |
+| [Hermes-Agent](Pro/Hermes-Agent/index.md) | Interne | En cours | Agent multi-profils & Kanban |
+| [Asso UNAPEI92](Pro/Asso%20UNAPEI92/index.md) | UNAPEI92 | Formulaires créés | Déploiement GitHub Pages |
+| [Coach Michel](Pro/Coach%20Michel/index.md) | Michel | Nouveau | Cadrage & objectifs |
 
-→ Détails : `Pro/[NomClient]/context.md`
+→ Détails : `Pro/[Nom]/index.md`
 
 ## Projets Perso
 
 | Dossier | Statut | Focus actuel |
 |---------|--------|-------------|
-| MonBusiness/ | Actif | À définir |
-| Apprentissage/ | Actif | À définir |
+| [Migration Hostinger → Hetzner](Perso/Migration-Hostinger-Hetzner/index.md) | Terminé | Serveur Coolify opérationnel |
+| [Achat Mini PC](Perso/Achat_Mini_PC/Resume_Strategie.md) | En cours | Serveur IA local (670€ budget) |
+| [MonBusiness](Perso/MonBusiness/index.md) | Actif | Business DNA & offres |
+| [Appli Mobile Coach Sportif](Perso/Appli-Mobile-Coach-Sportif/index.md) | Actif | Dev mobile & suivi clients |
+| [Site Web AZURO](Perso/Site-Web-AZURO/index.md) | Actif | Création site vitrine |
+| [Formation Vidéos Tutos](Perso/Formation-Videos-Tutos/index.md) | Actif | Marketing contenu & leads |
 
-→ Détails : `Perso/[NomProjet]/context.md`
+→ Détails : `Perso/[Nom]/index.md`
 
 ## Règle
 Un projet = une deadline. Sans deadline → c'est une Area.

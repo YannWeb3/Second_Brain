@@ -1,15 +1,15 @@
-# ⚡ Active — Focus de la semaine
+# Active — Focus de la semaine
 > Mis à jour chaque lundi. Une seule tâche principale à la fois.
-> Dernière mise à jour : 2026-04-18
+> Dernière mise à jour : 2026-06-29
 
 ---
 
 ## Tâche principale cette semaine
 
-**Projet** : Hermes Agent
-**Objectif** : Initialisation du projet, configuration serveur et credentials
-**Deadline** : ASAP
-**Statut** : En cours
+**Projet** : Organisation Second Brain
+**Objectif** : Réorganisation PARA terminée, tous les index à jour, push GitHub
+**Deadline** : 29/06/2026
+**Statut** : Terminé
 
 ---
 
@@ -21,13 +21,13 @@
 
 ## Décisions prises cette semaine
 
-- Création du Second Brain sur le Bureau
-- Structure PARA adaptée (0_Inbox + _Brain)
+- Réorganisation complète du Second Brain (fichiers racine → dossiers projets)
+- Création de `_Secure/` pour credentials
+- `_INDEX.md` réécrit avec navigation à jour
 
 ---
 
-## À faire après cette semaine
+## Prochaines tâches
 
-- [ ] Compléter identity.md
-- [ ] Créer le premier dossier client
-- [ ] Configurer la synchronisation Google Drive
+- [ ] Compléter identity.md (_Brain/Context/)
+- [ ] Configurer synchronisation automatisée

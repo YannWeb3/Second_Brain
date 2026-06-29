@@ -1,14 +1,14 @@
-# 📚 Index — Ressources
-> Dernière mise à jour : 2026-04-18
+# Ressources — Index
+> Dernière mise à jour : 2026-06-29
 
 ## Contenu
 
 | Dossier | Contenu |
 |---------|---------|
-| Formations/ | Notes de formations suivies |
-| Templates/ | Templates réutilisables (client, projet, skill) |
-| Outils/ | Documentation outils (n8n, Airtable, etc.) |
-| Lectures/ | Résumés de livres, articles clés |
+| [Outils/](Outils/) | Documentation outils (n8n, Airtable, MCP) |
+| [Templates/](Templates/) | Templates réutilisables (client, projet, skill) |
+| Formations/ | Notes de formations suivies (vide) |
+| Lectures/ | Résumés de livres, articles clés (vide) |
 
 ## Règle
 Une ressource = quelque chose à consulter, pas à faire.

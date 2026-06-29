@@ -1,5 +1,5 @@
-# 🗂️ Index — Archives
-> Dernière mise à jour : 2026-04-18
+# Archives — Index
+> Dernière mise à jour : 2026-06-29
 
 ## Règle absolue
 Ne jamais charger ce dossier automatiquement.
@@ -9,8 +9,8 @@ Ouvrir uniquement sur demande explicite.
 
 | Dossier | Contenu |
 |---------|---------|
-| 2024/ | Projets et notes clôturés en 2024 |
-| 2025/ | Projets et notes clôturés en 2025 |
+| 2024/ | Projets et notes clôturés en 2024 (vide) |
+| 2025/ | Projets et notes clôturés en 2025 (vide) |
 
 ## Comment archiver
 1. Déplacer le dossier projet dans `4_Archives/[année]/`

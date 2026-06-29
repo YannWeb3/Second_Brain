@@ -1,5 +1,5 @@
-# 🔄 Index — Areas (responsabilités continues)
-> Dernière mise à jour : 2026-04-18
+# Areas — Responsabilités continues
+> Dernière mise à jour : 2026-06-29
 
 ## Définition
 Une Area n'a pas de deadline. Tu la maintiens dans le temps.
