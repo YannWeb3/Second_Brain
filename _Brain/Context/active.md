@@ -13,17 +13,16 @@
 
 ---
 
-## En attente / bloquant
+## Ce qui a été fait
 
-- Rien pour l'instant
+- Projet Achat Mini PC archivé dans `4_Archives/2026/` : T460s upgradé 4→8 Go (12 Go total)
+- Tous les index mis à jour
 
 ---
 
-## Décisions prises cette semaine
+## En attente / bloquant
 
-- Réorganisation complète du Second Brain (fichiers racine → dossiers projets)
-- Création de `_Secure/` pour credentials
-- `_INDEX.md` réécrit avec navigation à jour
+- Rien pour l'instant
 
 ---
 

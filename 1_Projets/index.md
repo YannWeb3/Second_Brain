@@ -17,11 +17,12 @@
 | Dossier | Statut | Focus actuel |
 |---------|--------|-------------|
 | [Migration Hostinger → Hetzner](Perso/Migration-Hostinger-Hetzner/index.md) | Terminé | Serveur Coolify opérationnel |
-| [Achat Mini PC](Perso/Achat_Mini_PC/Resume_Strategie.md) | En cours | Serveur IA local (670€ budget) |
 | [MonBusiness](Perso/MonBusiness/index.md) | Actif | Business DNA & offres |
 | [Appli Mobile Coach Sportif](Perso/Appli-Mobile-Coach-Sportif/index.md) | Actif | Dev mobile & suivi clients |
 | [Site Web AZURO](Perso/Site-Web-AZURO/index.md) | Actif | Création site vitrine |
 | [Formation Vidéos Tutos](Perso/Formation-Videos-Tutos/index.md) | Actif | Marketing contenu & leads |
+
+**Archivé :** [Achat Mini PC](4_Archives/2026/Achat_Mini_PC/Resume_Strategie.md)
 
 → Détails : `Perso/[Nom]/index.md`
 

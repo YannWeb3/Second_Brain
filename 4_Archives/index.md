@@ -11,6 +11,12 @@ Ouvrir uniquement sur demande explicite.
 |---------|---------|
 | 2024/ | Projets et notes clôturés en 2024 (vide) |
 | 2025/ | Projets et notes clôturés en 2025 (vide) |
+| [2026/](2026/) | Projets et notes clôturés en 2026 |
+
+### 2026
+| Projet | Description |
+|--------|-------------|
+| [Achat Mini PC](2026/Achat_Mini_PC/Resume_Strategie.md) | Serveur IA local - stratégie terminée, T460s upgradé 4→8 Go (12 Go total) |
 
 ## Comment archiver
 1. Déplacer le dossier projet dans `4_Archives/[année]/`

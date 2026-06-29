@@ -49,9 +49,9 @@ Avoir 64 Go de mémoire transforme ce petit PC en véritable station de travail 
 
 Afin de ne pas jeter le matériel robuste existant et de le conserver pour la bureautique et la gestion du VPS Hetzner :
 - **Diagnostic :** Le PC est un ThinkPad T460s (très solide), mais son processeur Intel de 6ème génération est incapable de faire tourner l'IA locale de manière fluide.
-- **Action :** Ajouter une barrette de **16 Go RAM DDR4 SO-DIMM** (2133/2400 MHz) dans le slot disponible pour atteindre 20/24 Go au total.
-- **Coût :** ~30 €.
-- **Bénéfice :** Permet de prolonger la durée de vie de ce PC portable de plusieurs années pour un coût dérisoire.
+- **Action :** Remplacer la barrette de **4 Go par une 8 Go DDR4 SO-DIMM**  dans le slot disponible pour atteindre **12 Go** au total (4 Go soudée + 8 Go).
+- **Coût :** ~10-15 €.
+- **Bénéfice :** Permet de prolonger la durée de vie de ce PC portable de plusieurs années pour un coût dérisoire. Le slot 16 Go était trop cher ou indisponible.
 
 ---
 

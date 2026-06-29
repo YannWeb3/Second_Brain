@@ -30,7 +30,6 @@
 | Projet | Statut |
 |--------|--------|
 | [Migration Hostinger → Hetzner](1_Projets/Perso/Migration-Hostinger-Hetzner/index.md) | Terminé |
-| [Achat Mini PC](1_Projets/Perso/Achat_Mini_PC/Resume_Strategie.md) | En cours |
 | [Mon Business](1_Projets/Perso/MonBusiness/index.md) | En cours |
 | [Appli Mobile Coach Sportif](1_Projets/Perso/Appli-Mobile-Coach-Sportif/index.md) | En cours |
 | [Site Web AZURO](1_Projets/Perso/Site-Web-AZURO/index.md) | En cours |
@@ -43,3 +42,8 @@
 | [EWA](1_Projets/Pro/EWA/index.md) | EWA | En cours |
 | [Asso UNAPEI92](1_Projets/Pro/Asso%20UNAPEI92/index.md) | UNAPEI92 | En cours |
 | [Coach Michel](1_Projets/Pro/Coach%20Michel/index.md) | Michel | En cours |
+
+## Projets Archivés
+| Projet | Description |
+|--------|-------------|
+| [Achat Mini PC](4_Archives/2026/Achat_Mini_PC/Resume_Strategie.md) | Stratégie serveur IA local terminée — T460s upgradé 4→8 Go (12 Go total) |
