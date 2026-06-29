@@ -30,7 +30,7 @@
 | Projet | Statut |
 |--------|--------|
 | [Migration Hostinger → Hetzner](1_Projets/Perso/Migration-Hostinger-Hetzner/index.md) | Terminé |
-| [Migrer T460s ? Ubuntu](1_Projets/Perso/Migrer-T460s-Ubuntu/index.md) | En cours |
+| [Migrer T460s → Ubuntu](1_Projets/Perso/Migrer-T460s-Ubuntu/index.md) | En cours |
 | [Mon Business](1_Projets/Perso/MonBusiness/index.md) | En cours |
 | [Appli Mobile Coach Sportif](1_Projets/Perso/Appli-Mobile-Coach-Sportif/index.md) | En cours |
 | [Site Web AZURO](1_Projets/Perso/Site-Web-AZURO/index.md) | En cours |
