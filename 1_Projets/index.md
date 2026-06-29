@@ -17,6 +17,7 @@
 | Dossier | Statut | Focus actuel |
 |---------|--------|-------------|
 | [Migration Hostinger → Hetzner](Perso/Migration-Hostinger-Hetzner/index.md) | Terminé | Serveur Coolify opérationnel |
+| [Migrer T460s → Ubuntu](Perso/Migrer-T460s-Ubuntu/index.md) | En cours | Clean install Ubuntu après nettoyage disque |
 | [MonBusiness](Perso/MonBusiness/index.md) | Actif | Business DNA & offres |
 | [Appli Mobile Coach Sportif](Perso/Appli-Mobile-Coach-Sportif/index.md) | Actif | Dev mobile & suivi clients |
 | [Site Web AZURO](Perso/Site-Web-AZURO/index.md) | Actif | Création site vitrine |
